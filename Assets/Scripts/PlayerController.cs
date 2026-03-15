@@ -17,6 +17,15 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
     private Animator animator;
 
+    [Header("Combat")]
+    public float physicalDamage = 15f;
+    public float magicDamage = 20f;
+    public float attackRange = 2f;
+    public MeleeWeapon weapon;
+    public GameObject fishPrefab;
+    public float fishSpeed = 15f;
+    public GameObject magicProjectilePrefab;
+
     // Input Action Asset
     public InputActionAsset inputActions;
     public string actionMapName = "PlayerControls";
@@ -255,6 +264,7 @@ public class PlayerController : MonoBehaviour
             animator.SetTrigger("Attack01");
             attackPressed = false;
             Debug.Log("Атака");
+            PerformMeleeAttack();
         }
 
         if (magicPressed)
@@ -262,6 +272,64 @@ public class PlayerController : MonoBehaviour
             animator.SetTrigger("Attack02Start");
             magicPressed = false;
             Debug.Log("Магия");
+            PerformMagicAttack();
+        }
+    }
+
+    void PerformMeleeAttack()
+    {
+        if (weapon != null)
+        {
+            weapon.StartAttack();
+            Debug.Log("Физическая атака");
+        }
+    }
+
+    void PerformMagicAttack()
+    {
+        if (fishPrefab != null)
+        {
+            // Точка вылета рыбки
+            Vector3 spawnPos = transform.position + transform.forward * 1.5f + Vector3.up * 1.2f;
+
+            // Создаём рыбку
+            GameObject fish = Instantiate(fishPrefab, spawnPos, Quaternion.identity);
+            fish.tag = "PlayerProjectile";
+
+            // Настраиваем физику
+            Rigidbody rb = fish.GetComponent<Rigidbody>();
+            if (rb == null)
+            {
+                rb = fish.AddComponent<Rigidbody>();
+            }
+
+            rb.mass = 0.3f;
+            rb.drag = 0.2f;
+            rb.angularDrag = 0.1f;
+            rb.useGravity = true;
+
+            // Добавляем коллайдер
+            if (fish.GetComponent<Collider>() == null)
+            {
+                SphereCollider col = fish.AddComponent<SphereCollider>();
+                PhysicsMaterial mat = new PhysicsMaterial();
+                mat.bounciness = 0.6f;
+                col.material = mat;
+            }
+
+            // Добавляем скрипт
+            FishProjectile fishScript = fish.GetComponent<FishProjectile>();
+            if (fishScript == null)
+            {
+                fishScript = fish.AddComponent<FishProjectile>();
+            }
+            fishScript.damage = magicDamage;
+            fishScript.speed = fishSpeed;
+
+            // Запускаем в сторону, куда смотрит игрок
+            rb.velocity = transform.forward * fishSpeed + Vector3.up * 2f; // Небольшая дуга
+
+            Debug.Log("Рыбка вылетела!");
         }
     }
 
