@@ -47,7 +47,7 @@ public class FishProjectile : MonoBehaviour
 
     void OnCollisionStay(Collision collision)
     {
-        if (!hasHit && rb != null && rb.velocity.magnitude < 0.1f)
+        if (!hasHit && rb != null && rb.linearVelocity.magnitude < 0.1f)
         {
             Destroy(gameObject, 3f);
         }

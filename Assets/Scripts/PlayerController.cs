@@ -146,8 +146,8 @@ public class PlayerController : MonoBehaviour
 
         rb.freezeRotation = true;
         rb.mass = 1f;
-        rb.drag = 2f;
-        rb.angularDrag = 5f;
+        rb.linearDamping = 2f;
+        rb.angularDamping = 5f;
     }
 
     void Update()
@@ -221,20 +221,20 @@ public class PlayerController : MonoBehaviour
             rb.rotation = Quaternion.Slerp(rb.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
 
             Vector3 moveVelocity = moveDirection * currentSpeed;
-            moveVelocity.y = rb.velocity.y;
-            rb.velocity = moveVelocity;
+            moveVelocity.y = rb.linearVelocity.y;
+            rb.linearVelocity = moveVelocity;
         }
         else
         {
-            Vector3 horizontalVelocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+            Vector3 horizontalVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
             if (horizontalVelocity.magnitude > 0.1f)
             {
                 Vector3 slowdown = horizontalVelocity * (1 - Time.fixedDeltaTime * 5f);
-                rb.velocity = new Vector3(slowdown.x, rb.velocity.y, slowdown.z);
+                rb.linearVelocity = new Vector3(slowdown.x, rb.linearVelocity.y, slowdown.z);
             }
             else
             {
-                rb.velocity = new Vector3(0, rb.velocity.y, 0);
+                rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
             }
         }
     }
@@ -244,7 +244,7 @@ public class PlayerController : MonoBehaviour
         if (jumpPressed && isGrounded)
         {
             isJumping = true;
-            rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             animator.SetTrigger("JumpAir");
             jumpPressed = false;
@@ -304,8 +304,8 @@ public class PlayerController : MonoBehaviour
             }
 
             rb.mass = 0.3f;
-            rb.drag = 0.2f;
-            rb.angularDrag = 0.1f;
+            rb.linearDamping = 0.2f;
+            rb.angularDamping = 0.1f;
             rb.useGravity = true;
 
             // Добавляем коллайдер
@@ -327,7 +327,7 @@ public class PlayerController : MonoBehaviour
             fishScript.speed = fishSpeed;
 
             // Запускаем в сторону, куда смотрит игрок
-            rb.velocity = transform.forward * fishSpeed + Vector3.up * 2f; // Небольшая дуга
+            rb.linearVelocity = transform.forward * fishSpeed + Vector3.up * 2f; // Небольшая дуга
 
             Debug.Log("Рыбка вылетела!");
         }
@@ -335,7 +335,7 @@ public class PlayerController : MonoBehaviour
 
     void ApplyGravity()
     {
-        if (!isGrounded && rb.velocity.y < 0)
+        if (!isGrounded && rb.linearVelocity.y < 0)
         {
             rb.AddForce(Physics.gravity * (gravityMultiplier - 1), ForceMode.Acceleration);
         }
@@ -343,7 +343,7 @@ public class PlayerController : MonoBehaviour
 
     void UpdateAnimations()
     {
-        float horizontalVelocity = new Vector3(rb.velocity.x, 0, rb.velocity.z).magnitude;
+        float horizontalVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z).magnitude;
         float normalizedSpeed = horizontalVelocity / runSpeed;
 
         animator.SetFloat("Speed", normalizedSpeed);

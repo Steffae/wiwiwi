@@ -25,7 +25,7 @@ public class Health : MonoBehaviour
         if (healthBarPrefab != null)
         {
             // Ищем Canvas (создаём, если нет)
-            Canvas canvas = FindObjectOfType<Canvas>();
+            Canvas canvas = FindFirstObjectByType<Canvas>();
             if (canvas == null)
             {
                 GameObject canvasGO = new GameObject("Canvas");
@@ -89,13 +89,14 @@ public class Health : MonoBehaviour
     {
         Debug.Log($"{gameObject.name} умер");
         Animator anim = GetComponent<Animator>();
-        if (anim != null)
+        PlayerController controller = GetComponent<PlayerController>();
+        if (anim != null && controller != null)
         {
             anim.SetTrigger("Die");
         }
 
         // Отключаем управление
-        PlayerController controller = GetComponent<PlayerController>();
+        // PlayerController controller = GetComponent<PlayerController>();
         if (controller != null)
         {
             controller.enabled = false;
@@ -106,6 +107,5 @@ public class Health : MonoBehaviour
         {
             enemy.enabled = false;
         }
-
     }
 }

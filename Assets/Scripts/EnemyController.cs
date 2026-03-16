@@ -95,7 +95,7 @@ public class EnemyController : MonoBehaviour
 
             // ВСЕГДА случайный выбор, без привязки к предыдущему
             float randomValue = Random.value;
-            Debug.Log($"Выбор атаки: {randomValue}"); // Посмотрим в консоли
+            Debug.Log($"Выбор атаки: {randomValue}");
 
             if (randomValue > 0.5f)
             {
@@ -161,7 +161,7 @@ public class EnemyController : MonoBehaviour
             // Настраиваем тег
             bird.tag = "EnemyProjectile";
 
-            // ----- Настройка физики как у мячика -----
+            // Настройка физики как у мячика
             Rigidbody rb = bird.GetComponent<Rigidbody>();
             if (rb == null)
             {
@@ -170,8 +170,8 @@ public class EnemyController : MonoBehaviour
 
             // Делаем птичку лёгкой и упругой
             rb.mass = 0.3f;          // Лёгкая
-            rb.drag = 0.2f;          // Малое сопротивление воздуха
-            rb.angularDrag = 0.1f;    // Крутится легко
+            rb.linearDamping = 0.2f;          // Малое сопротивление воздуха
+            rb.angularDamping = 0.1f;    // Крутится легко
             rb.useGravity = true;     // Гравитация включена - будет лететь по дуге
             rb.interpolation = RigidbodyInterpolation.Interpolate; // Плавное движение
             rb.collisionDetectionMode = CollisionDetectionMode.Continuous; // Чтоб не пролетала сквозь стены
@@ -233,7 +233,7 @@ public class EnemyController : MonoBehaviour
             velocity += Random.insideUnitSphere * 1f;
 
             // Запускаем птичку
-            rb.velocity = velocity;
+            rb.linearVelocity = velocity;
 
             // Добавляем вращение (чтобы крутилась в полёте)
             rb.AddTorque(Random.insideUnitSphere * 3f, ForceMode.Impulse);

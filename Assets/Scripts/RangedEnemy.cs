@@ -129,8 +129,8 @@ public class RangedEnemy : EnemyBase
             }
 
             rb.mass = 0.2f;
-            rb.drag = 0.1f;
-            rb.angularDrag = 0.1f;
+            rb.linearDamping = 0.1f;
+            rb.angularDamping = 0.1f;
             rb.useGravity = true;
 
             if (bird.GetComponent<Collider>() == null)
@@ -157,7 +157,7 @@ public class RangedEnemy : EnemyBase
             Vector3 horizontalDirection = new Vector3(toTarget.x, 0, toTarget.z).normalized;
             Vector3 horizontalVelocity = horizontalDirection * birdSpeed;
 
-            rb.velocity = horizontalVelocity + Vector3.up * verticalVelocity;
+            rb.linearVelocity = horizontalVelocity + Vector3.up * verticalVelocity;
             rb.AddTorque(Random.insideUnitSphere * 2f, ForceMode.Impulse);
         }
 
