@@ -29468,7 +29468,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Health
   maxHealth: 100
   currentHealth: 0
-  healthBarPrefab: {fileID: 0}
+  healthBarPrefab: {fileID: 1756244541765657985, guid: d8b3fb9b923c5e640a29dbb8eaf9a55b, type: 3}
   healthBarOffset: {x: 0, y: 2.5, z: 0}
   GameOverPanel: {fileID: 148163159}
   AttackPanel: {fileID: 948339551}
