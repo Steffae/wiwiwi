@@ -1,5 +1,8 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Collections;
 
 public class Health : MonoBehaviour
 {
@@ -10,19 +13,18 @@ public class Health : MonoBehaviour
     [Header("UI")]
     public GameObject healthBarPrefab;  // Префаб слайдера
     public Vector3 healthBarOffset = new Vector3(0, 2.5f, 0);
+    public float displayTime = 0.5f;
 
     private Slider healthSlider;
     private GameObject healthBarInstance;
     private RectTransform healthBarRect;
     private Camera mainCamera;
-    public GameObject GameOverPanel;
     public GameObject AttackPanel;
 
     void Start()
     {
         currentHealth = maxHealth;
         mainCamera = Camera.main;
-        GameOverPanel.SetActive(false);
 
         // Создаём полоску здоровья
         if (healthBarPrefab != null)
@@ -103,17 +105,27 @@ public class Health : MonoBehaviour
 
         // Анимация получения урона
         Animator anim = GetComponent<Animator>();
-        if (anim != null)
+        PlayerController controller = GetComponent<PlayerController>();
+        if (anim != null && controller != null)
         {
             AttackPanel.SetActive(true);
+            StartCoroutine(HideAfterTime());
             anim.SetTrigger("GetHit");
-            AttackPanel.SetActive(false);
         }
 
         if (currentHealth <= 0)
         {
             Die();
         }
+    }
+
+    protected virtual IEnumerator HideAfterTime()
+    {
+        // Ждём указанное время
+        yield return new WaitForSeconds(displayTime);
+
+        // Отключаем объект
+        AttackPanel.SetActive(false);
     }
 
     void Die()
@@ -124,14 +136,43 @@ public class Health : MonoBehaviour
         if (anim != null && controller != null)
         {
             anim.SetTrigger("Die");
+            DisableCameraControls();
             controller.enabled = false;
-            GameOverPanel.SetActive(true);
+            SceneManager.LoadScene("End");
         }
 
         EnemyController enemy = GetComponent<EnemyController>();
         if (enemy != null)
         {
             enemy.enabled = false;
+        }
+    }
+
+    void DisableCameraControls()
+    {
+        // Ищем камеру в дочерних объектах
+        Camera cam = GetComponentInChildren<Camera>();
+        if (cam != null)
+        {
+            GameObject cameraObj = cam.gameObject;
+            Debug.Log("Найдена дочерняя камера: " + cameraObj.name);
+
+            // Отключаем скрипты
+            ThirdPersonCamera camCtrl = cameraObj.GetComponent<ThirdPersonCamera>();
+            if (camCtrl != null)
+            {
+                camCtrl.enabled = false;
+            }
+
+            PlayerInput playerInput = cameraObj.GetComponent<PlayerInput>();
+            if (playerInput != null)
+            {
+                playerInput.enabled = false;
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Не найдена дочерняя камера");
         }
     }
 }

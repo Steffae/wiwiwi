@@ -7,7 +7,9 @@ public class GameMenu : MonoBehaviour
 
     private void Start()
     {
-        GameOverPanel.SetActive(false);
+        GameOverPanel.SetActive(true);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     public void AgainPlayPressed()
