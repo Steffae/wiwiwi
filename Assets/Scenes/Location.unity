@@ -1102,6 +1102,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: MeleeEnemy Variant (10)
       objectReference: {fileID: 0}
+    - target: {fileID: 6050464271852630315, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: AttackPanel
+      value: 
+      objectReference: {fileID: 948339551}
+    - target: {fileID: 6050464271852630315, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: GameOverPanel
+      value: 
+      objectReference: {fileID: 148163159}
     - target: {fileID: 7224492680642114437, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
       propertyPath: player
       value: 
@@ -2215,7 +2223,7 @@ GameObject:
   - component: {fileID: 59724242}
   - component: {fileID: 59724241}
   - component: {fileID: 59724240}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: tomenu_bt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6216,7 +6224,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 148163160}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: GameOverPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -25323,7 +25331,7 @@ GameObject:
   - component: {fileID: 544565445}
   - component: {fileID: 544565444}
   - component: {fileID: 544565443}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: again_bt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -27625,7 +27633,7 @@ GameObject:
   - component: {fileID: 586945828}
   - component: {fileID: 586945830}
   - component: {fileID: 586945829}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28558,6 +28566,14 @@ PrefabInstance:
       propertyPath: maxHealth
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 6224126011225737544, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: AttackPanel
+      value: 
+      objectReference: {fileID: 948339551}
+    - target: {fileID: 6224126011225737544, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: GameOverPanel
+      value: 
+      objectReference: {fileID: 148163159}
     - target: {fileID: 7544466014235509301, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -29454,6 +29470,8 @@ MonoBehaviour:
   currentHealth: 0
   healthBarPrefab: {fileID: 0}
   healthBarOffset: {x: 0, y: 2.5, z: 0}
+  GameOverPanel: {fileID: 148163159}
+  AttackPanel: {fileID: 948339551}
 --- !u!1001 &611227624
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -33983,6 +34001,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 148163160}
+  - {fileID: 948339552}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -47005,6 +47024,81 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8909426311804280968, guid: af9b9034a74c71e43aef7d475b156981, type: 3}
   m_PrefabInstance: {fileID: 947347286}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &948339551
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 948339552}
+  - component: {fileID: 948339554}
+  - component: {fileID: 948339553}
+  m_Layer: 5
+  m_Name: attackv
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &948339552
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 948339551}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 683342341}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &948339553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 948339551}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.46666667}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: aa7bbb5f7a7f0e04aa8cd6dd530a73a8, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &948339554
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 948339551}
+  m_CullTransparentMesh: 1
 --- !u!1001 &951841988
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -56950,6 +57044,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: MeleeEnemy Variant (12)
       objectReference: {fileID: 0}
+    - target: {fileID: 6050464271852630315, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: AttackPanel
+      value: 
+      objectReference: {fileID: 948339551}
+    - target: {fileID: 6050464271852630315, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: GameOverPanel
+      value: 
+      objectReference: {fileID: 148163159}
     - target: {fileID: 7224492680642114437, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
       propertyPath: player
       value: 
@@ -76504,7 +76606,7 @@ GameObject:
   - component: {fileID: 1535393469}
   - component: {fileID: 1535393471}
   - component: {fileID: 1535393470}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -77060,6 +77162,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: MeleeEnemy Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 6050464271852630315, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: AttackPanel
+      value: 
+      objectReference: {fileID: 948339551}
+    - target: {fileID: 6050464271852630315, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: GameOverPanel
+      value: 
+      objectReference: {fileID: 148163159}
     - target: {fileID: 7224492680642114437, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
       propertyPath: player
       value: 
@@ -84690,6 +84800,14 @@ PrefabInstance:
       propertyPath: maxHealth
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 6224126011225737544, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: AttackPanel
+      value: 
+      objectReference: {fileID: 948339551}
+    - target: {fileID: 6224126011225737544, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: GameOverPanel
+      value: 
+      objectReference: {fileID: 148163159}
     - target: {fileID: 7544466014235509301, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.7109451
@@ -99952,7 +100070,7 @@ GameObject:
   - component: {fileID: 1965868093}
   - component: {fileID: 1965868095}
   - component: {fileID: 1965868094}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105355,6 +105473,14 @@ PrefabInstance:
       propertyPath: maxHealth
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 6224126011225737544, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: AttackPanel
+      value: 
+      objectReference: {fileID: 948339551}
+    - target: {fileID: 6224126011225737544, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: GameOverPanel
+      value: 
+      objectReference: {fileID: 148163159}
     - target: {fileID: 7544466014235509301, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.4359474
@@ -109627,6 +109753,14 @@ PrefabInstance:
       propertyPath: maxHealth
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 6224126011225737544, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: AttackPanel
+      value: 
+      objectReference: {fileID: 948339551}
+    - target: {fileID: 6224126011225737544, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: GameOverPanel
+      value: 
+      objectReference: {fileID: 148163159}
     - target: {fileID: 7544466014235509301, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.982109
@@ -109812,6 +109946,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: MeleeEnemy
       objectReference: {fileID: 0}
+    - target: {fileID: 6050464271852630315, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: AttackPanel
+      value: 
+      objectReference: {fileID: 948339551}
+    - target: {fileID: 6050464271852630315, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: GameOverPanel
+      value: 
+      objectReference: {fileID: 148163159}
     - target: {fileID: 7224492680642114437, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
       propertyPath: player
       value: 

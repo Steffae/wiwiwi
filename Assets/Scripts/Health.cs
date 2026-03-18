@@ -15,11 +15,14 @@ public class Health : MonoBehaviour
     private GameObject healthBarInstance;
     private RectTransform healthBarRect;
     private Camera mainCamera;
+    public GameObject GameOverPanel;
+    public GameObject AttackPanel;
 
     void Start()
     {
         currentHealth = maxHealth;
         mainCamera = Camera.main;
+        GameOverPanel.SetActive(false);
 
         // Создаём полоску здоровья
         if (healthBarPrefab != null)
@@ -102,7 +105,9 @@ public class Health : MonoBehaviour
         Animator anim = GetComponent<Animator>();
         if (anim != null)
         {
+            AttackPanel.SetActive(true);
             anim.SetTrigger("GetHit");
+            AttackPanel.SetActive(false);
         }
 
         if (currentHealth <= 0)
@@ -119,13 +124,8 @@ public class Health : MonoBehaviour
         if (anim != null && controller != null)
         {
             anim.SetTrigger("Die");
-        }
-
-        // Отключаем управление
-        // PlayerController controller = GetComponent<PlayerController>();
-        if (controller != null)
-        {
             controller.enabled = false;
+            GameOverPanel.SetActive(true);
         }
 
         EnemyController enemy = GetComponent<EnemyController>();
