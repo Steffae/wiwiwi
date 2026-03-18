@@ -52,10 +52,36 @@ public class Health : MonoBehaviour
     {
         if (healthBarRect != null && mainCamera != null)
         {
-            // Полоска всегда смотрит на камеру и следует за игроком
-            Vector3 worldPos = transform.position + healthBarOffset;
-            Vector3 screenPos = mainCamera.WorldToScreenPoint(worldPos);
-            healthBarRect.position = screenPos;
+            // Проверяем, виден ли игрок камере
+            Vector3 viewPos = mainCamera.WorldToViewportPoint(transform.position);
+            bool isVisible = viewPos.x > 0 && viewPos.x < 1 && viewPos.y > 0 && viewPos.y < 1 && viewPos.z > 0;
+
+            // Дополнительная проверка лучом (чтобы стены не просвечивали)
+            if (isVisible)
+            {
+                RaycastHit hit;
+                Vector3 direction = transform.position - mainCamera.transform.position;
+                if (Physics.Raycast(mainCamera.transform.position, direction, out hit, direction.magnitude))
+                {
+                    // Если луч упёрся не в игрока - значит что-то между камерой и игроком
+                    if (hit.collider.gameObject != gameObject)
+                    {
+                        isVisible = false;
+                    }
+                }
+            }
+
+            if (isVisible)
+            {
+                Vector3 worldPos = transform.position + healthBarOffset;
+                Vector3 screenPos = mainCamera.WorldToScreenPoint(worldPos);
+                healthBarRect.position = screenPos;
+                healthBarInstance.SetActive(true);
+            }
+            else
+            {
+                healthBarInstance.SetActive(false);
+            }
         }
     }
 

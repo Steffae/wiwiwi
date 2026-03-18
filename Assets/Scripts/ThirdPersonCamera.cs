@@ -78,7 +78,7 @@ public class ThirdPersonCamera : MonoBehaviour
         xRotation -= lookInput.y * mouseSensitivity * Time.deltaTime;
 
         // Ограничиваем угол по вертикали (чтобы камера не уходила под землю)
-        xRotation = Mathf.Clamp(xRotation, 10f, 80f); // Минимум 10 градусов над горизонтом
+        xRotation = Mathf.Clamp(xRotation, 20f, 80f); // Минимум 10 градусов над горизонтом
 
         // Позиция камеры
         Quaternion rotation = Quaternion.Euler(xRotation, yRotation, 0f);

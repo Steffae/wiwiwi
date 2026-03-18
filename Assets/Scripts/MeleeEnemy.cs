@@ -37,8 +37,8 @@ public class MeleeEnemy : EnemyBase
         agent.stoppingDistance = attackRange * 0.8f;
         agent.updateRotation = true;
 
-        if (player == null)
-            player = GameObject.FindGameObjectWithTag("Player").transform;
+        //if (player == null)
+            //player = GameObject.FindGameObjectWithTag("Player").transform;
 
         InvokeRepeating(nameof(SetNewPatrolTarget), 0f, 5f);
     }

@@ -3,8 +3,8 @@ using UnityEngine;
 public class MagicProjectile : MonoBehaviour
 {
     public float damage = 10f;
-    public float speed = 15f;
-    public float lifetime = 10f;
+    public float speed = 25f;
+    public float lifetime = 5f;
     public GameObject hitEffect;
 
     private bool hasHit = false;

@@ -1050,6 +1050,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 861145958}
     m_Modifications:
+    - target: {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: maxHealth
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 5618815698641005921, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
       propertyPath: m_LocalPosition.x
       value: -9.294596
@@ -1094,7 +1102,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: MeleeEnemy Variant (10)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 7224492680642114437, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 610377744}
+    m_RemovedComponents:
+    - {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -7024,6 +7037,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 861145958}
     m_Modifications:
+    - target: {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: maxHealth
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 5618815698641005921, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
       propertyPath: m_LocalPosition.x
       value: -77.68807
@@ -7068,7 +7089,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: MeleeEnemy Variant (7)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 5618815698641170753, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7224492680642114437, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 610377744}
+    m_RemovedComponents:
+    - {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -13775,6 +13805,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 861145958}
     m_Modifications:
+    - target: {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: maxHealth
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 5618815698641005921, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
       propertyPath: m_LocalPosition.x
       value: -37.61176
@@ -13819,7 +13857,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: MeleeEnemy Variant (4)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 5618815698641170753, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7224492680642114437, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 610377744}
+    m_RemovedComponents:
+    - {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -21729,6 +21776,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 861145958}
     m_Modifications:
+    - target: {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: maxHealth
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 5618815698641005921, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
       propertyPath: m_LocalPosition.x
       value: -11.142323
@@ -21773,7 +21828,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: MeleeEnemy Variant (8)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 5618815698641170753, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7224492680642114437, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 610377744}
+    m_RemovedComponents:
+    - {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -28482,6 +28546,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 861145958}
     m_Modifications:
+    - target: {fileID: 1554756981837271969, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 610377744}
+    - target: {fileID: 4213489166829347880, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4213489166829347880, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: maxHealth
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 7544466014235509301, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -28526,7 +28602,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: RangedEnemy Variant (9)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4213489166829347880, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -29375,7 +29452,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Health
   maxHealth: 100
   currentHealth: 0
-  healthBarPrefab: {fileID: 1756244541765657985, guid: 154b2c33003abb24087d402e09184a04, type: 3}
+  healthBarPrefab: {fileID: 0}
   healthBarOffset: {x: 0, y: 2.5, z: 0}
 --- !u!1001 &611227624
 PrefabInstance:
@@ -30421,6 +30498,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 861145958}
     m_Modifications:
+    - target: {fileID: 1554756981837271969, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 610377744}
+    - target: {fileID: 4213489166829347880, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4213489166829347880, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: maxHealth
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 7544466014235509301, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
       propertyPath: m_LocalPosition.x
       value: -69.69496
@@ -30465,7 +30554,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: RangedEnemy Variant (2)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 7544466014235549205, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 4213489166829347880, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -40232,6 +40326,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 861145958}
     m_Modifications:
+    - target: {fileID: 1554756981837271969, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 610377744}
+    - target: {fileID: 4213489166829347880, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4213489166829347880, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: maxHealth
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 7544466014235509301, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
       propertyPath: m_LocalPosition.x
       value: -51.46249
@@ -40276,7 +40382,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: RangedEnemy Variant (3)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 7544466014235549205, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 4213489166829347880, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -40289,6 +40400,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 861145958}
     m_Modifications:
+    - target: {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: maxHealth
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 5618815698641005921, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
       propertyPath: m_LocalPosition.x
       value: -75.73308
@@ -40333,7 +40452,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: MeleeEnemy Variant (2)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 5618815698641170753, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7224492680642114437, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 610377744}
+    m_RemovedComponents:
+    - {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -43689,6 +43817,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 861145958}
     m_Modifications:
+    - target: {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: maxHealth
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 5618815698641005921, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 5.9532814
@@ -43733,7 +43869,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: MeleeEnemy Variant (9)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 5618815698641170753, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7224492680642114437, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 610377744}
+    m_RemovedComponents:
+    - {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -43818,7 +43963,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1953271650171834, guid: dbf7a0c9d76b77a40af3104feac0641d, type: 3}
       propertyPath: m_TagString
-      value: Player
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 4063552230360950, guid: dbf7a0c9d76b77a40af3104feac0641d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -44245,6 +44390,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 861145958}
     m_Modifications:
+    - target: {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: maxHealth
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 5618815698641005921, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
       propertyPath: m_LocalPosition.x
       value: -52.68381
@@ -44289,7 +44442,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: MeleeEnemy Variant (3)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 5618815698641170753, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7224492680642114437, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 610377744}
+    m_RemovedComponents:
+    - {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -52747,6 +52909,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 861145958}
     m_Modifications:
+    - target: {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: maxHealth
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 5618815698641005921, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2.2261734
@@ -52791,7 +52961,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: MeleeEnemy Variant (11)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 5618815698641170753, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7224492680642114437, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 610377744}
+    m_RemovedComponents:
+    - {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -53972,6 +54151,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 861145958}
     m_Modifications:
+    - target: {fileID: 1554756981837271969, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 610377744}
+    - target: {fileID: 4213489166829347880, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4213489166829347880, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: maxHealth
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 7544466014235509301, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
       propertyPath: m_LocalPosition.x
       value: -68.68861
@@ -54016,7 +54207,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: RangedEnemy Variant (6)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 7544466014235549205, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 4213489166829347880, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -55935,6 +56131,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 861145958}
     m_Modifications:
+    - target: {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: maxHealth
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 5618815698641005921, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
       propertyPath: m_LocalPosition.x
       value: -45.122322
@@ -55979,7 +56183,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: MeleeEnemy Variant (5)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 5618815698641170753, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7224492680642114437, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 610377744}
+    m_RemovedComponents:
+    - {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -56685,6 +56898,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 861145958}
     m_Modifications:
+    - target: {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: maxHealth
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 5618815698641005921, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
       propertyPath: m_LocalPosition.x
       value: -6.016651
@@ -56729,7 +56950,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: MeleeEnemy Variant (12)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 7224492680642114437, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 610377744}
+    m_RemovedComponents:
+    - {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -76782,6 +77008,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 861145958}
     m_Modifications:
+    - target: {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: maxHealth
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 5618815698641005921, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
       propertyPath: m_LocalPosition.x
       value: -21.750334
@@ -76826,7 +77060,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: MeleeEnemy Variant
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 7224492680642114437, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 610377744}
+    m_RemovedComponents:
+    - {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -79710,6 +79949,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 861145958}
     m_Modifications:
+    - target: {fileID: 1554756981837271969, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 610377744}
+    - target: {fileID: 4213489166829347880, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4213489166829347880, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: maxHealth
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 7544466014235509301, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
       propertyPath: m_LocalPosition.x
       value: -33.631935
@@ -79754,7 +80005,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: RangedEnemy Variant (5)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 7544466014235549205, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 4213489166829347880, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -79891,6 +80147,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 861145958}
     m_Modifications:
+    - target: {fileID: 1554756981837271969, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 610377744}
+    - target: {fileID: 4213489166829347880, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4213489166829347880, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: maxHealth
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 7544466014235509301, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
       propertyPath: m_LocalPosition.x
       value: -23.453075
@@ -79935,7 +80203,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: RangedEnemy Variant (4)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 7544466014235549205, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 4213489166829347880, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -81337,6 +81610,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 861145958}
     m_Modifications:
+    - target: {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: maxHealth
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 5618815698641005921, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
       propertyPath: m_LocalPosition.x
       value: -49.135143
@@ -81381,7 +81662,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: MeleeEnemy Variant (1)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 5618815698641170753, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7224492680642114437, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 610377744}
+    m_RemovedComponents:
+    - {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -84388,6 +84678,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 861145958}
     m_Modifications:
+    - target: {fileID: 1554756981837271969, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 610377744}
+    - target: {fileID: 4213489166829347880, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4213489166829347880, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: maxHealth
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 7544466014235509301, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.7109451
@@ -84432,7 +84734,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: RangedEnemy Variant (8)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4213489166829347880, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -91623,6 +91926,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 861145958}
     m_Modifications:
+    - target: {fileID: 1554756981837271969, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 610377744}
+    - target: {fileID: 4213489166829347880, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4213489166829347880, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: maxHealth
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 7544466014235509301, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
       propertyPath: m_LocalPosition.x
       value: -56.572174
@@ -91667,7 +91982,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: RangedEnemy Variant
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 7544466014235549205, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 4213489166829347880, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -99555,6 +99875,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 861145958}
     m_Modifications:
+    - target: {fileID: 1554756981837271969, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 610377744}
+    - target: {fileID: 4213489166829347880, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4213489166829347880, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: maxHealth
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 7544466014235509301, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
       propertyPath: m_LocalPosition.x
       value: -79.54686
@@ -99599,7 +99931,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: RangedEnemy Variant (1)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 7544466014235549205, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 4213489166829347880, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -105006,6 +105343,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 861145958}
     m_Modifications:
+    - target: {fileID: 1554756981837271969, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 610377744}
+    - target: {fileID: 4213489166829347880, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4213489166829347880, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: maxHealth
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 7544466014235509301, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.4359474
@@ -105050,7 +105399,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: RangedEnemy Variant (7)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4213489166829347880, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -108702,6 +109052,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 861145958}
     m_Modifications:
+    - target: {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: maxHealth
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 5618815698641005921, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
       propertyPath: m_LocalPosition.x
       value: -69.4705
@@ -108746,7 +109104,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: MeleeEnemy Variant (6)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 5618815698641170753, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7224492680642114437, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 610377744}
+    m_RemovedComponents:
+    - {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -109252,6 +109619,14 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 610377744}
+    - target: {fileID: 4213489166829347880, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4213489166829347880, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
+      propertyPath: maxHealth
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 7544466014235509301, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.982109
@@ -109296,7 +109671,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: RangedEnemy
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4213489166829347880, guid: 47d4fd8e16c453949ba685616e5763ea, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -109318,9 +109694,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: MultiEnemy
       objectReference: {fileID: 0}
+    - target: {fileID: 6345310480206845756, guid: 60e7f234be3f4434b898c0ee4b5920c6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6345310480207006492, guid: 60e7f234be3f4434b898c0ee4b5920c6, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 38.003204
+      value: 44.51
       objectReference: {fileID: 0}
     - target: {fileID: 6345310480207006492, guid: 60e7f234be3f4434b898c0ee4b5920c6, type: 3}
       propertyPath: m_LocalPosition.y
@@ -109328,7 +109708,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6345310480207006492, guid: 60e7f234be3f4434b898c0ee4b5920c6, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -37.930893
+      value: -43.27
       objectReference: {fileID: 0}
     - target: {fileID: 6345310480207006492, guid: 60e7f234be3f4434b898c0ee4b5920c6, type: 3}
       propertyPath: m_LocalRotation.w
@@ -109380,6 +109760,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 861145958}
     m_Modifications:
+    - target: {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
+      propertyPath: maxHealth
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 5618815698641005921, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.79211044
@@ -109428,7 +109816,8 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 610377744}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 32719589142203126, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
