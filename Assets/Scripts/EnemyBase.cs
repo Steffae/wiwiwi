@@ -73,41 +73,50 @@ public class EnemyBase : MonoBehaviour
 
     protected virtual IEnumerator Die()
     {
+        Debug.Log($"{gameObject.name} начал процесс смерти");
+
         if (isDying) yield break;
         isDying = true;
 
-        Debug.Log($"{gameObject.name} умирает...");
+        Debug.Log($"{gameObject.name} умирает");
 
         // Отключаем всё
         if (agent != null) agent.enabled = false;
-        MonoBehaviour[] scripts = GetComponents<MonoBehaviour>();
-        foreach (var script in scripts)
+
+        // Отключаем коллайдеры
+        Collider[] colliders = GetComponents<Collider>();
+        foreach (var col in colliders)
         {
-            if (script != this)
-                script.enabled = false;
+            col.enabled = false;
         }
 
-        // Плавно увеличиваем scale и поднимаем вверх
+        // Отключаем вращение и движение физики
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.isKinematic = true;
+        }
+
+        // ПРОСТАЯ АНИМАЦИЯ СМЕРТИ
         Vector3 originalScale = transform.localScale;
         Vector3 originalPosition = transform.position;
-        float floatHeight = 1f;
         float floatTime = 0.5f;
 
+        Debug.Log("  - Начинаем подъём");
+
+        // Поднимаемся вверх
         float elapsedTime = 0;
         while (elapsedTime < floatTime)
         {
             float t = elapsedTime / floatTime;
-            transform.localScale = Vector3.Lerp(originalScale, originalScale * 1.5f, t);
-            transform.position = originalPosition + Vector3.up * (floatHeight * t);
+            transform.position = originalPosition + Vector3.up * t; // Просто подъём
+            transform.localScale = originalScale * (1f + t * 0.5f); // Увеличиваемся
 
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        // Резко уменьшаем
-        transform.localScale = Vector3.zero;
-
-        // Уничтожаем
-        Destroy(gameObject, 0.2f);
+        Debug.Log("  - Уничтожаем");
+        Destroy(gameObject);
     }
 }

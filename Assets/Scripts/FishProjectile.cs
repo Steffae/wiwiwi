@@ -27,7 +27,7 @@ public class FishProjectile : MonoBehaviour
             return;
 
         Health health = collision.collider.GetComponent<Health>();
-        if (health != null && collision.collider.CompareTag("Enemy"))
+        if (collision.collider.CompareTag("Enemy"))
         {
             health.TakeDamage(damage);
             hasHit = true;
