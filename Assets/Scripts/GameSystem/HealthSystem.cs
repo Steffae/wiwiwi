@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 public class HealthSystem
 {
@@ -6,14 +7,25 @@ public class HealthSystem
     public float CurrentHealth { get; private set; }
 
     // События
-    public event Action<float> OnDamageTaken;    // (урон)
-    public event Action<float> OnHealthChanged;  // (текущее здоровье)
-    public event Action OnDeath;                  // ()
+    public event Action<float> OnDamageTaken;
+    public event Action<float> OnHealthChanged;
+    public event Action OnDeath;
 
     public HealthSystem(float maxHealth)
     {
         MaxHealth = maxHealth;
         CurrentHealth = maxHealth;
+    }
+
+    public void SetHealth(float health)
+    {
+        CurrentHealth = Mathf.Clamp(health, 0, MaxHealth);
+        OnHealthChanged?.Invoke(CurrentHealth);
+
+        if (CurrentHealth <= 0)
+        {
+            OnDeath?.Invoke();
+        }
     }
 
     public void TakeDamage(float damage)

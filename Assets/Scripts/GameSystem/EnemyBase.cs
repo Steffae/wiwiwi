@@ -28,6 +28,19 @@ public class EnemyBase : MonoBehaviour
     protected RectTransform healthBarRect;
     protected Camera mainCamera;
 
+    // save zone
+    public float CurrentHealth => healthSystem.CurrentHealth;
+    public float MaxHealthValue => maxHealth;
+    public bool IsDying => isDying;
+
+    public void SetHealth(float health)
+    {
+        if (healthSystem != null)
+        {
+            healthSystem.SetHealth(health);
+        }
+    }
+
     protected virtual void Awake()
     {
         healthSystem = new HealthSystem(maxHealth);

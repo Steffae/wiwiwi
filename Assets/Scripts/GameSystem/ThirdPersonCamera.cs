@@ -77,8 +77,8 @@ public class ThirdPersonCamera : MonoBehaviour
         yRotation += lookInput.x * mouseSensitivity * Time.deltaTime;
         xRotation -= lookInput.y * mouseSensitivity * Time.deltaTime;
 
-        // Ограничиваем угол по вертикали (чтобы камера не уходила под землю)
-        xRotation = Mathf.Clamp(xRotation, -20f, 100f); // Минимум 10 градусов над горизонтом
+        // Ограничиваем угол по вертикали
+        xRotation = Mathf.Clamp(xRotation, -20f, 100f);
 
         // Позиция камеры
         Quaternion rotation = Quaternion.Euler(xRotation, yRotation, 0f);
@@ -94,7 +94,7 @@ public class ThirdPersonCamera : MonoBehaviour
             transform.position = desiredPosition;
         }
 
-        // Камера смотрит на игрока (чуть выше пояса)
+        // Камера смотрит на игрока
         transform.LookAt(player.position + Vector3.up * 1.5f);
     }
 }

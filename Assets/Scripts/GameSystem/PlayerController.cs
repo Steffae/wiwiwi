@@ -168,9 +168,8 @@ public class PlayerController : MonoBehaviour
     void HandleGroundCheck()
     {
         // Получаем позицию центра персонажа
-        Vector3 center = transform.position + Vector3.up * 0.5f; // Чуть выше центра
+        Vector3 center = transform.position + Vector3.up * 0.5f;
 
-        // Пускаем 8 лучей по кругу
         isGrounded = false;
 
         for (int i = 0; i < 8; i++)
@@ -327,7 +326,7 @@ public class PlayerController : MonoBehaviour
             fishScript.speed = fishSpeed;
 
             // Запускаем в сторону, куда смотрит игрок
-            rb.linearVelocity = transform.forward * fishSpeed + Vector3.up * 2f; // Небольшая дуга
+            rb.linearVelocity = transform.forward * fishSpeed + Vector3.up * 2f;
 
             Debug.Log("Рыбка вылетела!");
         }

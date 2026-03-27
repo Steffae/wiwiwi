@@ -30,6 +30,11 @@ public class HealthComponent : MonoBehaviour
     public float CurrentHealth => healthSystem?.CurrentHealth ?? 0;
     public float MaxHealthValue => maxHealth;
 
+    public void SetHealth(float health)
+    {
+        healthSystem.SetHealth(health);
+    }
+
     void Awake()
     {
         healthSystem = new HealthSystem(maxHealth);

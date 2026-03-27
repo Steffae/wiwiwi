@@ -31,7 +31,7 @@ public class MagicProjectile : MonoBehaviour
     {
         if (hasHit) return;
 
-        // Игнорируем столкновение с врагами (чтобы птичка не сталкивалась с ними)
+        // Игнорируем столкновение с врагами
         if (collision.collider.CompareTag("Enemy"))
             return;
 
