@@ -7,29 +7,33 @@ using System.Collections;
 public class Health : MonoBehaviour
 {
     [Header("Health")]
-    public float maxHealth = 100f;
-    public float currentHealth;
+    [SerializeField] private float maxHealth = 100f;
 
     [Header("UI")]
-    public GameObject healthBarPrefab;  // Префаб слайдера
+    public GameObject healthBarPrefab;
     public Vector3 healthBarOffset = new Vector3(0, 2.5f, 0);
-    public float displayTime = 0.5f;
+    public GameObject AttackPanel;
 
+    private HealthSystem healthSystem;
     private Slider healthSlider;
     private GameObject healthBarInstance;
     private RectTransform healthBarRect;
     private Camera mainCamera;
-    public GameObject AttackPanel;
+
+    public HealthSystem HealthSystem => healthSystem;
 
     void Start()
     {
-        currentHealth = maxHealth;
+        healthSystem = new HealthSystem(maxHealth);
         mainCamera = Camera.main;
+
+        // Подписываемся на события
+        healthSystem.OnHealthChanged += UpdateHealthUI;
+        healthSystem.OnDeath += Die;
 
         // Создаём полоску здоровья
         if (healthBarPrefab != null)
         {
-            // Ищем Canvas (создаём, если нет)
             Canvas canvas = FindFirstObjectByType<Canvas>();
             if (canvas == null)
             {
@@ -48,31 +52,26 @@ public class Health : MonoBehaviour
             {
                 healthSlider.minValue = 0;
                 healthSlider.maxValue = maxHealth;
-                healthSlider.value = currentHealth;
+                healthSlider.value = healthSystem.CurrentHealth;
             }
         }
     }
 
     void LateUpdate()
     {
-        if (healthBarRect != null && mainCamera != null)
+        if (healthBarRect != null && mainCamera != null && healthSystem.CurrentHealth > 0)
         {
-            // Проверяем, виден ли игрок камере
             Vector3 viewPos = mainCamera.WorldToViewportPoint(transform.position);
             bool isVisible = viewPos.x > 0 && viewPos.x < 1 && viewPos.y > 0 && viewPos.y < 1 && viewPos.z > 0;
 
-            // Дополнительная проверка лучом (чтобы стены не просвечивали)
             if (isVisible)
             {
                 RaycastHit hit;
                 Vector3 direction = transform.position - mainCamera.transform.position;
                 if (Physics.Raycast(mainCamera.transform.position, direction, out hit, direction.magnitude))
                 {
-                    // Если луч упёрся не в игрока - значит что-то между камерой и игроком
                     if (hit.collider.gameObject != gameObject)
-                    {
                         isVisible = false;
-                    }
                 }
             }
 
@@ -90,89 +89,67 @@ public class Health : MonoBehaviour
         }
     }
 
-    public void TakeDamage(float damage)
+    void UpdateHealthUI(float currentHealth)
     {
-        currentHealth -= damage;
-        currentHealth = Mathf.Max(currentHealth, 0);
-
-        // Обновляем слайдер
         if (healthSlider != null)
         {
             healthSlider.value = currentHealth;
         }
+    }
 
-        Debug.Log($"{gameObject.name} получил {damage} урона. Осталось HP: {currentHealth}");
+    public void TakeDamage(float damage)
+    {
+        healthSystem.TakeDamage(damage);
+        Debug.Log($"{gameObject.name} получил {damage} урона. Осталось HP: {healthSystem.CurrentHealth}");
 
         // Анимация получения урона
         Animator anim = GetComponent<Animator>();
-        PlayerController controller = GetComponent<PlayerController>();
-        if (anim != null && controller != null)
+        if (anim != null)
         {
             AttackPanel.SetActive(true);
             StartCoroutine(HideAfterTime());
             anim.SetTrigger("GetHit");
         }
-
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
     }
 
     protected virtual IEnumerator HideAfterTime()
     {
-        // Ждём указанное время
-        yield return new WaitForSeconds(displayTime);
-
-        // Отключаем объект
+        yield return new WaitForSeconds(0.5f);
         AttackPanel.SetActive(false);
     }
 
     void Die()
     {
         Debug.Log($"{gameObject.name} умер");
+
         Animator anim = GetComponent<Animator>();
         PlayerController controller = GetComponent<PlayerController>();
+
         if (anim != null && controller != null)
         {
             anim.SetTrigger("Die");
             DisableCameraControls();
             controller.enabled = false;
-            GameBootstrapper.Instance.GameStateService.LoadEnd();
+            SceneManager.LoadScene("End");
         }
 
-        EnemyController enemy = GetComponent<EnemyController>();
-        if (enemy != null)
-        {
-            enemy.enabled = false;
-        }
+        // Убираем полоску
+        if (healthBarInstance != null)
+            Destroy(healthBarInstance, 2f);
+
+        Destroy(gameObject, 2f);
     }
 
     void DisableCameraControls()
     {
-        // Ищем камеру в дочерних объектах
         Camera cam = GetComponentInChildren<Camera>();
         if (cam != null)
         {
-            GameObject cameraObj = cam.gameObject;
-            Debug.Log("Найдена дочерняя камера: " + cameraObj.name);
+            ThirdPersonCamera camCtrl = cam.GetComponent<ThirdPersonCamera>();
+            if (camCtrl != null) camCtrl.enabled = false;
 
-            // Отключаем скрипты
-            ThirdPersonCamera camCtrl = cameraObj.GetComponent<ThirdPersonCamera>();
-            if (camCtrl != null)
-            {
-                camCtrl.enabled = false;
-            }
-
-            PlayerInput playerInput = cameraObj.GetComponent<PlayerInput>();
-            if (playerInput != null)
-            {
-                playerInput.enabled = false;
-            }
-        }
-        else
-        {
-            Debug.LogWarning("Не найдена дочерняя камера");
+            PlayerInput playerInput = cam.GetComponent<PlayerInput>();
+            if (playerInput != null) playerInput.enabled = false;
         }
     }
 }

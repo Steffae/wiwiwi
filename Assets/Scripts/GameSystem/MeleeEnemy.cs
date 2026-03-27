@@ -4,41 +4,25 @@ using System.Collections;
 
 public class MeleeEnemy : EnemyBase
 {
-    [Header("Movement")]
-    public float moveSpeed = 3f;
-    public float patrolRadius = 10f;
+    [Header("Melee Settings")]
     public float detectionRange = 8f;
-
-    [Header("Combat")]
-    public float physicalDamage = 10f;
     public float attackRange = 2f;
     public float attackCooldown = 2f;
+    public float physicalDamage = 10f;
     public float pushForce = 5f;
 
-    [Header("References")]
-    public Transform player;
-
-    private NavMeshAgent agent;
     private float lastAttackTime;
     private Vector3 patrolTarget;
     private bool isAttacking = false;
 
-    protected override void Start()
+    protected override void Awake()
     {
-        base.Start(); // גûחûגאוע EnemyBase.Start()
+        base.Awake();
 
-        agent = GetComponent<NavMeshAgent>();
-        if (agent == null)
+        if (agent != null)
         {
-            agent = gameObject.AddComponent<NavMeshAgent>();
+            agent.stoppingDistance = attackRange * 0.8f;
         }
-
-        agent.speed = moveSpeed;
-        agent.stoppingDistance = attackRange * 0.8f;
-        agent.updateRotation = true;
-
-        //if (player == null)
-            //player = GameObject.FindGameObjectWithTag("Player").transform;
 
         InvokeRepeating(nameof(SetNewPatrolTarget), 0f, 5f);
     }
@@ -71,12 +55,12 @@ public class MeleeEnemy : EnemyBase
     {
         for (int i = 0; i < 10; i++)
         {
-            Vector3 randomDirection = Random.insideUnitSphere * patrolRadius;
+            Vector3 randomDirection = Random.insideUnitSphere * 10f;
             randomDirection.y = 0;
             Vector3 randomPoint = transform.position + randomDirection;
 
             NavMeshHit hit;
-            if (NavMesh.SamplePosition(randomPoint, out hit, patrolRadius, NavMesh.AllAreas))
+            if (NavMesh.SamplePosition(randomPoint, out hit, 10f, NavMesh.AllAreas))
             {
                 patrolTarget = hit.position;
                 return;
@@ -86,12 +70,10 @@ public class MeleeEnemy : EnemyBase
 
     void AttackPlayer()
     {
-        if (Time.time > lastAttackTime + attackCooldown && !isAttacking)
+        if (Time.time > lastAttackTime + attackCooldown && !isAttacking && !isDying)
         {
             lastAttackTime = Time.time;
-
             transform.LookAt(new Vector3(player.position.x, transform.position.y, player.position.z));
-
             StartCoroutine(PerformPhysicalAttack());
         }
     }
@@ -105,7 +87,7 @@ public class MeleeEnemy : EnemyBase
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
         if (distanceToPlayer <= attackRange + 0.5f && !isDying)
         {
-            Health playerHealth = player.GetComponent<Health>();
+            HealthComponent playerHealth = player.GetComponent<HealthComponent>();
             if (playerHealth != null)
             {
                 playerHealth.TakeDamage(physicalDamage);

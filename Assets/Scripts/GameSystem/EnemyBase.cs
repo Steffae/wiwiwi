@@ -1,37 +1,137 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class EnemyBase : MonoBehaviour
 {
     [Header("Health")]
-    public float maxHealth = 50f;
-    protected float currentHealth;
+    [SerializeField] protected float maxHealth = 50f;
 
+    [Header("Movement")]
+    public float moveSpeed = 3f;
+
+    [Header("UI")]
+    public GameObject healthBarPrefab;
+    public Vector3 healthBarOffset = new Vector3(0, 2f, 0);
+    public float showDistance = 10f;
+
+    protected HealthSystem healthSystem;
     protected bool isDying = false;
     protected bool isHit = false;
     protected NavMeshAgent agent;
+    protected Transform player;
+
+    // UI элементы
+    protected GameObject healthBarInstance;
+    protected Slider healthSlider;
+    protected RectTransform healthBarRect;
+    protected Camera mainCamera;
+
+    protected virtual void Awake()
+    {
+        healthSystem = new HealthSystem(maxHealth);
+
+        // Подписываемся на события
+        healthSystem.OnHealthChanged += UpdateHealthUI;
+        healthSystem.OnDeath += Die;
+
+        agent = GetComponent<NavMeshAgent>();
+        if (agent != null)
+        {
+            agent.speed = moveSpeed;
+        }
+
+        mainCamera = Camera.main;
+    }
 
     protected virtual void Start()
     {
-        currentHealth = maxHealth;
-        agent = GetComponent<NavMeshAgent>();
+        player = GameObject.FindGameObjectWithTag("Player")?.transform;
+
+        // Создаём полоску здоровья
+        if (healthBarPrefab != null)
+        {
+            Canvas canvas = FindFirstObjectByType<Canvas>();
+            if (canvas == null)
+            {
+                GameObject canvasGO = new GameObject("Canvas");
+                canvas = canvasGO.AddComponent<Canvas>();
+                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+                canvasGO.AddComponent<CanvasScaler>();
+                canvasGO.AddComponent<GraphicRaycaster>();
+            }
+
+            healthBarInstance = Instantiate(healthBarPrefab, canvas.transform);
+            healthSlider = healthBarInstance.GetComponent<Slider>();
+            healthBarRect = healthBarInstance.GetComponent<RectTransform>();
+
+            if (healthSlider != null)
+            {
+                healthSlider.minValue = 0;
+                healthSlider.maxValue = maxHealth;
+                healthSlider.value = healthSystem.CurrentHealth;
+            }
+        }
+    }
+
+    protected virtual void LateUpdate()
+    {
+        if (healthBarRect == null || mainCamera == null || isDying || healthSystem.CurrentHealth <= 0)
+        {
+            if (healthBarInstance != null && healthBarInstance.activeSelf)
+                healthBarInstance.SetActive(false);
+            return;
+        }
+
+        // Проверяем расстояние до игрока
+        bool showHealthBar = false;
+        if (player != null)
+        {
+            float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+            showHealthBar = distanceToPlayer <= showDistance;
+        }
+
+        if (showHealthBar)
+        {
+            Vector3 worldPos = transform.position + healthBarOffset;
+            Vector3 screenPos = mainCamera.WorldToScreenPoint(worldPos);
+
+            if (screenPos.z > 0)
+            {
+                healthBarRect.position = screenPos;
+                healthBarInstance.SetActive(true);
+            }
+            else
+            {
+                healthBarInstance.SetActive(false);
+            }
+        }
+        else
+        {
+            if (healthBarInstance != null && healthBarInstance.activeSelf)
+                healthBarInstance.SetActive(false);
+        }
     }
 
     public virtual void TakeDamage(float damage)
     {
         if (isDying) return;
 
-        currentHealth -= damage;
-        Debug.Log($"{gameObject.name} получил {damage} урона. Осталось: {currentHealth}");
+        healthSystem.TakeDamage(damage);
+        Debug.Log($"{gameObject.name} получил {damage} урона. Осталось: {healthSystem.CurrentHealth}");
 
-        if (currentHealth <= 0)
-        {
-            StartCoroutine(Die());
-        }
-        else
+        if (!isDying && healthSystem.CurrentHealth > 0)
         {
             StartCoroutine(HitReaction());
+        }
+    }
+
+    protected void UpdateHealthUI(float currentHealth)
+    {
+        if (healthSlider != null)
+        {
+            healthSlider.value = currentHealth;
         }
     }
 
@@ -39,7 +139,11 @@ public class EnemyBase : MonoBehaviour
     {
         isHit = true;
 
-        if (agent != null) agent.isStopped = true;
+        // Проверяем, жив ли агент и не умирает ли враг
+        if (agent != null && agent.isActiveAndEnabled && !isDying)
+        {
+            agent.isStopped = true;
+        }
 
         // Тычок назад
         Vector3 startPos = transform.position;
@@ -67,20 +171,22 @@ public class EnemyBase : MonoBehaviour
             yield return null;
         }
 
+        if (agent != null && agent.isActiveAndEnabled && !isDying)
+        {
+            agent.isStopped = false;
+        }
+
         isHit = false;
-        if (agent != null) agent.isStopped = false;
     }
 
-    protected virtual IEnumerator Die()
+    protected virtual void Die()
     {
-        Debug.Log($"{gameObject.name} начал процесс смерти");
-
-        if (isDying) yield break;
+        if (isDying) return;
         isDying = true;
 
         Debug.Log($"{gameObject.name} умирает");
 
-        // Отключаем всё
+        // Отключаем движение
         if (agent != null) agent.enabled = false;
 
         // Отключаем коллайдеры
@@ -90,33 +196,52 @@ public class EnemyBase : MonoBehaviour
             col.enabled = false;
         }
 
-        // Отключаем вращение и движение физики
+        // Отключаем физику
         Rigidbody rb = GetComponent<Rigidbody>();
-        if (rb != null)
+        if (rb != null) rb.isKinematic = true;
+
+        // Прячем полоску здоровья
+        if (healthBarInstance != null)
         {
-            rb.isKinematic = true;
+            Destroy(healthBarInstance, 0.5f);
         }
 
-        // ПРОСТАЯ АНИМАЦИЯ СМЕРТИ
+        // Запускаем анимацию смерти
+        StartCoroutine(DeathAnimation());
+    }
+
+    protected virtual IEnumerator DeathAnimation()
+    {
         Vector3 originalScale = transform.localScale;
         Vector3 originalPosition = transform.position;
         float floatTime = 0.5f;
 
-        Debug.Log("  - Начинаем подъём");
-
-        // Поднимаемся вверх
         float elapsedTime = 0;
         while (elapsedTime < floatTime)
         {
             float t = elapsedTime / floatTime;
-            transform.position = originalPosition + Vector3.up * t; // Просто подъём
-            transform.localScale = originalScale * (1f + t * 0.5f); // Увеличиваемся
-
+            transform.position = originalPosition + Vector3.up * t;
+            transform.localScale = originalScale * (1f + t * 0.5f);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        Debug.Log("  - Уничтожаем");
         Destroy(gameObject);
+    }
+
+    protected virtual void OnDestroy()
+    {
+        // Отписываемся от событий
+        if (healthSystem != null)
+        {
+            healthSystem.OnHealthChanged -= UpdateHealthUI;
+            healthSystem.OnDeath -= Die;
+        }
+
+        // Уничтожаем полоску здоровья
+        if (healthBarInstance != null)
+        {
+            Destroy(healthBarInstance);
+        }
     }
 }

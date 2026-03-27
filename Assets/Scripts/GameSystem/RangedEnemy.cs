@@ -4,42 +4,29 @@ using System.Collections;
 
 public class RangedEnemy : EnemyBase
 {
-    [Header("Movement")]
-    public float moveSpeed = 2f;
-    public float patrolRadius = 10f;
-
-    [Header("Combat")]
-    public float magicDamage = 15f;
+    [Header("Ranged Settings")]
     public float attackRange = 15f;
-    public float preferredDistance = 12f;
-    public float attackCooldown = 3f;
+    public float minDistance = 8f;      // Минимальная дистанция (если ближе — отступаем)
+    public float maxDistance = 12f;     // Максимальная дистанция (если дальше — подходим)
+    public float attackCooldown = 2f;
+    public float magicDamage = 15f;
     public GameObject birdPrefab;
-    public float birdSpeed = 20f;
+    public float birdSpeed = 25f;
 
-    [Header("References")]
-    public Transform player;
-
-    private NavMeshAgent agent;
     private float lastAttackTime;
     private Vector3 patrolTarget;
     private bool isAttacking = false;
+    private bool isMoving = false;
 
-    protected override void Start()
+    protected override void Awake()
     {
-        base.Start(); // вызывает EnemyBase.Start()
+        base.Awake();
 
-        agent = GetComponent<NavMeshAgent>();
-        if (agent == null)
+        if (agent != null)
         {
-            agent = gameObject.AddComponent<NavMeshAgent>();
+            agent.speed = moveSpeed;
+            agent.stoppingDistance = 1f;
         }
-
-        agent.speed = moveSpeed;
-        agent.stoppingDistance = preferredDistance * 0.8f;
-        agent.updateRotation = true;
-
-        //if (player == null)
-            //player = GameObject.FindGameObjectWithTag("Player").transform;
 
         InvokeRepeating(nameof(SetNewPatrolTarget), 0f, 5f);
     }
@@ -50,36 +37,55 @@ public class RangedEnemy : EnemyBase
 
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
+        // ЛОГИКА ПЕРЕДВИЖЕНИЯ
         if (distanceToPlayer <= attackRange)
         {
-            if (distanceToPlayer < preferredDistance - 2f)
-            {
-                Vector3 awayFromPlayer = transform.position - player.position;
-                awayFromPlayer.y = 0;
-                Vector3 retreatPoint = transform.position + awayFromPlayer.normalized * 5f;
+            // Враг видит игрока
 
-                agent.isStopped = false;
-                agent.SetDestination(retreatPoint);
-            }
-            else if (distanceToPlayer > preferredDistance + 2f)
+            if (distanceToPlayer < minDistance)
             {
+                // СЛИШКОМ БЛИЗКО — ОТСТУПАЕМ
+                Vector3 awayFromPlayer = (transform.position - player.position).normalized;
+                awayFromPlayer.y = 0;
+                Vector3 retreatPoint = transform.position + awayFromPlayer * 5f;
+
+                agent.SetDestination(retreatPoint);
                 agent.isStopped = false;
+                isMoving = true;
+                Debug.Log($"RangedEnemy: ОТСТУПАЮ! dist={distanceToPlayer}");
+            }
+            else if (distanceToPlayer > maxDistance)
+            {
+                // СЛИШКОМ ДАЛЕКО — ПОДХОДИМ
                 agent.SetDestination(player.position);
+                agent.isStopped = false;
+                isMoving = true;
+                Debug.Log($"RangedEnemy: ПОДХОЖУ! dist={distanceToPlayer}");
             }
             else
             {
-                agent.isStopped = true;
-                agent.velocity = Vector3.zero;
+                // НА ПРАВИЛЬНОЙ ДИСТАНЦИИ — СТОЮ И СТРЕЛЯЮ
+                if (isMoving)
+                {
+                    agent.isStopped = true;
+                    isMoving = false;
+                }
 
-                transform.LookAt(new Vector3(player.position.x, transform.position.y, player.position.z));
+                // Поворачиваемся к игроку
+                Vector3 lookDirection = player.position - transform.position;
+                lookDirection.y = 0;
+                transform.rotation = Quaternion.LookRotation(lookDirection);
 
+                // Атакуем
                 AttackPlayer();
             }
         }
         else
         {
+            // ИГРОК НЕ ВИДЕН — ПАТРУЛИРУЕМ
             agent.isStopped = false;
-            agent.SetDestination(player.position);
+            agent.SetDestination(patrolTarget);
+            isMoving = true;
         }
     }
 
@@ -87,12 +93,12 @@ public class RangedEnemy : EnemyBase
     {
         for (int i = 0; i < 10; i++)
         {
-            Vector3 randomDirection = Random.insideUnitSphere * patrolRadius;
+            Vector3 randomDirection = Random.insideUnitSphere * 10f;
             randomDirection.y = 0;
             Vector3 randomPoint = transform.position + randomDirection;
 
             NavMeshHit hit;
-            if (NavMesh.SamplePosition(randomPoint, out hit, patrolRadius, NavMesh.AllAreas))
+            if (NavMesh.SamplePosition(randomPoint, out hit, 10f, NavMesh.AllAreas))
             {
                 patrolTarget = hit.position;
                 return;
@@ -117,48 +123,66 @@ public class RangedEnemy : EnemyBase
 
         if (birdPrefab != null && !isDying)
         {
-            Vector3 spawnPos = transform.position + transform.forward * 2f + Vector3.up * 1.5f;
+            // Точка вылета — ДАЛЬШЕ от врага, чтобы не столкнуться с ним
+            Vector3 spawnPos = transform.position + transform.forward * 2.5f + Vector3.up * 1.5f;
+
+            // Проверка: не спавнится ли внутри врага?
+            Collider[] hitColliders = Physics.OverlapSphere(spawnPos, 0.5f);
+            foreach (var hit in hitColliders)
+            {
+                if (hit.gameObject == gameObject)
+                {
+                    // Если спавнится внутри себя — смещаем ещё дальше
+                    spawnPos = transform.position + transform.forward * 3f + Vector3.up * 1.5f;
+                    break;
+                }
+            }
 
             GameObject bird = Instantiate(birdPrefab, spawnPos, Quaternion.identity);
             bird.tag = "EnemyProjectile";
 
             Rigidbody rb = bird.GetComponent<Rigidbody>();
-            if (rb == null)
-            {
-                rb = bird.AddComponent<Rigidbody>();
-            }
+            if (rb == null) rb = bird.AddComponent<Rigidbody>();
 
+            // Настройки физики
             rb.mass = 0.2f;
-            rb.linearDamping = 0.1f;
-            rb.angularDamping = 0.1f;
+            rb.drag = 0.05f;      // Минимальное сопротивление
+            rb.angularDrag = 0.05f;
             rb.useGravity = true;
+            rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
 
+            // Добавляем коллайдер
             if (bird.GetComponent<Collider>() == null)
             {
                 SphereCollider col = bird.AddComponent<SphereCollider>();
-                PhysicsMaterial mat = new PhysicsMaterial();
-                mat.bounciness = 0.4f;
-                col.material = mat;
+                col.radius = 0.3f;
+                col.material = new PhysicsMaterial();
+                col.material.bounciness = 0.5f;
             }
 
             MagicProjectile projScript = bird.GetComponent<MagicProjectile>();
-            if (projScript == null)
-            {
-                projScript = bird.AddComponent<MagicProjectile>();
-            }
+            if (projScript == null) projScript = bird.AddComponent<MagicProjectile>();
             projScript.damage = magicDamage;
 
-            Vector3 targetPos = player.position + Vector3.up * 0.8f;
-            Vector3 toTarget = targetPos - spawnPos;
-            float horizontalDistance = new Vector3(toTarget.x, 0, toTarget.z).magnitude;
-            float flightTime = horizontalDistance / birdSpeed;
-            float verticalVelocity = (toTarget.y + 0.5f * Mathf.Abs(Physics.gravity.y) * flightTime * flightTime) / flightTime;
+            // ===== СИЛЬНЫЙ БРОСОК =====
+            Vector3 directionToPlayer = (player.position - spawnPos).normalized;
 
-            Vector3 horizontalDirection = new Vector3(toTarget.x, 0, toTarget.z).normalized;
-            Vector3 horizontalVelocity = horizontalDirection * birdSpeed;
+            // Большая скорость
+            float speed = 15f;
+            rb.velocity = directionToPlayer * speed;
+            //rb.AddForce(directionToPlayer * 15f, ForceMode.Impulse);
 
-            rb.linearVelocity = horizontalVelocity + Vector3.up * verticalVelocity;
-            rb.AddTorque(Random.insideUnitSphere * 2f, ForceMode.Impulse);
+            // Добавляем вращение
+            rb.AddTorque(Random.insideUnitSphere * 5f, ForceMode.Impulse);
+
+            // Игнорируем столкновение с врагом, который выпустил птичку
+            Collider enemyCollider = GetComponent<Collider>();
+            if (enemyCollider != null && bird.GetComponent<Collider>() != null)
+            {
+                Physics.IgnoreCollision(enemyCollider, bird.GetComponent<Collider>(), true);
+            }
+
+            Debug.Log($"Птичка вылетела из {spawnPos} в направлении {directionToPlayer}");
         }
 
         yield return new WaitForSeconds(1f);
@@ -170,7 +194,10 @@ public class RangedEnemy : EnemyBase
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, attackRange);
 
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(transform.position, preferredDistance);
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, minDistance);
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, maxDistance);
     }
 }

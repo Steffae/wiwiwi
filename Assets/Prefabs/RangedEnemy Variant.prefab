@@ -81,9 +81,6 @@ PrefabInstance:
       addedObject: {fileID: 1566673656240725913}
     - targetCorrespondingSourceObject: {fileID: 100016, guid: 89fc79b8e96bce64d9ea713a39f3f05e, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6224126011225737544}
-    - targetCorrespondingSourceObject: {fileID: 100016, guid: 89fc79b8e96bce64d9ea713a39f3f05e, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 1886404398773436933}
     - targetCorrespondingSourceObject: {fileID: 100016, guid: 89fc79b8e96bce64d9ea713a39f3f05e, type: 3}
       insertIndex: -1
@@ -91,9 +88,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 100016, guid: 89fc79b8e96bce64d9ea713a39f3f05e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1554756981837271969}
-    - targetCorrespondingSourceObject: {fileID: 100016, guid: 89fc79b8e96bce64d9ea713a39f3f05e, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4213489166829347880}
   m_SourcePrefab: {fileID: 100100000, guid: 89fc79b8e96bce64d9ea713a39f3f05e, type: 3}
 --- !u!1 &7544466014235549205 stripped
 GameObject:
@@ -127,22 +121,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &6224126011225737544
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7544466014235549205}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8bdd46bae9971f4fb97ca2425d9913b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Health
-  maxHealth: 100
-  currentHealth: 0
-  healthBarPrefab: {fileID: 1756244541765657985, guid: 154b2c33003abb24087d402e09184a04, type: 3}
-  healthBarOffset: {x: 0, y: 2.5, z: 0}
 --- !u!195 &1886404398773436933
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -200,24 +178,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RangedEnemy
   maxHealth: 40
   moveSpeed: 2
-  patrolRadius: 10
-  magicDamage: 15
   attackRange: 10
   preferredDistance: 8
+  retreatDistance: 5
   attackCooldown: 3
+  magicDamage: 15
   birdPrefab: {fileID: 100000, guid: d418c88afd808cf448602106c7ead664, type: 3}
   birdSpeed: 12
-  player: {fileID: 0}
---- !u!114 &4213489166829347880
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7544466014235549205}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0fd0c9c10c70c048acd89b266ecbd63, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyBase
-  maxHealth: 50

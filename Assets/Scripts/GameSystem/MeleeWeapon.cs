@@ -12,9 +12,7 @@ public class MeleeWeapon : MonoBehaviour
     {
         weaponCollider = GetComponent<Collider>();
         if (weaponCollider != null)
-        {
             weaponCollider.enabled = false;
-        }
     }
 
     public void StartAttack()
@@ -38,7 +36,7 @@ public class MeleeWeapon : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (isAttacking && other.CompareTag("Enemy"))
+        if (isAttacking)
         {
             EnemyBase enemy = other.GetComponent<EnemyBase>();
             if (enemy != null)
