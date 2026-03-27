@@ -1,9 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
-using System;
+п»їusing UnityEngine;
 
 public class MainMenu : MonoBehaviour
 {
@@ -11,32 +6,43 @@ public class MainMenu : MonoBehaviour
     public GameObject settingsPanel;
     public GameObject startPanel;
 
+    private IGameStateService gameStateService;
+    private SoundManager soundManager;
+
     private void Start()
     {
         settingsPanel.SetActive(false);
         startPanel.SetActive(false);
         menuPanel.SetActive(true);
+
+        // РџРѕР»СѓС‡Р°РµРј СЃРµСЂРІРёСЃС‹ РёР· Bootstrapper
+        gameStateService = GameBootstrapper.Instance.GameStateService;
+        soundManager = GameBootstrapper.Instance.SoundManager;
     }
+
     public void PlayPressed()
     {
+        soundManager.PlayButtonClick();
         menuPanel.SetActive(false);
         startPanel.SetActive(true);
     }
 
     public void SettingsPressed()
     {
+        soundManager.PlayButtonClick();
         menuPanel.SetActive(false);
         settingsPanel.SetActive(true);
     }
+
     public void ExitPressed()
     {
-        // Выход из игры
+        soundManager.PlayButtonClick();
         Application.Quit();
-        Debug.Log("выход из игры!!!");
     }
 
     public void BackPressed()
     {
+        soundManager.PlayButtonClick();
         settingsPanel.SetActive(false);
         startPanel.SetActive(false);
         menuPanel.SetActive(true);
@@ -44,6 +50,7 @@ public class MainMenu : MonoBehaviour
 
     public void LvPressed()
     {
-        SceneManager.LoadScene("Location");
+        soundManager.PlayButtonClick();
+        gameStateService.LoadLocation();   // в†ђ Р’РђР–РќРћ: С‚РµРїРµСЂСЊ С‡РµСЂРµР· СЃРµСЂРІРёСЃ
     }
 }

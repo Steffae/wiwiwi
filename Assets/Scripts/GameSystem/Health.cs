@@ -138,7 +138,7 @@ public class Health : MonoBehaviour
             anim.SetTrigger("Die");
             DisableCameraControls();
             controller.enabled = false;
-            SceneManager.LoadScene("End");
+            GameBootstrapper.Instance.GameStateService.LoadEnd();
         }
 
         EnemyController enemy = GetComponent<EnemyController>();

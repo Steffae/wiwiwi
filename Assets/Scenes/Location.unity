@@ -29091,7 +29091,7 @@ MonoBehaviour:
   currentHealth: 0
   healthBarPrefab: {fileID: 1756244541765657985, guid: d8b3fb9b923c5e640a29dbb8eaf9a55b, type: 3}
   healthBarOffset: {x: 0, y: 2.5, z: 0}
-  GameOverPanel: {fileID: 0}
+  displayTime: 0.5
   AttackPanel: {fileID: 948339551}
 --- !u!1001 &611227624
 PrefabInstance:

@@ -4,39 +4,25 @@ using UnityEngine.UI;
 public class VolumeSlider : MonoBehaviour
 {
     public Slider volumeSlider;
-    public bool isMusic; // true для музыки, false для звуковых эффектов
+    public bool isMusic;
+
+    private SoundManager soundManager;
 
     void Start()
     {
-        //Загрузка значений из SoundManager
-        if (SoundManager.Instance != null)
-        {
-            if (isMusic)
-            {
-                volumeSlider.value = SoundManager.Instance.musicVolume;
-            }
-            else
-            {
-                volumeSlider.value = SoundManager.Instance.soundEffectsVolume;
-            }
-        }
+        soundManager = GameBootstrapper.Instance.SoundManager;
+
+        if (isMusic)
+            volumeSlider.value = soundManager.musicVolume;
+        else
+            volumeSlider.value = soundManager.soundEffectsVolume;
     }
 
     public void SetVolume()
     {
-        if (SoundManager.Instance == null)
-        {
-            Debug.LogError("SoundManager is not initialized!");
-            return;
-        }
-
         if (isMusic)
-        {
-            SoundManager.Instance.SetMusicVolume(volumeSlider.value);
-        }
+            soundManager.SetMusicVolume(volumeSlider.value);
         else
-        {
-            SoundManager.Instance.SetSoundEffectsVolume(volumeSlider.value);
-        }
+            soundManager.SetSoundEffectsVolume(volumeSlider.value);
     }
 }

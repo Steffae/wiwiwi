@@ -1,105 +1,76 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SoundManager : MonoBehaviour
 {
-    public static SoundManager Instance { get; private set; }
+    private AudioSource musicSource;
+    private AudioSource sfxSource;
 
-    public float musicVolume = 1f;
-    public float soundEffectsVolume = 1f;
+    public float musicVolume = 0.5f;
+    public float soundEffectsVolume = 0.5f;
 
-    [Header("Музыка")]
-    public AudioClip backgroundMusic; 
-    private AudioSource musicSource; 
+    [SerializeField] private AudioClip menuMusic;
+    [SerializeField] private AudioClip gameMusic;
+    [SerializeField] private AudioClip endMusic;
 
-    private const string MUSIC_VOLUME_KEY = "MusicVolume";
-    private const string SOUND_EFFECTS_VOLUME_KEY = "SoundEffectsVolume";
+    [SerializeField] private AudioClip buttonClickSound;
 
-    void Awake()
+    private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-            SetupAudioSource(); 
-            LoadVolume();
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        musicSource = gameObject.AddComponent<AudioSource>();
+        sfxSource = gameObject.AddComponent<AudioSource>();
+
+        musicSource.loop = true;
+
+        musicSource.volume = musicVolume;
+        sfxSource.volume = soundEffectsVolume;
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    // Настройка AudioSource
-    void SetupAudioSource()
+    public void PlayMusic(AudioClip clip)
     {
-        // Создаем или получаем AudioSource компонент
-        musicSource = GetComponent<AudioSource>();
-        if (musicSource == null)
-        {
-            musicSource = gameObject.AddComponent<AudioSource>();
-        }
-
-        // Настройки для фоновой музыки
-        musicSource.clip = backgroundMusic;
-        musicSource.loop = true;
-        musicSource.playOnAwake = true;
-        musicSource.volume = musicVolume;
-
-        // Запускаем музыку
+        musicSource.clip = clip;
         musicSource.Play();
+    }
+
+    public void PlaySoundEffect(AudioClip clip)
+    {
+        sfxSource.PlayOneShot(clip);
     }
 
     public void SetMusicVolume(float volume)
     {
-        musicVolume = Mathf.Clamp01(volume);
-        PlayerPrefs.SetFloat(MUSIC_VOLUME_KEY, musicVolume);
-
-        // Теперь управляем конкретным musicSource
-        if (musicSource != null)
-        {
-            musicSource.volume = musicVolume;
-        }
+        musicVolume = volume;
+        musicSource.volume = volume;
     }
 
     public void SetSoundEffectsVolume(float volume)
     {
-        soundEffectsVolume = Mathf.Clamp01(volume);
-        PlayerPrefs.SetFloat(SOUND_EFFECTS_VOLUME_KEY, soundEffectsVolume);
-        // ApplyVolume для звуковых эффектов остается
+        soundEffectsVolume = volume;
+        sfxSource.volume = volume;
     }
 
-    // Упрощенный ApplyVolume только для звуковых эффектов
-    void ApplyVolume()
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // Только для звуковых эффектов
-        AudioSource[] sources = Object.FindObjectsByType<AudioSource>(FindObjectsSortMode.None);
-        foreach (AudioSource source in sources)
+        switch (scene.name)
         {
-            // Пропускаем наш musicSource
-            if (source == musicSource) continue;
+            case "MenuScene":
+                PlayMusic(menuMusic);
+                break;
 
-            if (source.gameObject.CompareTag("SoundEffect"))
-            {
-                source.volume = soundEffectsVolume;
-            }
+            case "Location":
+                PlayMusic(gameMusic);
+                break;
+
+            case "End":
+                PlayMusic(endMusic);
+                break;
         }
     }
-    void LoadVolume()
-    {
-        if (PlayerPrefs.HasKey(MUSIC_VOLUME_KEY))
-        {
-            musicVolume = PlayerPrefs.GetFloat(MUSIC_VOLUME_KEY);
-        }
-        if (PlayerPrefs.HasKey(SOUND_EFFECTS_VOLUME_KEY))
-        {
-            soundEffectsVolume = PlayerPrefs.GetFloat(SOUND_EFFECTS_VOLUME_KEY);
-        }
 
-        // Применяем громкость к musicSource
-        if (musicSource != null)
-        {
-            musicSource.volume = musicVolume;
-        }
-        ApplyVolume();
+    public void PlayButtonClick()
+    {
+        sfxSource.PlayOneShot(buttonClickSound);
     }
 }
