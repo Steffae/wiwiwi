@@ -6,23 +6,22 @@ public class VolumeSlider : MonoBehaviour
     public Slider volumeSlider;
     public bool isMusic;
 
-    private SoundManager soundManager;
+    private IAudioService audioService;
 
     void Start()
     {
-        soundManager = GameBootstrapper.Instance.SoundManager;
+        audioService = GameEntrypoint.Instance.AudioService;
 
-        if (isMusic)
-            volumeSlider.value = soundManager.musicVolume;
-        else
-            volumeSlider.value = soundManager.soundEffectsVolume;
+        volumeSlider.value = isMusic
+            ? audioService.MusicVolume
+            : audioService.SoundEffectsVolume;
     }
 
     public void SetVolume()
     {
         if (isMusic)
-            soundManager.SetMusicVolume(volumeSlider.value);
+            audioService.SetMusicVolume(volumeSlider.value);
         else
-            soundManager.SetSoundEffectsVolume(volumeSlider.value);
+            audioService.SetSoundEffectsVolume(volumeSlider.value);
     }
 }

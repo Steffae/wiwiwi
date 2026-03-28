@@ -6,43 +6,44 @@ public class MainMenu : MonoBehaviour
     public GameObject settingsPanel;
     public GameObject startPanel;
 
-    private IGameStateService gameStateService;
-    private SoundManager soundManager;
+    private MenuSceneEntrypoint sceneEntrypoint;
+    private IAudioService audioService;
+
+    [SerializeField] private AudioClip buttonClick;
 
     private void Start()
     {
+        sceneEntrypoint = FindFirstObjectByType<MenuSceneEntrypoint>();
+        audioService = GameEntrypoint.Instance.AudioService;
+
         settingsPanel.SetActive(false);
         startPanel.SetActive(false);
         menuPanel.SetActive(true);
-
-        // Получаем сервисы из Bootstrapper
-        gameStateService = GameBootstrapper.Instance.GameStateService;
-        soundManager = GameBootstrapper.Instance.SoundManager;
     }
 
     public void PlayPressed()
     {
-        soundManager.PlayButtonClick();
+        audioService.PlaySoundEffect(buttonClick);
         menuPanel.SetActive(false);
         startPanel.SetActive(true);
     }
 
     public void SettingsPressed()
     {
-        soundManager.PlayButtonClick();
+        audioService.PlaySoundEffect(buttonClick);
         menuPanel.SetActive(false);
         settingsPanel.SetActive(true);
     }
 
     public void ExitPressed()
     {
-        soundManager.PlayButtonClick();
-        Application.Quit();
+        audioService.PlaySoundEffect(buttonClick);
+        sceneEntrypoint.ExitGame();
     }
 
     public void BackPressed()
     {
-        soundManager.PlayButtonClick();
+        audioService.PlaySoundEffect(buttonClick);
         settingsPanel.SetActive(false);
         startPanel.SetActive(false);
         menuPanel.SetActive(true);
@@ -50,7 +51,7 @@ public class MainMenu : MonoBehaviour
 
     public void LvPressed()
     {
-        soundManager.PlayButtonClick();
-        gameStateService.LoadLocation();   // ← ВАЖНО: теперь через сервис
+        audioService.PlaySoundEffect(buttonClick);
+        sceneEntrypoint.LoadLocation();
     }
 }

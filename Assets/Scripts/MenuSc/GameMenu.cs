@@ -1,31 +1,32 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameMenu : MonoBehaviour
 {
     public GameObject GameOverPanel;
 
-    private IGameStateService gameStateService;
-    private SoundManager soundManager;
+    private IAudioService audioService;
+
+    [SerializeField] private AudioClip buttonClick;
 
     private void Start()
     {
+        audioService = GameEntrypoint.Instance.AudioService;
+
         GameOverPanel.SetActive(true);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-
-        gameStateService = GameBootstrapper.Instance.GameStateService;
-        soundManager = GameBootstrapper.Instance.SoundManager;
     }
 
     public void AgainPlayPressed()
     {
-        soundManager.PlayButtonClick();
-        gameStateService.LoadLocation();
+        audioService.PlaySoundEffect(buttonClick);
+        SceneManager.LoadScene("Location");
     }
 
     public void LvPressed()
     {
-        soundManager.PlayButtonClick();
-        gameStateService.LoadMenu();
+        audioService.PlaySoundEffect(buttonClick);
+        SceneManager.LoadScene("MenuScene");
     }
 }

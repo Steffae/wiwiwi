@@ -1,28 +1,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SaveInteractor
+public class SaveInteractor : ISaveInteractor
 {
-    private PlayerRepository playerRepo;
-    private EnemyRepository enemyRepo;
-    private GameSaver gameSaver;
+    private readonly IRepository<PlayerData> playerRepository;
+    private readonly IRepository<List<EnemySaveData>> enemyRepository;
+    private readonly ISaveRepository saveRepository;
 
-    public SaveInteractor()
+    public SaveInteractor(
+        IRepository<PlayerData> playerRepository,
+        IRepository<List<EnemySaveData>> enemyRepository,
+        ISaveRepository saveRepository)
     {
-        playerRepo = new PlayerRepository();
-        enemyRepo = new EnemyRepository();
-        gameSaver = new GameSaver();
+        this.playerRepository = playerRepository;
+        this.enemyRepository = enemyRepository;
+        this.saveRepository = saveRepository;
     }
 
     public void SaveGame()
     {
-        Debug.Log("Сохраняем игру...");
-
-        PlayerData playerData = playerRepo.GetData();
-        List<EnemySaveData> enemiesData = enemyRepo.GetData();
-
-        playerRepo.SaveData(playerData);
-        enemyRepo.SaveData(enemiesData);
+        PlayerData playerData = playerRepository.GetData();
+        List<EnemySaveData> enemiesData = enemyRepository.GetData();
 
         SaveData saveData = new SaveData();
         saveData.PlayerPosition = playerData.position;
@@ -31,22 +29,14 @@ public class SaveInteractor
         saveData.enemies = enemiesData;
         saveData.saveTime = System.DateTime.Now.ToString("HH:mm:ss");
 
-        gameSaver.Save(saveData);
-
-        Debug.Log($"Игра сохранена! Позиция игрока: {playerData.position}");
+        saveRepository.Save(saveData);
     }
 
     public void LoadGame()
     {
-        Debug.Log("Загружаем игру...");
-
-        SaveData saveData = gameSaver.Load();
-
+        SaveData saveData = saveRepository.Load();
         if (saveData == null)
-        {
-            Debug.LogWarning("Нет сохранений!");
             return;
-        }
 
         PlayerData playerData = new PlayerData
         {
@@ -55,14 +45,12 @@ public class SaveInteractor
             maxHealth = saveData.playerMaxHealth
         };
 
-        playerRepo.Restore(playerData);
-        enemyRepo.Restore(saveData.enemies);
-
-        Debug.Log($"Игра загружена! Позиция игрока: {saveData.PlayerPosition}");
+        playerRepository.Restore(playerData);
+        enemyRepository.Restore(saveData.enemies);
     }
 
     public bool HasSave()
     {
-        return gameSaver.HasSave();
+        return saveRepository.HasSave();
     }
 }

@@ -3,23 +3,15 @@ using UnityEngine;
 
 public class EnemyRepository : IRepository<List<EnemySaveData>>
 {
-    private List<EnemyBase> enemies = new List<EnemyBase>();
-    private List<EnemySaveData> cachedData;
+    private readonly List<EnemyBase> enemies;
 
-    public EnemyRepository()
+    public EnemyRepository(List<EnemyBase> enemies)
     {
-        RefreshEnemies();
-    }
-
-    public void RefreshEnemies()
-    {
-        enemies.Clear();
-        enemies.AddRange(Object.FindObjectsByType<EnemyBase>(FindObjectsSortMode.None));
+        this.enemies = enemies;
     }
 
     public List<EnemySaveData> GetData()
     {
-        RefreshEnemies();
         var data = new List<EnemySaveData>();
 
         foreach (var enemy in enemies)
@@ -28,12 +20,13 @@ public class EnemyRepository : IRepository<List<EnemySaveData>>
 
             var enemyData = new EnemySaveData
             {
-                enemyId = enemy.gameObject.GetInstanceID().ToString(),
+                enemyId = enemy.GetInstanceID().ToString(),
                 enemyType = enemy is MeleeEnemy ? "Melee" : "Ranged",
                 health = enemy.CurrentHealth,
                 maxHealth = enemy.MaxHealthValue,
                 isAlive = !enemy.IsDying && enemy.CurrentHealth > 0
             };
+
             enemyData.Position = enemy.transform.position;
             data.Add(enemyData);
         }
@@ -41,38 +34,28 @@ public class EnemyRepository : IRepository<List<EnemySaveData>>
         return data;
     }
 
-    public void SaveData(List<EnemySaveData> data)
-    {
-        cachedData = data;
-    }
+    public void SaveData(List<EnemySaveData> data) { }
 
-    public void Reset()
-    {
-        cachedData = null;
-    }
+    public void Reset() { }
 
     public void Restore(List<EnemySaveData> data)
     {
-        if (data == null) return;
+        var map = new Dictionary<string, EnemySaveData>();
 
-        RefreshEnemies();
-
-        Dictionary<string, EnemySaveData> saveDataMap = new Dictionary<string, EnemySaveData>();
         foreach (var enemyData in data)
-        {
-            saveDataMap[enemyData.enemyId] = enemyData;
-        }
+            map[enemyData.enemyId] = enemyData;
 
         foreach (var enemy in enemies)
         {
-            string enemyId = enemy.gameObject.GetInstanceID().ToString();
-            if (saveDataMap.TryGetValue(enemyId, out EnemySaveData savedData))
-            {
-                enemy.transform.position = savedData.Position;
+            string id = enemy.GetInstanceID().ToString();
 
-                if (savedData.isAlive)
+            if (map.TryGetValue(id, out var saved))
+            {
+                enemy.transform.position = saved.Position;
+
+                if (saved.isAlive)
                 {
-                    enemy.SetHealth(savedData.health);
+                    enemy.SetHealth(saved.health);
                     enemy.gameObject.SetActive(true);
                 }
                 else

@@ -6,8 +6,8 @@ public class RangedEnemy : EnemyBase
 {
     [Header("Ranged Settings")]
     public float attackRange = 15f;
-    public float minDistance = 8f;      // если ближе — отступаем
-    public float maxDistance = 12f;     // если дальше — подходим
+    public float minDistance = 8f;      // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    public float maxDistance = 12f;     // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     public float attackCooldown = 2f;
     public float magicDamage = 15f;
     public GameObject birdPrefab;
@@ -37,13 +37,13 @@ public class RangedEnemy : EnemyBase
 
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
-        // Передвижение дальнего врага
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         if (distanceToPlayer <= attackRange)
         {
 
             if (distanceToPlayer < minDistance)
             {
-                // Слишком близко
+                // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
                 Vector3 awayFromPlayer = (transform.position - player.position).normalized;
                 awayFromPlayer.y = 0;
                 Vector3 retreatPoint = transform.position + awayFromPlayer * 5f;
@@ -51,26 +51,26 @@ public class RangedEnemy : EnemyBase
                 agent.SetDestination(retreatPoint);
                 agent.isStopped = false;
                 isMoving = true;
-                Debug.Log($"RangedEnemy: ОТСТУПАЮ! dist={distanceToPlayer}");
+                Debug.Log($"RangedEnemy: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ! dist={distanceToPlayer}");
             }
             else if (distanceToPlayer > maxDistance)
             {
-                // Слишком далеко
+                // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
                 agent.SetDestination(player.position);
                 agent.isStopped = false;
                 isMoving = true;
-                Debug.Log($"RangedEnemy: ПОДХОЖУ! dist={distanceToPlayer}");
+                Debug.Log($"RangedEnemy: пїЅпїЅпїЅпїЅпїЅпїЅпїЅ! dist={distanceToPlayer}");
             }
             else
             {
-                // Дистанция аттаки
+                // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
                 if (isMoving)
                 {
                     agent.isStopped = true;
                     isMoving = false;
                 }
 
-                // Поворот к игроку
+                // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
                 Vector3 lookDirection = player.position - transform.position;
                 lookDirection.y = 0;
                 transform.rotation = Quaternion.LookRotation(lookDirection);
@@ -80,7 +80,7 @@ public class RangedEnemy : EnemyBase
         }
         else
         {
-            // Просто ходит
+            // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
             agent.isStopped = false;
             agent.SetDestination(patrolTarget);
             isMoving = true;
@@ -139,10 +139,10 @@ public class RangedEnemy : EnemyBase
             Rigidbody rb = bird.GetComponent<Rigidbody>();
             if (rb == null) rb = bird.AddComponent<Rigidbody>();
 
-            // Настройки физики
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
             rb.mass = 0.2f;
-            rb.drag = 0.05f;
-            rb.angularDrag = 0.05f;
+            rb.linearDamping = 0.05f;
+            rb.angularDamping = 0.05f;
             rb.useGravity = true;
             rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
 
@@ -160,18 +160,18 @@ public class RangedEnemy : EnemyBase
 
             Vector3 directionToPlayer = (player.position - spawnPos).normalized;
             float speed = 15f;
-            rb.velocity = directionToPlayer * speed;
+            rb.linearVelocity = directionToPlayer * speed;
             //rb.AddForce(directionToPlayer * 15f, ForceMode.Impulse);
 
             rb.AddTorque(Random.insideUnitSphere * 5f, ForceMode.Impulse);
-            // Игнорируем столкновение с врагом
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
             Collider enemyCollider = GetComponent<Collider>();
             if (enemyCollider != null && bird.GetComponent<Collider>() != null)
             {
                 Physics.IgnoreCollision(enemyCollider, bird.GetComponent<Collider>(), true);
             }
 
-            Debug.Log($"Птичка вылетела из {spawnPos} в направлении {directionToPlayer}");
+            Debug.Log($"пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ {spawnPos} пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ {directionToPlayer}");
         }
 
         yield return new WaitForSeconds(1f);
