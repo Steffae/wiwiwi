@@ -152,7 +152,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameMenu
   GameOverPanel: {fileID: 1105524518}
-  buttonClick: {fileID: 0}
+  buttonClick: {fileID: 8300000, guid: 85e9f05d59f55a54f920fe3881810a3c, type: 3}
 --- !u!114 &307959139
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -244,6 +244,38 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 307959142}
     m_Modifications:
+    - target: {fileID: 1571955469401252948, guid: 49aee55c74af9484099f528b07f1472b, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 84.4564
+      objectReference: {fileID: 0}
+    - target: {fileID: 1571955469401252948, guid: 49aee55c74af9484099f528b07f1472b, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 29.7332
+      objectReference: {fileID: 0}
+    - target: {fileID: 1571955469401252948, guid: 49aee55c74af9484099f528b07f1472b, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 222
+      objectReference: {fileID: 0}
+    - target: {fileID: 1571955469401252948, guid: 49aee55c74af9484099f528b07f1472b, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -142.71
+      objectReference: {fileID: 0}
+    - target: {fileID: 1731567885677466967, guid: 49aee55c74af9484099f528b07f1472b, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 57.4064
+      objectReference: {fileID: 0}
+    - target: {fileID: 1731567885677466967, guid: 49aee55c74af9484099f528b07f1472b, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 27.1528
+      objectReference: {fileID: 0}
+    - target: {fileID: 1731567885677466967, guid: 49aee55c74af9484099f528b07f1472b, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -230
+      objectReference: {fileID: 0}
+    - target: {fileID: 1731567885677466967, guid: 49aee55c74af9484099f528b07f1472b, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -141.42
+      objectReference: {fileID: 0}
     - target: {fileID: 2944056893530986452, guid: 49aee55c74af9484099f528b07f1472b, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0

@@ -8,8 +8,12 @@ public class CursorController : MonoBehaviour
 
     private bool isCursorLocked = true;
 
+    public GameObject GameMenuPanel;
+
     void Start()
     {
+        GameMenuPanel.SetActive(false);
+
         if (startLocked)
         {
             LockCursor();
@@ -22,7 +26,7 @@ public class CursorController : MonoBehaviour
 
     void Update()
     {
-        // Проверяем нажатие ESC через новую Input System
+        // РћС‚СЃР»РµР¶РёРІР°РµРј РЅР°Р¶Р°С‚РёРµ ESC С‡РµСЂРµР· Input System
         if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
         {
             if (isCursorLocked)
@@ -41,7 +45,8 @@ public class CursorController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         isCursorLocked = true;
-        Debug.Log("Курсор заблокирован");
+        GameMenuPanel.SetActive(false);
+        Debug.Log("РљСѓСЂСЃРѕСЂ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅ");
     }
 
     public void UnlockCursor()
@@ -49,7 +54,8 @@ public class CursorController : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         isCursorLocked = false;
-        Debug.Log("Курсор разблокирован");
+        GameMenuPanel.SetActive(true);
+        Debug.Log("РљСѓСЂСЃРѕСЂ СЂР°Р·Р±Р»РѕРєРёСЂРѕРІР°РЅ");
     }
 
     public void ToggleCursor()

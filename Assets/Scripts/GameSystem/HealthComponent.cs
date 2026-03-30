@@ -12,8 +12,8 @@ public class HealthComponent : MonoBehaviour
     [SerializeField] private Text healthText;
     [SerializeField] private GameObject damageImage;
 
-    [Header("Damage Effect")]
-    [SerializeField] private float damageFlashDuration = 0.2f;
+    //[Header("Damage Effect")]
+    //[SerializeField] private float damageFlashDuration = 0.2f;
     //[SerializeField] private Color damageFlashColor = new Color(1f, 0f, 0f, 0.5f);
 
     private HealthSystem healthSystem;

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SaveMenuUI : MonoBehaviour
 {
@@ -23,5 +24,11 @@ public class SaveMenuUI : MonoBehaviour
     {
         audioService.PlaySoundEffect(buttonClick);
         saveInteractor?.LoadGame();
+    }
+
+    public void OnMenuPressed()
+    {
+        audioService.PlaySoundEffect(buttonClick);
+        SceneManager.LoadScene("MenuScene");
     }
 }
