@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour
     [Header("Jump")]
     public float jumpForce = 8f;
     public float gravityMultiplier = 2f;
-    public float groundRayLength = 1.2f; // Длина луча
+    public float groundRayLength = 1.2f; // РґР»РёРЅР° Р»СѓС‡Р°
 
     [Header("Components")]
     private Rigidbody rb;
@@ -167,7 +167,7 @@ public class PlayerController : MonoBehaviour
 
     void HandleGroundCheck()
     {
-        // Получаем позицию центра персонажа
+        // РљСЂСѓРіРѕРІР°СЏ РїСЂРѕРІРµСЂРєР° Р·РµРјР»Рё РІРѕРєСЂСѓРі РїРµСЂСЃРѕРЅР°Р¶Р°
         Vector3 center = transform.position + Vector3.up * 0.5f;
 
         isGrounded = false;
@@ -247,11 +247,11 @@ public class PlayerController : MonoBehaviour
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             animator.SetTrigger("JumpAir");
             jumpPressed = false;
-            Debug.Log("Прыжок!");
+            Debug.Log("РџСЂС‹Р¶РѕРє!");
         }
         else if (jumpPressed && !isGrounded)
         {
-            Debug.Log("Не на земле, прыжок невозможен");
+            Debug.Log("РќРµ РЅР° Р·РµРјР»Рµ, РїСЂС‹Р¶РѕРє РЅРµРІРѕР·РјРѕР¶РµРЅ");
             jumpPressed = false;
         }
     }
@@ -262,7 +262,7 @@ public class PlayerController : MonoBehaviour
         {
             animator.SetTrigger("Attack01");
             attackPressed = false;
-            Debug.Log("Атака");
+            Debug.Log("РђС‚Р°РєР°");
             PerformMeleeAttack();
         }
 
@@ -270,7 +270,7 @@ public class PlayerController : MonoBehaviour
         {
             animator.SetTrigger("Attack02Start");
             magicPressed = false;
-            Debug.Log("Магия");
+            Debug.Log("РњР°РіРёСЏ");
             PerformMagicAttack();
         }
     }
@@ -280,7 +280,7 @@ public class PlayerController : MonoBehaviour
         if (weapon != null)
         {
             weapon.StartAttack();
-            Debug.Log("Физическая атака");
+            Debug.Log("Р’С‹РїРѕР»РЅСЏРµС‚СЃСЏ Р°С‚Р°РєР°");
         }
     }
 
@@ -288,14 +288,14 @@ public class PlayerController : MonoBehaviour
     {
         if (fishPrefab != null)
         {
-            // Точка вылета рыбки
+            // РўРѕС‡РєР° РїРѕСЏРІР»РµРЅРёСЏ СЃРЅР°СЂСЏРґР°
             Vector3 spawnPos = transform.position + transform.forward * 1.5f + Vector3.up * 1.2f;
 
-            // Создаём рыбку
+            // РЎРѕР·РґР°РЅРёРµ СЃРЅР°СЂСЏРґР°
             GameObject fish = Instantiate(fishPrefab, spawnPos, Quaternion.identity);
             fish.tag = "PlayerProjectile";
 
-            // Настраиваем физику
+            // РќР°СЃС‚СЂРѕР№РєР° С„РёР·РёРєРё
             Rigidbody rb = fish.GetComponent<Rigidbody>();
             if (rb == null)
             {
@@ -307,7 +307,7 @@ public class PlayerController : MonoBehaviour
             rb.angularDamping = 0.1f;
             rb.useGravity = true;
 
-            // Добавляем коллайдер
+            // РќР°СЃС‚СЂРѕР№РєР° РєРѕР»Р»Р°Р№РґРµСЂР°
             if (fish.GetComponent<Collider>() == null)
             {
                 SphereCollider col = fish.AddComponent<SphereCollider>();
@@ -316,7 +316,7 @@ public class PlayerController : MonoBehaviour
                 col.material = mat;
             }
 
-            // Добавляем скрипт
+            // РќР°СЃС‚СЂРѕР№РєР° СЃРєСЂРёРїС‚Р°
             FishProjectile fishScript = fish.GetComponent<FishProjectile>();
             if (fishScript == null)
             {
@@ -325,10 +325,10 @@ public class PlayerController : MonoBehaviour
             fishScript.damage = magicDamage;
             fishScript.speed = fishSpeed;
 
-            // Запускаем в сторону, куда смотрит игрок
+            // РџРѕР»С‘С‚ СЃ РЅРµР±РѕР»СЊС€РѕР№ РґСѓРіРѕР№
             rb.linearVelocity = transform.forward * fishSpeed + Vector3.up * 2f;
 
-            Debug.Log("Рыбка вылетела!");
+            Debug.Log("Р С‹Р±Р° Р·Р°РїСѓС‰РµРЅР°!");
         }
     }
 

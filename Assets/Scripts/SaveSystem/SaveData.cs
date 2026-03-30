@@ -5,20 +5,20 @@ using UnityEngine;
 [Serializable]
 public class SaveData
 {
-    // Данные игрока — используем отдельные поля для координат
+    // РџРѕР·РёС†РёСЏ РёРіСЂРѕРєР° РІ РІРёРґРµ РѕС‚РґРµР»СЊРЅС‹С… РєРѕРѕСЂРґРёРЅР°С‚ РґР»СЏ СЃРµСЂРёР°Р»РёР·Р°С†РёРё
     public float playerX;
     public float playerY;
     public float playerZ;
     public float playerHealth;
     public float playerMaxHealth;
 
-    // Данные врагов
+    // Р”Р°РЅРЅС‹Рµ РІСЂР°РіРѕРІ
     public List<EnemySaveData> enemies = new List<EnemySaveData>();
 
-    // Время сохранения
+    // Р’СЂРµРјСЏ СЃРѕС…СЂР°РЅРµРЅРёСЏ
     public string saveTime;
 
-    // Удобные методы для работы с Vector3
+    // Р’СЃРїРѕРјРѕРіР°С‚РµР»СЊРЅРѕРµ СЃРІРѕР№СЃС‚РІРѕ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ Vector3
     public Vector3 PlayerPosition
     {
         get => new Vector3(playerX, playerY, playerZ);

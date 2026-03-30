@@ -42,7 +42,7 @@ public class MeleeWeapon : MonoBehaviour
             if (enemy != null)
             {
                 enemy.TakeDamage(damage);
-                Debug.Log("Враг получил урон от палки!");
+                Debug.Log("РќР°РЅРµСЃС‘РЅ СѓСЂРѕРЅ РїРѕСЃРѕС…РѕРј РїРѕ РІСЂР°РіСѓ!");
             }
         }
     }

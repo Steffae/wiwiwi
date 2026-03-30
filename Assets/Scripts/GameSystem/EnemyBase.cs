@@ -22,7 +22,7 @@ public class EnemyBase : MonoBehaviour
     protected NavMeshAgent agent;
     protected Transform player;
 
-    // UI элементы
+    // UI РєРѕРјРїРѕРЅРµРЅС‚С‹
     protected GameObject healthBarInstance;
     protected Slider healthSlider;
     protected RectTransform healthBarRect;
@@ -45,7 +45,7 @@ public class EnemyBase : MonoBehaviour
     {
         healthSystem = new HealthSystem(maxHealth);
 
-        // Подписываемся на события
+        // РџРѕРґРїРёСЃС‹РІР°РµРјСЃСЏ РЅР° СЃРѕР±С‹С‚РёСЏ
         healthSystem.OnHealthChanged += UpdateHealthUI;
         healthSystem.OnDeath += Die;
 
@@ -62,7 +62,7 @@ public class EnemyBase : MonoBehaviour
     {
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
 
-        // Создаём полоску здоровья
+        // РЎРѕР·РґР°РЅРёРµ РїРѕР»РѕСЃРєРё Р·РґРѕСЂРѕРІСЊСЏ
         if (healthBarPrefab != null)
         {
             Canvas canvas = FindFirstObjectByType<Canvas>();
@@ -97,7 +97,7 @@ public class EnemyBase : MonoBehaviour
             return;
         }
 
-        // Проверяем расстояние до игрока
+        // РџСЂРѕРІРµСЂРєР° СЂР°СЃСЃС‚РѕСЏРЅРёСЏ РґРѕ РёРіСЂРѕРєР°
         bool showHealthBar = false;
         if (player != null)
         {
@@ -132,7 +132,7 @@ public class EnemyBase : MonoBehaviour
         if (isDying) return;
 
         healthSystem.TakeDamage(damage);
-        Debug.Log($"{gameObject.name} получил {damage} урона. Осталось: {healthSystem.CurrentHealth}");
+        Debug.Log($"{gameObject.name} РїРѕР»СѓС‡РёР» {damage} СѓСЂРѕРЅР°. РћСЃС‚Р°Р»РѕСЃСЊ: {healthSystem.CurrentHealth}");
 
         if (!isDying && healthSystem.CurrentHealth > 0)
         {
@@ -152,13 +152,13 @@ public class EnemyBase : MonoBehaviour
     {
         isHit = true;
 
-        // Проверяем, жив ли агент и не умирает ли враг
+        // РћСЃС‚Р°РЅР°РІР»РёРІР°РµРј, С‡С‚РѕР±С‹ РІСЂР°Рі РЅРµ РґРІРёРіР°Р»СЃСЏ РІРѕ РІСЂРµРјСЏ РѕС‚Р±СЂР°СЃС‹РІР°РЅРёСЏ
         if (agent != null && agent.isActiveAndEnabled && !isDying)
         {
             agent.isStopped = true;
         }
 
-        // Тычок назад
+        // Р­С„С„РµРєС‚ РѕС‚РґР°С‡Рё
         Vector3 startPos = transform.position;
         Vector3 backDirection = -transform.forward * 1.5f;
         Vector3 targetPos = startPos + backDirection;
@@ -174,7 +174,7 @@ public class EnemyBase : MonoBehaviour
             yield return null;
         }
 
-        // Возвращаемся обратно
+        // Р’РѕР·РІСЂР°С‰РµРЅРёРµ РЅР° РјРµСЃС‚Рѕ
         elapsed = 0;
         while (elapsed < hitTime)
         {
@@ -197,29 +197,29 @@ public class EnemyBase : MonoBehaviour
         if (isDying) return;
         isDying = true;
 
-        Debug.Log($"{gameObject.name} умирает");
+        Debug.Log($"{gameObject.name} РїРѕРіРёР±");
 
-        // Отключаем движение
+        // РћС‚РєР»СЋС‡РµРЅРёРµ РЅР°РІРёРіР°С†РёРё
         if (agent != null) agent.enabled = false;
 
-        // Отключаем коллайдеры
+        // РћС‚РєР»СЋС‡РµРЅРёРµ РєРѕР»Р»Р°Р№РґРµСЂРѕРІ
         Collider[] colliders = GetComponents<Collider>();
         foreach (var col in colliders)
         {
             col.enabled = false;
         }
 
-        // Отключаем физику
+        // РћС‚РєР»СЋС‡РµРЅРёРµ С„РёР·РёРєРё
         Rigidbody rb = GetComponent<Rigidbody>();
         if (rb != null) rb.isKinematic = true;
 
-        // Прячем полоску здоровья
+        // РЈРґР°Р»РµРЅРёРµ РїРѕР»РѕСЃРєРё Р·РґРѕСЂРѕРІСЊСЏ
         if (healthBarInstance != null)
         {
             Destroy(healthBarInstance, 0.5f);
         }
 
-        // Запускаем анимацию смерти
+        // Р—Р°РїСѓСЃРє Р°РЅРёРјР°С†РёРё СЃРјРµСЂС‚Рё
         StartCoroutine(DeathAnimation());
     }
 
@@ -244,14 +244,14 @@ public class EnemyBase : MonoBehaviour
 
     protected virtual void OnDestroy()
     {
-        // Отписываемся от событий
+        // РћС‚РїРёСЃРєР° РѕС‚ СЃРѕР±С‹С‚РёР№
         if (healthSystem != null)
         {
             healthSystem.OnHealthChanged -= UpdateHealthUI;
             healthSystem.OnDeath -= Die;
         }
 
-        // Уничтожаем полоску здоровья
+        // РЈРЅРёС‡С‚РѕР¶РµРЅРёРµ РїРѕР»РѕСЃРєРё Р·РґРѕСЂРѕРІСЊСЏ
         if (healthBarInstance != null)
         {
             Destroy(healthBarInstance);

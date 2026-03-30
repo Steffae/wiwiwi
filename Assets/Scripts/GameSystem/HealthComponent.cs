@@ -14,18 +14,18 @@ public class HealthComponent : MonoBehaviour
 
     [Header("Damage Effect")]
     [SerializeField] private float damageFlashDuration = 0.2f;
-    [SerializeField] private Color damageFlashColor = new Color(1f, 0f, 0f, 0.5f);
+    //[SerializeField] private Color damageFlashColor = new Color(1f, 0f, 0f, 0.5f);
 
     private HealthSystem healthSystem;
     private Animator animator;
     private bool isDead = false;
-    private Color originalImageColor;
+    //private Color originalImageColor;
 
-    // События для подписки из других скриптов
+    // РЎРѕР±С‹С‚РёСЏ РґР»СЏ РѕРїРѕРІРµС‰РµРЅРёСЏ Рѕ РїРѕР»СѓС‡РµРЅРёРё СѓСЂРѕРЅР°
     public System.Action<float> OnDamageTaken;
     public System.Action OnDeath;
 
-    // Публичный доступ к HealthSystem
+    // РЎРІРѕР№СЃС‚РІРѕ РґРѕСЃС‚СѓРїР° Рє HealthSystem
     public HealthSystem HealthSystem => healthSystem;
     public float CurrentHealth => healthSystem?.CurrentHealth ?? 0;
     public float MaxHealthValue => maxHealth;
@@ -76,11 +76,11 @@ public class HealthComponent : MonoBehaviour
     {
         if (isDead) return;
 
-        Debug.Log($"{gameObject.name} получил {damage} урона. Осталось: {healthSystem.CurrentHealth}");
+        Debug.Log($"{gameObject.name} пїЅпїЅпїЅпїЅпїЅпїЅпїЅ {damage} пїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: {healthSystem.CurrentHealth}");
 
         OnDamageTaken?.Invoke(damage);
 
-        // Анимация получения урона
+        // Р’РѕСЃРїСЂРѕРёР·РІРµРґРµРЅРёРµ СЌС„С„РµРєС‚Р° СѓРґР°СЂР°
         if (animator != null)
         {
             animator.SetTrigger("GetHit");
@@ -92,7 +92,7 @@ public class HealthComponent : MonoBehaviour
             StartCoroutine(ShowVignette());
         }
 
-        // Эффект отбрасывания
+        // Р­С„С„РµРєС‚ РѕС‚Р±СЂР°СЃС‹РІР°РЅРёСЏ
         Rigidbody rb = GetComponent<Rigidbody>();
         if (rb != null && damage > 10f)
         {
@@ -105,10 +105,10 @@ public class HealthComponent : MonoBehaviour
 
     IEnumerator ShowVignette()
     {
-        // Ждём
+        // Р–РґС‘Рј
         yield return new WaitForSeconds(0.7f);
 
-        // Выключаем
+        // РЎРєСЂС‹РІР°РµРј
         damageImage.SetActive(false);
     }
 
@@ -117,30 +117,30 @@ public class HealthComponent : MonoBehaviour
         if (isDead) return;
         isDead = true;
 
-        Debug.Log($"{gameObject.name} умер");
+        Debug.Log($"{gameObject.name} пїЅпїЅпїЅпїЅ");
 
         OnDeath?.Invoke();
 
-        // Анимация смерти
+        // Р’РѕСЃРїСЂРѕРёР·РІРµРґРµРЅРёРµ Р°РЅРёРјР°С†РёРё
         if (animator != null)
         {
             animator.SetTrigger("Die");
         }
 
-        // Отключаем управление
+        // РћС‚РєР»СЋС‡РµРЅРёРµ СѓРїСЂР°РІР»РµРЅРёСЏ
         DisableControls();
 
-        // Скрываем полоску здоровья
+        // РЎРєСЂС‹С‚РёРµ РїРѕР»РѕСЃРєРё Р·РґРѕСЂРѕРІСЊСЏ
         if (healthSlider != null)
         {
             healthSlider.gameObject.SetActive(false);
         }
 
-        // Разблокируем курсор
+        // Р Р°Р·Р±Р»РѕРєРёСЂРѕРІРєР° РєСѓСЂСЃРѕСЂР°
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        // Загружаем сцену "End"
+        // Р—Р°РіСЂСѓР·РєР° СЃС†РµРЅС‹ "End"
         UnityEngine.SceneManagement.SceneManager.LoadScene("End");
     }
 
@@ -152,14 +152,14 @@ public class HealthComponent : MonoBehaviour
             playerController.enabled = false;
         }
 
-        // Отключаем коллайдеры
+        // РћС‚РєР»СЋС‡РµРЅРёРµ РєРѕР»Р»Р°Р№РґРµСЂРѕРІ
         Collider[] colliders = GetComponents<Collider>();
         foreach (var col in colliders)
         {
             col.enabled = false;
         }
 
-        // Отключаем физику
+        // РћС‚РєР»СЋС‡РµРЅРёРµ С„РёР·РёРєРё
         Rigidbody rb = GetComponent<Rigidbody>();
         if (rb != null)
         {

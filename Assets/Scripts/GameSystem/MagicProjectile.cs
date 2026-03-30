@@ -1,4 +1,4 @@
-using UnityEngine;
+п»їusing UnityEngine;
 
 public class MagicProjectile : MonoBehaviour
 {
@@ -12,7 +12,7 @@ public class MagicProjectile : MonoBehaviour
     {
         Destroy(gameObject, lifetime);
 
-        // Игнорируем столкновение с врагом, который выпустил снаряд
+        // РРіРЅРѕСЂРёСЂСѓРµРј СЃС‚РѕР»РєРЅРѕРІРµРЅРёСЏ СЃРѕ РІСЃРµРјРё РІСЂР°РіР°РјРё РїСЂРё Р·Р°РїСѓСЃРєРµ
         Collider projectileCollider = GetComponent<Collider>();
         if (projectileCollider != null)
         {
@@ -31,7 +31,7 @@ public class MagicProjectile : MonoBehaviour
     {
         if (hasHit) return;
 
-        // Игнорируем столкновение с врагами
+        // РРіРЅРѕСЂРёСЂСѓРµРј СЃС‚РѕР»РєРЅРѕРІРµРЅРёСЏ СЃ РІСЂР°РіР°РјРё
         if (collision.collider.CompareTag("Enemy"))
             return;
 

@@ -23,7 +23,7 @@ public class GameEntrypoint : MonoBehaviour
 
     private void InitializeServices()
     {
-        // Создаём конкретные реализации (ВЕРХНИЙ УРОВЕНЬ)
+        // РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РѕСЃРЅРѕРІРЅС‹С… СЃРµСЂРІРёСЃРѕРІ (РІРЅРµРґСЂРµРЅРёРµ Р·Р°РІРёСЃРёРјРѕСЃС‚РµР№)
         AudioService = new AudioService(gameObject);
         SaveRepository = new JsonSaveRepository();
     }

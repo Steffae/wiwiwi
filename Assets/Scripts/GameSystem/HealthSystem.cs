@@ -6,7 +6,7 @@ public class HealthSystem
     public float MaxHealth { get; private set; }
     public float CurrentHealth { get; private set; }
 
-    // События
+    // РЎРѕР±С‹С‚РёСЏ
     public event Action<float> OnDamageTaken;
     public event Action<float> OnHealthChanged;
     public event Action OnDeath;

@@ -91,7 +91,7 @@ public class MeleeEnemy : EnemyBase
             if (playerHealth != null)
             {
                 playerHealth.TakeDamage(physicalDamage);
-                Debug.Log("Ближний враг толкнул игрока");
+                Debug.Log("РќР°РЅРµСЃС‘РЅ СѓРґР°СЂ Р±Р»РёР¶РЅРµРіРѕ Р±РѕСЏ");
             }
 
             Rigidbody playerRb = player.GetComponent<Rigidbody>();

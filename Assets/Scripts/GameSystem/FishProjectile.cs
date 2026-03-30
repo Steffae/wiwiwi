@@ -20,7 +20,7 @@ public class FishProjectile : MonoBehaviour
     {
         if (hasHit) return;
 
-        // Проверяем, попали ли во врага
+        // РџСЂРѕРІРµСЂСЏРµРј, РЅРµ РІСЂР°Рі Р»Рё СЌС‚Рѕ
         EnemyBase enemy = collision.collider.GetComponent<EnemyBase>();
         if (enemy != null)
         {

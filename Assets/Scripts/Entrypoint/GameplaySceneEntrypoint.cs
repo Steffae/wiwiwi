@@ -15,7 +15,7 @@ public class GameplaySceneEntrypoint : MonoBehaviour
 
         audioService = gameEntrypoint.AudioService;
 
-        // 🎵 Музыка сцены
+        // Музыка сцены
         if (gameplayMusic != null)
             audioService.PlayMusic(gameplayMusic);
 

@@ -6,8 +6,8 @@ public class RangedEnemy : EnemyBase
 {
     [Header("Ranged Settings")]
     public float attackRange = 15f;
-    public float minDistance = 8f;      // ���� ����� � ���������
-    public float maxDistance = 12f;     // ���� ������ � ��������
+    public float minDistance = 8f;      // зона отступления
+    public float maxDistance = 12f;     // зона сближения
     public float attackCooldown = 2f;
     public float magicDamage = 15f;
     public GameObject birdPrefab;
@@ -37,13 +37,13 @@ public class RangedEnemy : EnemyBase
 
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
-        // ������������ �������� �����
+        // Дистанционное поведение врага
         if (distanceToPlayer <= attackRange)
         {
 
             if (distanceToPlayer < minDistance)
             {
-                // ������� ������
+                // Отступаем назад
                 Vector3 awayFromPlayer = (transform.position - player.position).normalized;
                 awayFromPlayer.y = 0;
                 Vector3 retreatPoint = transform.position + awayFromPlayer * 5f;
@@ -51,26 +51,26 @@ public class RangedEnemy : EnemyBase
                 agent.SetDestination(retreatPoint);
                 agent.isStopped = false;
                 isMoving = true;
-                Debug.Log($"RangedEnemy: ��������! dist={distanceToPlayer}");
+                Debug.Log($"RangedEnemy: Отступление! dist={distanceToPlayer}");
             }
             else if (distanceToPlayer > maxDistance)
             {
-                // ������� ������
+                // Сближаемся
                 agent.SetDestination(player.position);
                 agent.isStopped = false;
                 isMoving = true;
-                Debug.Log($"RangedEnemy: �������! dist={distanceToPlayer}");
+                Debug.Log($"RangedEnemy: Сближение! dist={distanceToPlayer}");
             }
             else
             {
-                // ��������� ������
+                // Оптимальная дистанция — атакуем
                 if (isMoving)
                 {
                     agent.isStopped = true;
                     isMoving = false;
                 }
 
-                // ������� � ������
+                // Поворачиваемся к игроку
                 Vector3 lookDirection = player.position - transform.position;
                 lookDirection.y = 0;
                 transform.rotation = Quaternion.LookRotation(lookDirection);
@@ -80,7 +80,7 @@ public class RangedEnemy : EnemyBase
         }
         else
         {
-            // ������ �����
+            // Режим патрулирования
             agent.isStopped = false;
             agent.SetDestination(patrolTarget);
             isMoving = true;
@@ -139,7 +139,7 @@ public class RangedEnemy : EnemyBase
             Rigidbody rb = bird.GetComponent<Rigidbody>();
             if (rb == null) rb = bird.AddComponent<Rigidbody>();
 
-            // ��������� ������
+            // Настройка физики
             rb.mass = 0.2f;
             rb.linearDamping = 0.05f;
             rb.angularDamping = 0.05f;
@@ -164,14 +164,14 @@ public class RangedEnemy : EnemyBase
             //rb.AddForce(directionToPlayer * 15f, ForceMode.Impulse);
 
             rb.AddTorque(Random.insideUnitSphere * 5f, ForceMode.Impulse);
-            // ���������� ������������ � ������
+            // Игнорируем столкновения с врагом
             Collider enemyCollider = GetComponent<Collider>();
             if (enemyCollider != null && bird.GetComponent<Collider>() != null)
             {
                 Physics.IgnoreCollision(enemyCollider, bird.GetComponent<Collider>(), true);
             }
 
-            Debug.Log($"������ �������� �� {spawnPos} � ����������� {directionToPlayer}");
+            Debug.Log($"Снаряд создан на {spawnPos} с направлением {directionToPlayer}");
         }
 
         yield return new WaitForSeconds(1f);
