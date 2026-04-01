@@ -6,6 +6,7 @@ public class GameEntrypoint : MonoBehaviour
 
     public IAudioService AudioService { get; private set; }
     public ISaveRepository SaveRepository { get; private set; }
+    public object GameStateService { get; internal set; }
 
     private void Awake()
     {
