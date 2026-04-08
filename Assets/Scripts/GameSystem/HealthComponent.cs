@@ -12,14 +12,9 @@ public class HealthComponent : MonoBehaviour
     [SerializeField] private Text healthText;
     [SerializeField] private GameObject damageImage;
 
-    //[Header("Damage Effect")]
-    //[SerializeField] private float damageFlashDuration = 0.2f;
-    //[SerializeField] private Color damageFlashColor = new Color(1f, 0f, 0f, 0.5f);
-
     private HealthSystem healthSystem;
     private Animator animator;
     private bool isDead = false;
-    //private Color originalImageColor;
 
     // События для оповещения о получении урона
     public System.Action<float> OnDamageTaken;
@@ -76,7 +71,7 @@ public class HealthComponent : MonoBehaviour
     {
         if (isDead) return;
 
-        Debug.Log($"{gameObject.name} ������� {damage} �����. ��������: {healthSystem.CurrentHealth}");
+        Debug.Log($"{gameObject.name} получил {damage} урона. Здоровье: {healthSystem.CurrentHealth}");
 
         OnDamageTaken?.Invoke(damage);
 
