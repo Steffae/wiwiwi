@@ -1,9 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
-using System;
+п»їusing UnityEngine;
 
 public class MainMenu : MonoBehaviour
 {
@@ -11,32 +6,44 @@ public class MainMenu : MonoBehaviour
     public GameObject settingsPanel;
     public GameObject startPanel;
 
+    private MenuSceneEntrypoint sceneEntrypoint;
+    private IAudioService audioService;
+
+    [SerializeField] private AudioClip buttonClick;
+
     private void Start()
     {
+        sceneEntrypoint = FindFirstObjectByType<MenuSceneEntrypoint>();
+        audioService = GameEntrypoint.Instance.AudioService;
+
         settingsPanel.SetActive(false);
         startPanel.SetActive(false);
         menuPanel.SetActive(true);
     }
+
     public void PlayPressed()
     {
+        audioService.PlaySoundEffect(buttonClick);
         menuPanel.SetActive(false);
         startPanel.SetActive(true);
     }
 
     public void SettingsPressed()
     {
+        audioService.PlaySoundEffect(buttonClick);
         menuPanel.SetActive(false);
         settingsPanel.SetActive(true);
     }
+
     public void ExitPressed()
     {
-        // Выход из игры
-        Application.Quit();
-        Debug.Log("выход из игры!!!");
+        audioService.PlaySoundEffect(buttonClick);
+        sceneEntrypoint.ExitGame();
     }
 
     public void BackPressed()
     {
+        audioService.PlaySoundEffect(buttonClick);
         settingsPanel.SetActive(false);
         startPanel.SetActive(false);
         menuPanel.SetActive(true);
@@ -44,6 +51,7 @@ public class MainMenu : MonoBehaviour
 
     public void LvPressed()
     {
-        SceneManager.LoadScene("Location");
+        audioService.PlaySoundEffect(buttonClick);
+        sceneEntrypoint.LoadLocation();
     }
 }

@@ -73,18 +73,18 @@ public class ThirdPersonCamera : MonoBehaviour
     {
         if (player == null) return;
 
-        // Получаем ввод мыши
+        // РџРѕРІРѕСЂРѕС‚ РєР°РјРµСЂС‹ РјС‹С€СЊСЋ
         yRotation += lookInput.x * mouseSensitivity * Time.deltaTime;
         xRotation -= lookInput.y * mouseSensitivity * Time.deltaTime;
 
-        // Ограничиваем угол по вертикали (чтобы камера не уходила под землю)
-        xRotation = Mathf.Clamp(xRotation, 20f, 80f); // Минимум 10 градусов над горизонтом
+        // РћРіСЂР°РЅРёС‡РµРЅРёРµ СѓРіР»Р° РїРѕ РІРµСЂС‚РёРєР°Р»Рё
+        xRotation = Mathf.Clamp(xRotation, -20f, 100f);
 
-        // Позиция камеры
+        // Р’С‹С‡РёСЃР»РµРЅРёРµ РїРѕР·РёС†РёРё
         Quaternion rotation = Quaternion.Euler(xRotation, yRotation, 0f);
         Vector3 desiredPosition = player.position + rotation * new Vector3(offset.x, offset.y, -cameraDistance);
 
-        // Проверка стен
+        // РџСЂРѕРІРµСЂРєР° РїСЂРµРїСЏС‚СЃС‚РІРёР№
         if (Physics.Linecast(player.position + Vector3.up * 1f, desiredPosition, out RaycastHit hit))
         {
             transform.position = hit.point;
@@ -94,7 +94,7 @@ public class ThirdPersonCamera : MonoBehaviour
             transform.position = desiredPosition;
         }
 
-        // Камера смотрит на игрока (чуть выше пояса)
+        // РќР°РїСЂР°РІР»РµРЅРёРµ РєР°РјРµСЂС‹ РЅР° РёРіСЂРѕРєР°
         transform.LookAt(player.position + Vector3.up * 1.5f);
     }
 }
