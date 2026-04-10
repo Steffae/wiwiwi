@@ -1,11 +1,15 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using Game.Data;
 
 public class HealthComponent : MonoBehaviour
 {
     [Header("Health Settings")]
     [SerializeField] private float maxHealth = 100f;
+
+    [Header("ScriptableObject Data")]
+    [SerializeField] private PlayerRuntimeData playerData;
 
     [Header("UI")]
     [SerializeField] private Slider healthSlider;
@@ -16,29 +20,56 @@ public class HealthComponent : MonoBehaviour
     private Animator animator;
     private bool isDead = false;
 
-    // События для оповещения о получении урона
     public System.Action<float> OnDamageTaken;
     public System.Action OnDeath;
 
-    // Свойство доступа к HealthSystem
     public HealthSystem HealthSystem => healthSystem;
     public float CurrentHealth => healthSystem?.CurrentHealth ?? 0;
     public float MaxHealthValue => maxHealth;
 
-    public void SetHealth(float health)
-    {
-        healthSystem.SetHealth(health);
-    }
-
     void Awake()
     {
-        healthSystem = new HealthSystem(maxHealth);
+        InitializeHealthSystem();
 
         healthSystem.OnDamageTaken += HandleDamageTaken;
         healthSystem.OnHealthChanged += UpdateUI;
+        healthSystem.OnHealthChanged += SaveHealthToData;
         healthSystem.OnDeath += HandleDeath;
 
         animator = GetComponent<Animator>();
+    }
+
+    private void InitializeHealthSystem()
+    {
+        // Если есть PlayerRuntimeData и он инициализирован - берём оттуда
+        if (playerData != null && playerData.isInitialized)
+        {
+            healthSystem = new HealthSystem(playerData.maxHealth);
+            healthSystem.SetHealth(playerData.currentHealth);
+            Debug.Log($"Health loaded from ScriptableObject: {playerData.currentHealth}/{playerData.maxHealth}");
+        }
+        else
+        {
+            healthSystem = new HealthSystem(maxHealth);
+
+            // Если PlayerRuntimeData есть, но не инициализирован - инициализируем
+            if (playerData != null)
+            {
+                playerData.maxHealth = maxHealth;
+                playerData.currentHealth = maxHealth;
+                playerData.isInitialized = true;
+            }
+
+            Debug.Log($"Health initialized with default: {maxHealth}");
+        }
+    }
+
+    private void SaveHealthToData(float currentHealth)
+    {
+        if (playerData != null)
+        {
+            playerData.currentHealth = currentHealth;
+        }
     }
 
     void Start()
@@ -51,7 +82,11 @@ public class HealthComponent : MonoBehaviour
         }
 
         UpdateUI(healthSystem.CurrentHealth);
-        damageImage.SetActive(false);
+
+        if (damageImage != null)
+        {
+            damageImage.SetActive(false);
+        }
     }
 
     void UpdateUI(float currentHealth)
@@ -75,7 +110,6 @@ public class HealthComponent : MonoBehaviour
 
         OnDamageTaken?.Invoke(damage);
 
-        // Воспроизведение эффекта удара
         if (animator != null)
         {
             animator.SetTrigger("GetHit");
@@ -97,14 +131,14 @@ public class HealthComponent : MonoBehaviour
         }
     }
 
-
     IEnumerator ShowVignette()
     {
-        // Ждём
         yield return new WaitForSeconds(0.7f);
 
-        // Скрываем
-        damageImage.SetActive(false);
+        if (damageImage != null)
+        {
+            damageImage.SetActive(false);
+        }
     }
 
     void HandleDeath()
@@ -112,30 +146,31 @@ public class HealthComponent : MonoBehaviour
         if (isDead) return;
         isDead = true;
 
-        Debug.Log($"{gameObject.name} ����");
+        Debug.Log($"{gameObject.name} умер");
 
         OnDeath?.Invoke();
 
-        // Воспроизведение анимации
         if (animator != null)
         {
             animator.SetTrigger("Die");
         }
 
-        // Отключение управления
         DisableControls();
 
-        // Скрытие полоски здоровья
         if (healthSlider != null)
         {
             healthSlider.gameObject.SetActive(false);
         }
 
-        // Разблокировка курсора
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        // Загрузка сцены "End"
+        // Сбрасываем данные при смерти
+        if (playerData != null)
+        {
+            playerData.ResetToDefault();
+        }
+
         UnityEngine.SceneManagement.SceneManager.LoadScene("End");
     }
 
@@ -147,14 +182,12 @@ public class HealthComponent : MonoBehaviour
             playerController.enabled = false;
         }
 
-        // Отключение коллайдеров
         Collider[] colliders = GetComponents<Collider>();
         foreach (var col in colliders)
         {
             col.enabled = false;
         }
 
-        // Отключение физики
         Rigidbody rb = GetComponent<Rigidbody>();
         if (rb != null)
         {
@@ -200,13 +233,33 @@ public class HealthComponent : MonoBehaviour
         UpdateUI(healthSystem.CurrentHealth);
     }
 
+    // Метод для ручного сохранения позиции (вызывать при переходе между сценами)
+    public void SavePlayerState(string sceneName)
+    {
+        if (playerData != null)
+        {
+            playerData.SavePosition(transform.position, sceneName);
+            playerData.currentHealth = healthSystem.CurrentHealth;
+        }
+    }
+
     void OnDestroy()
     {
         if (healthSystem != null)
         {
             healthSystem.OnDamageTaken -= HandleDamageTaken;
             healthSystem.OnHealthChanged -= UpdateUI;
+            healthSystem.OnHealthChanged -= SaveHealthToData;
             healthSystem.OnDeath -= HandleDeath;
+        }
+    }
+
+    public void SetHealth(float health)
+    {
+        if (healthSystem != null)
+        {
+            healthSystem.SetHealth(health);
+            UpdateUI(healthSystem.CurrentHealth);
         }
     }
 }

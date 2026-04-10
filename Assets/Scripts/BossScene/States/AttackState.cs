@@ -44,11 +44,11 @@ namespace Game.Boss
                 }
 
                 // Проверяем, попали ли мы
-                if (distance <= boss.Stats.attackRange && boss.CanSeePlayer())
+                HealthComponent playerHealth = boss.Player.GetComponent<HealthComponent>();
+                if (playerHealth != null)
                 {
-                    // Здесь будет вызов метода TakeDamage у игрока
-                    Debug.Log($"Boss attacks for {damage} damage!");
-                    // player.TakeDamage(damage);
+                    playerHealth.TakeDamage(damage);
+                    Debug.Log($"Boss dealt {damage} damage to player!");
                 }
             }
 

@@ -15536,6 +15536,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7828ee7db664cf64c84b80b05bd6385d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainToBossSceneMove
+  targetSceneName: Location_boss
+  triggerTag: Player
+  spawnPointName: BossSpawnPoint
+  playerData: {fileID: 11400000, guid: bfa1d97dc63759f4f872788dfaba7792, type: 2}
 --- !u!1001 &327828881
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -54649,6 +54653,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7828ee7db664cf64c84b80b05bd6385d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainToBossSceneMove
+  targetSceneName: Location_boss
+  triggerTag: Player
+  spawnPointName: BossSpawnPoint
+  playerData: {fileID: 11400000, guid: bfa1d97dc63759f4f872788dfaba7792, type: 2}
 --- !u!4 &1119387987 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5618815698641005921, guid: b95e66d4287f4f0488673eb80e64aca5, type: 3}
@@ -59941,6 +59949,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7828ee7db664cf64c84b80b05bd6385d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainToBossSceneMove
+  targetSceneName: Location_boss
+  triggerTag: Player
+  spawnPointName: BossSpawnPoint
+  playerData: {fileID: 11400000, guid: bfa1d97dc63759f4f872788dfaba7792, type: 2}
 --- !u!1001 &1218623379
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -109598,6 +109610,10 @@ PrefabInstance:
       propertyPath: healthText
       value: 
       objectReference: {fileID: 2078847437}
+    - target: {fileID: 2456382097258152899, guid: 75f91d2e86c1a5842b6682e9a3c2c81a, type: 3}
+      propertyPath: playerData
+      value: 
+      objectReference: {fileID: 11400000, guid: bfa1d97dc63759f4f872788dfaba7792, type: 2}
     - target: {fileID: 2456382097258152899, guid: 75f91d2e86c1a5842b6682e9a3c2c81a, type: 3}
       propertyPath: damageImage
       value: 

@@ -42,12 +42,11 @@ namespace Game.Boss
                 }
 
                 // Увеличенный радиус для тяжёлой атаки
-                if (distance <= boss.Stats.heavyAttackRange && boss.CanSeePlayer())
+                HealthComponent playerHealth = boss.Player.GetComponent<HealthComponent>();
+                if (playerHealth != null)
                 {
-                    Debug.Log($"Boss performs HEAVY attack for {damage} damage!");
-                    // player.TakeDamage(damage);
-
-                    // Добавляем эффект отбрасывания или стана на игрока
+                    playerHealth.TakeDamage(damage);
+                    Debug.Log($"Boss dealt {damage} damage to player!");
                 }
             }
 

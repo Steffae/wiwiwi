@@ -2,16 +2,15 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Game.Data;
 
-public class MainToBossSceneMove : MonoBehaviour
+public class PlayerSceneTransition : MonoBehaviour
 {
-    [Header("Scene Settings")]
+    [Header("Target Scene")]
     [SerializeField] private string targetSceneName = "Location_boss";
-    [SerializeField] private string triggerTag = "Player";
 
-    [Header("Spawn Settings")]
-    [SerializeField] private string spawnPointName = "BossSpawnPoint";
+    [Header("Spawn Point in Target Scene")]
+    [SerializeField] private string spawnPointName = "PlayerSpawnPoint";
 
-    [Header("Player Data")]
+    [Header("Data")]
     [SerializeField] private PlayerRuntimeData playerData;
 
     private bool isTransitioning = false;
@@ -20,67 +19,53 @@ public class MainToBossSceneMove : MonoBehaviour
     {
         if (isTransitioning) return;
 
-        if (other.CompareTag(triggerTag))
+        if (other.CompareTag("Player"))
         {
-            // Сохраняем состояние игрока
+            // Сохраняем состояние игрока перед переходом
             SavePlayerState(other.gameObject);
 
-            // Блокируем повторный вход
+            // Загружаем новую сцену
             isTransitioning = true;
-
-            // Подписываемся на событие загрузки сцены
-            SceneManager.sceneLoaded += OnSceneLoaded;
-
-            // Загружаем сцену
             SceneManager.LoadScene(targetSceneName);
+
+            // Подписываемся на событие загрузки сцены для телепортации игрока
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
     }
 
     private void SavePlayerState(GameObject player)
     {
-        if (playerData == null)
-        {
-            Debug.LogWarning("PlayerRuntimeData is not assigned!");
-            return;
-        }
+        if (playerData == null) return;
 
-        // Сохраняем здоровье
         HealthComponent health = player.GetComponent<HealthComponent>();
         if (health != null)
         {
             playerData.currentHealth = health.CurrentHealth;
-            playerData.maxHealth = health.MaxHealthValue;
-            Debug.Log($"Saved player health: {playerData.currentHealth}/{playerData.maxHealth}");
         }
 
-        // Сохраняем позицию и сцену
-        playerData.lastPosition = player.transform.position;
-        playerData.lastSceneName = SceneManager.GetActiveScene().name;
-        playerData.isInitialized = true;
-
-        // Сохраняем урон (опционально)
         PlayerController controller = player.GetComponent<PlayerController>();
         if (controller != null)
         {
             playerData.physicalDamage = controller.physicalDamage;
             playerData.magicDamage = controller.magicDamage;
         }
+
+        playerData.lastSceneName = SceneManager.GetActiveScene().name;
+        playerData.lastPosition = player.transform.position;
+        playerData.isInitialized = true;
+
+        Debug.Log($"Player state saved: HP={playerData.currentHealth}, Scene={playerData.lastSceneName}");
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // Отписываемся от события
         SceneManager.sceneLoaded -= OnSceneLoaded;
 
         // Находим игрока в новой сцене
-        GameObject player = GameObject.FindGameObjectWithTag(triggerTag);
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
         {
             TeleportPlayerToSpawnPoint(player);
-        }
-        else
-        {
-            Debug.LogWarning($"Player with tag '{triggerTag}' not found in scene {targetSceneName}");
         }
 
         isTransitioning = false;
@@ -88,12 +73,12 @@ public class MainToBossSceneMove : MonoBehaviour
 
     private void TeleportPlayerToSpawnPoint(GameObject player)
     {
-        // Ищем точку спавна
+        // Ищем точку спавна по имени
         GameObject spawnPoint = GameObject.Find(spawnPointName);
 
         if (spawnPoint != null)
         {
-            // Телепортируем игрока
+            // Отключаем контроллер персонажа на время телепортации
             CharacterController cc = player.GetComponent<CharacterController>();
             if (cc != null)
             {
@@ -108,17 +93,16 @@ public class MainToBossSceneMove : MonoBehaviour
                 player.transform.rotation = spawnPoint.transform.rotation;
             }
 
-            Debug.Log($"Player teleported to: {spawnPointName} at {spawnPoint.transform.position}");
+            Debug.Log($"Player teleported to spawn point: {spawnPointName}");
         }
         else
         {
-            Debug.LogWarning($"Spawn point '{spawnPointName}' not found! Player remains at default position.");
+            Debug.LogWarning($"Spawn point '{spawnPointName}' not found in scene {targetSceneName}");
         }
     }
 
     private void OnDestroy()
     {
-        // Очищаем подписку при уничтожении объекта
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 }
