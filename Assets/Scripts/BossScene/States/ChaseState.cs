@@ -6,11 +6,10 @@ namespace Game.Boss
     {
         public void Enter(BossController boss)
         {
-            if (boss.Agent != null)
-            {
-                boss.Agent.isStopped = false;
+            boss.SafeSetAgentStopped(false);
 
-                // Увеличиваем скорость в зависимости от режима
+            if (boss.IsAgentReady())
+            {
                 float speed = boss.IsEnraged ?
                     boss.Stats.runSpeed * boss.Stats.enrageSpeedMultiplier :
                     boss.Stats.runSpeed;
@@ -23,22 +22,21 @@ namespace Game.Boss
         {
             if (boss.Player == null) return;
 
-            // Обновляем цель для NavMesh
-            if (boss.Agent != null && boss.Agent.isActiveAndEnabled)
+            // Проверяем, можно ли атаковать
+            bool canAttack = !boss.IsPeacefulMode || boss.HasBeenAttackedByPlayer;
+
+            if (boss.IsAgentReady())
             {
-                boss.Agent.SetDestination(boss.Player.position);
+                boss.SafeSetDestination(boss.Player.position);
             }
 
             float distance = boss.DistanceToPlayer();
 
-            // Проверка на переход в атаку
-            if (distance <= boss.Stats.attackRange && boss.CanSeePlayer())
+            if (canAttack && distance <= boss.Stats.attackRange && boss.CanSeePlayer())
             {
-                // Выбираем тип атаки
                 if (boss.AttackTimer <= 0)
                 {
-                    // 30% шанс на сильную атаку
-                    if (Random.value < 0.3f && !boss.IsPeacefulMode)
+                    if (Random.value < 0.3f)
                     {
                         boss.TransitionToState(BossState.HeavyAttack);
                     }
@@ -50,7 +48,7 @@ namespace Game.Boss
                 }
             }
 
-            // Проверка на бегство (только в мирном режиме)
+            // В мирном режиме если HP мало - убегаем
             if (boss.IsPeacefulMode)
             {
                 float healthPercent = boss.CurrentHealth / boss.Stats.maxHealth;
@@ -61,7 +59,6 @@ namespace Game.Boss
                 }
             }
 
-            // Если игрок далеко и мы не видим его - возвращаемся в Idle
             if (distance > boss.Stats.attackRange * 5f && !boss.CanSeePlayer())
             {
                 boss.TransitionToState(BossState.Idle);
@@ -70,7 +67,7 @@ namespace Game.Boss
 
         public void Exit(BossController boss)
         {
-            // Ничего не делаем при выходе
+            // Ничего не делаем
         }
     }
 }

@@ -1,8 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 using UnityEngine.AI;
+using System.Collections;
+using System.Collections.Generic;
+using Game.Core;
 
 namespace Game.Boss
 {
@@ -32,6 +32,7 @@ namespace Game.Boss
         private float currentHealth;
         private bool isDead = false;
         private bool isPeacefulMode = false;
+        private bool hasBeenAttackedByPlayer = false;
 
         // Таймеры
         private float attackTimer = 0f;
@@ -49,13 +50,14 @@ namespace Game.Boss
         public float AttackTimer { get => attackTimer; set => attackTimer = value; }
         public float StunTimer { get => stunTimer; set => stunTimer = value; }
         public bool IsPeacefulMode { get => isPeacefulMode; set => isPeacefulMode = value; }
+        public bool HasBeenAttackedByPlayer => hasBeenAttackedByPlayer;
         public bool IsEnraged { get; private set; }
         public Transform MeleeAttackPoint => meleeAttackPoint;
         public Transform RangedAttackPoint => rangedAttackPoint;
         public GameObject DefaultProjectilePrefab => defaultProjectilePrefab;
 
         // События
-        public System.Action<float, float> OnHealthChanged; // current, max
+        public System.Action<float, float> OnHealthChanged;
         public System.Action OnBossDeath;
 
         private void Awake()
@@ -63,14 +65,6 @@ namespace Game.Boss
             animator = GetComponent<Animator>();
             agent = GetComponent<NavMeshAgent>();
             bossCollider = GetComponent<Collider>();
-
-            // Убеждаемся, что агент правильно инициализирован
-            if (agent != null)
-            {
-                agent.autoTraverseOffMeshLink = true;
-                agent.autoRepath = true;
-                agent.isStopped = true; // Начинаем с остановленного
-            }
 
             currentHealth = stats.maxHealth;
 
@@ -83,13 +77,16 @@ namespace Game.Boss
 
             if (player == null)
             {
-                Debug.LogError("Boss: Player not found! Make sure Player has 'Player' tag.");
+                Debug.LogError("Boss: Player not found!");
             }
 
-            // Создаём Health Bar
-            CreateHealthBar();
+            // Подписываемся на мирный режим
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.SubscribeToPeacefulMode(OnPeacefulModeChanged);
+            }
 
-            // Начинаем с Idle
+            CreateHealthBar();
             TransitionToState(BossState.Idle);
         }
 
@@ -97,15 +94,19 @@ namespace Game.Boss
         {
             if (isDead || player == null) return;
 
-            // Обновляем таймеры
             if (attackTimer > 0) attackTimer -= Time.deltaTime;
             if (stunTimer > 0) stunTimer -= Time.deltaTime;
 
-            // Обновляем текущее состояние
             currentState?.Update(this);
 
-            // Обновляем анимацию движения
             UpdateMovementAnimation();
+        }
+
+        private void OnPeacefulModeChanged(bool peaceful)
+        {
+            isPeacefulMode = peaceful;
+            hasBeenAttackedByPlayer = false;
+            Debug.Log($"Boss: Peaceful mode = {peaceful}");
         }
 
         private void InitializeStates()
@@ -147,37 +148,66 @@ namespace Game.Boss
         {
             if (healthBarPrefab != null && healthBarPosition != null)
             {
-                GameObject healthBarObj = Instantiate(healthBarPrefab, healthBarPosition);
-                // Здесь позже настроим связь с UI Slider
+                Instantiate(healthBarPrefab, healthBarPosition);
             }
         }
 
-        // ===== ПУБЛИЧНЫЕ МЕТОДЫ =====
+        public bool IsAgentReady()
+        {
+            return agent != null && agent.isActiveAndEnabled && agent.isOnNavMesh && agent.enabled;
+        }
+
+        public void SafeSetDestination(Vector3 destination)
+        {
+            if (!IsAgentReady()) return;
+
+            if (!agent.pathPending && agent.remainingDistance < 0.5f)
+            {
+                agent.ResetPath();
+            }
+
+            agent.SetDestination(destination);
+        }
+
+        public void SafeSetAgentStopped(bool stopped)
+        {
+            if (!IsAgentReady()) return;
+
+            agent.isStopped = stopped;
+
+            if (!stopped)
+            {
+                agent.ResetPath();
+            }
+        }
 
         public void TakeDamage(float damage)
         {
             if (isDead) return;
 
+            // В мирном режиме отмечаем, что босса атаковали
+            if (isPeacefulMode && !hasBeenAttackedByPlayer)
+            {
+                hasBeenAttackedByPlayer = true;
+                Debug.Log("Boss was attacked! Entering aggressive mode.");
+            }
+
             currentHealth = Mathf.Max(0, currentHealth - damage);
             OnHealthChanged?.Invoke(currentHealth, stats.maxHealth);
 
-            // Анимация получения урона
             animator.SetTrigger("TakeHit");
 
-            // Проверка на стан
             if (damage >= stats.stunThreshold && currentStateType != BossState.Stunned)
             {
                 TransitionToState(BossState.Stunned);
             }
 
-            // Проверка на Enrage
             if (!IsEnraged && currentHealth <= stats.maxHealth * stats.enrageHealthThreshold)
             {
                 IsEnraged = true;
                 TransitionToState(BossState.Enrage);
             }
 
-            // Проверка на смерть
             if (currentHealth <= 0)
             {
                 Die();
@@ -236,15 +266,11 @@ namespace Game.Boss
             }
         }
 
-        private void OnDrawGizmosSelected()
+        private void OnDestroy()
         {
-            if (stats != null)
+            if (GameManager.Instance != null)
             {
-                Gizmos.color = Color.yellow;
-                Gizmos.DrawWireSphere(transform.position, stats.attackRange);
-
-                Gizmos.color = Color.red;
-                Gizmos.DrawWireSphere(transform.position, stats.heavyAttackRange);
+                GameManager.Instance.UnsubscribeFromPeacefulMode(OnPeacefulModeChanged);
             }
         }
     }

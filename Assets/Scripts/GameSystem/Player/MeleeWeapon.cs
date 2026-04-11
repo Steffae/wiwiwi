@@ -1,4 +1,5 @@
 using UnityEngine;
+using BossController = Game.Boss.BossController;
 
 public class MeleeWeapon : MonoBehaviour
 {
@@ -36,14 +37,23 @@ public class MeleeWeapon : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (isAttacking)
+        if (!isAttacking) return;
+
+        // Проверяем обычных врагов (через EnemyBase)
+        EnemyBase enemy = other.GetComponent<EnemyBase>();
+        if (enemy != null)
         {
-            EnemyBase enemy = other.GetComponent<EnemyBase>();
-            if (enemy != null)
-            {
-                enemy.TakeDamage(damage);
-                Debug.Log("Нанесён урон посохом по врагу!");
-            }
+            enemy.TakeDamage(damage);
+            Debug.Log($"Нанесён урон {damage} посохом по врагу {other.name}!");
+            return;
+        }
+
+        // Проверяем босса
+        BossController boss = other.GetComponent<BossController>();
+        if (boss != null)
+        {
+            boss.TakeDamage(damage);
+            Debug.Log($"Нанесён урон {damage} посохом по БОССУ!");
         }
     }
 }

@@ -572,7 +572,7 @@ Transform:
   m_GameObject: {fileID: 819137578}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 8.83, z: 0}
+  m_LocalPosition: {x: 0, y: 9.08, z: 2.35}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3609,6 +3609,7 @@ GameObject:
   - component: {fileID: 555530260231512410}
   - component: {fileID: 545261984864864094}
   - component: {fileID: 562575555064127527}
+  - component: {fileID: 562575555064127528}
   m_Layer: 0
   m_Name: Pier
   m_TagString: Untagged
@@ -4187,8 +4188,40 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 8.502524, y: 3.70123, z: 11.803606}
-  m_Center: {x: 0.014882291, y: -1.836546, z: 5.132567}
+  m_Size: {x: 8.502524, y: 3.9528883, z: 11.803606}
+  m_Center: {x: 0.014883627, y: -1.7107168, z: 5.132567}
+--- !u!114 &562575555064127528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 559311672667172596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshSurface
+  m_SerializedVersion: 0
+  m_AgentTypeID: 0
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 0
+  m_DefaultArea: 0
+  m_GenerateLinks: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 23800000, guid: c7294ff283a4e90498376fe94653f1ba, type: 2}
+  m_BuildHeightMesh: 0
 --- !u!4 &562575555080549798
 Transform:
   m_ObjectHideFlags: 0
@@ -4945,6 +4978,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6380075286535452846, guid: 1a86aa36fd26dd8488d0ccecebc130c9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4762814149171486234}
+    - targetCorrespondingSourceObject: {fileID: 6380075286535452846, guid: 1a86aa36fd26dd8488d0ccecebc130c9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4762814149171486235}
   m_SourcePrefab: {fileID: 100100000, guid: 1a86aa36fd26dd8488d0ccecebc130c9, type: 3}
 --- !u!1 &4762814149171486229 stripped
 GameObject:
@@ -5046,6 +5082,28 @@ MonoBehaviour:
   meleeAttackPoint: {fileID: 1854405513}
   rangedAttackPoint: {fileID: 2142690332}
   defaultProjectilePrefab: {fileID: 919132149155446097, guid: c2f47803b85b0f44d95ab1ee9e1baf95, type: 3}
+--- !u!64 &4762814149171486235
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4762814149171486229}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
