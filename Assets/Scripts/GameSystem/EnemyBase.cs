@@ -7,6 +7,7 @@ public class EnemyBase : MonoBehaviour
 {
     [Header("Health")]
     [SerializeField] protected float maxHealth = 50f;
+    protected float physicalDamage = 10f;
 
     [Header("Movement")]
     public float moveSpeed = 3f;

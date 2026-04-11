@@ -2,6 +2,12 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
 
+public enum RangedAttackType
+{
+    Bird,      // Птичка
+    Octopus    // Осьминог
+}
+
 public class RangedEnemy : EnemyStateMachine
 {
     [Header("Ranged Settings")]
@@ -9,14 +15,30 @@ public class RangedEnemy : EnemyStateMachine
     public float minDistance = 8f;
     public float maxDistance = 12f;
     public float attackCooldown = 2f;
-    public float magicDamage = 15f;
+
+    [Header("Attack Type")]
+    public RangedAttackType attackType = RangedAttackType.Bird;
+
+    [Header("Bird Attack Settings")]
+    public float birdDamage = 15f;
     public GameObject birdPrefab;
     public float birdSpeed = 25f;
+
+    [Header("Octopus Attack Settings")]
+    public float octopusDamage = 25f;
+    public GameObject octopusPrefab;
+    public float octopusSpeed = 20f;
+
+    [Header("Effects")]
+    public GameObject hitEffect;
 
     private float lastAttackTime;
     private Vector3 patrolTarget;
     private bool isAttacking = false;
     private bool isMoving = false;
+    private float currentDamage;
+    private GameObject currentProjectile;
+    private float currentSpeed;
 
     protected override void Awake()
     {
@@ -36,6 +58,22 @@ public class RangedEnemy : EnemyStateMachine
     protected override void Start()
     {
         base.Start();
+
+        // Устанавливаем параметры в зависимости от типа атаки
+        if (attackType == RangedAttackType.Bird)
+        {
+            currentDamage = birdDamage;
+            currentProjectile = birdPrefab;
+            currentSpeed = birdSpeed;
+            Debug.Log($"{gameObject.name}: атака - Птичка (урон {currentDamage})");
+        }
+        else
+        {
+            currentDamage = octopusDamage;
+            currentProjectile = octopusPrefab;
+            currentSpeed = octopusSpeed;
+            Debug.Log($"{gameObject.name}: атака - Осьминог (урон {currentDamage})");
+        }
     }
 
     // Переключение состояний
@@ -45,7 +83,6 @@ public class RangedEnemy : EnemyStateMachine
         // В мирном режиме не атакуем
         if (isPeacefulMode)
         {
-            Debug.Log($"{gameObject.name}: мирный режим, атака запрещена");
             return false;
         }
 
@@ -154,14 +191,13 @@ public class RangedEnemy : EnemyStateMachine
         lookDirection.y = 0;
         transform.rotation = Quaternion.LookRotation(lookDirection);
 
-        // Атака
+        // Атака с кулдауном
         if (Time.time > lastAttackTime + attackCooldown && !isAttacking && !isDying)
         {
             lastAttackTime = Time.time;
             StartCoroutine(PerformRangedAttack());
         }
     }
-
 
     void SetNewPatrolTarget()
     {
@@ -186,7 +222,7 @@ public class RangedEnemy : EnemyStateMachine
 
         yield return new WaitForSeconds(0.2f);
 
-        if (birdPrefab != null && !isDying)
+        if (currentProjectile != null && !isDying)
         {
             Vector3 spawnPos = transform.position + transform.forward * 2.5f + Vector3.up * 1.5f;
 
@@ -201,44 +237,45 @@ public class RangedEnemy : EnemyStateMachine
                 }
             }
 
-            GameObject bird = Instantiate(birdPrefab, spawnPos, Quaternion.identity);
-            bird.tag = "EnemyProjectile";
+            GameObject projectile = Instantiate(currentProjectile, spawnPos, Quaternion.identity);
+            projectile.tag = "EnemyProjectile";
 
-            Rigidbody rb = bird.GetComponent<Rigidbody>();
-            if (rb == null) rb = bird.AddComponent<Rigidbody>();
+            Rigidbody rb = projectile.GetComponent<Rigidbody>();
+            if (rb == null) rb = projectile.AddComponent<Rigidbody>();
 
             // Настройка физики
-            rb.mass = 0.2f;
-            rb.linearDamping = 0.05f;
-            rb.angularDamping = 0.05f;
-            rb.useGravity = true;
+            rb.mass = 0.1f;
+            rb.linearDamping = 0f;
+            rb.angularDamping = 0f;
+            rb.useGravity = false;
             rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
 
-            if (bird.GetComponent<Collider>() == null)
+            if (projectile.GetComponent<Collider>() == null)
             {
-                SphereCollider col = bird.AddComponent<SphereCollider>();
+                SphereCollider col = projectile.AddComponent<SphereCollider>();
                 col.radius = 0.3f;
                 col.material = new PhysicsMaterial();
                 col.material.bounciness = 0.5f;
             }
 
-            MagicProjectile projScript = bird.GetComponent<MagicProjectile>();
-            if (projScript == null) projScript = bird.AddComponent<MagicProjectile>();
-            projScript.damage = magicDamage;
+            // Добавляем скрипт снаряда
+            MagicProjectile projScript = projectile.GetComponent<MagicProjectile>();
+            if (projScript == null) projScript = projectile.AddComponent<MagicProjectile>();
+            projScript.damage = currentDamage;
+            projScript.hitEffect = hitEffect;
 
             Vector3 directionToPlayer = (player.position - spawnPos).normalized;
-            float speed = 15f;
-            rb.linearVelocity = directionToPlayer * speed;
+            rb.linearVelocity = directionToPlayer * currentSpeed;
             rb.AddTorque(Random.insideUnitSphere * 5f, ForceMode.Impulse);
 
             // Игнорируем столкновения с врагом
             Collider enemyCollider = GetComponent<Collider>();
-            if (enemyCollider != null && bird.GetComponent<Collider>() != null)
+            if (enemyCollider != null && projectile.GetComponent<Collider>() != null)
             {
-                Physics.IgnoreCollision(enemyCollider, bird.GetComponent<Collider>(), true);
+                Physics.IgnoreCollision(enemyCollider, projectile.GetComponent<Collider>(), true);
             }
 
-            Debug.Log($"Снаряд создан на {spawnPos} с направлением {directionToPlayer}");
+            Debug.Log($"Снаряд ({attackType}) создан на {spawnPos} с направлением {directionToPlayer}");
         }
 
         yield return new WaitForSeconds(1f);

@@ -162,12 +162,14 @@ public abstract class EnemyStateMachine : EnemyBase
             agent.SetDestination(player.position);
         }
 
-        if (animator != null)
-            animator.SetFloat("Speed", 1f);
+        //if (animator != null)
+            //animator.SetFloat("Speed", 1f);
     }
 
     protected virtual void AttackBehavior()
     {
+        Debug.Log($"AttackBehavior: currentState={currentState}, distance={distanceToPlayer}");
+
         if (agent != null)
         {
             agent.isStopped = true;
@@ -177,6 +179,7 @@ public abstract class EnemyStateMachine : EnemyBase
         Vector3 lookDirection = player.position - transform.position;
         lookDirection.y = 0;
         transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDirection), Time.deltaTime * 10f);
+
     }
 
     protected virtual void FleeBehavior()
@@ -192,8 +195,8 @@ public abstract class EnemyStateMachine : EnemyBase
             agent.SetDestination(fleePoint);
         }
 
-        if (animator != null)
-            animator.SetFloat("Speed", 1.2f);
+        //if (animator != null)
+            //animator.SetFloat("Speed", 1.2f);
     }
 
     protected void SwitchState(EnemyState newState)
