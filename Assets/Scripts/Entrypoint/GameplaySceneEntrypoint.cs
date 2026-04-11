@@ -27,7 +27,7 @@ public class GameplaySceneEntrypoint : MonoBehaviour
 
         // Репозитории
         var playerRepo = new PlayerRepository(player);
-        var enemyRepo = new EnemyRepository(enemies);
+        var enemyRepo = new EnemyRepository();
 
         // Interactor
         saveInteractor = new SaveInteractor(

@@ -154,7 +154,7 @@ public class RangedEnemy : EnemyStateMachine
         if (distanceToPlayer < minDistance)
         {
             // Отступаем назад
-            Vector3 awayFromPlayer = (transform.position - player.position).normalized;
+            Vector3 awayFromPlayer = (transform.position - targetPlayer.position).normalized;
             awayFromPlayer.y = 0;
             Vector3 retreatPoint = transform.position + awayFromPlayer * 5f;
 
@@ -165,7 +165,7 @@ public class RangedEnemy : EnemyStateMachine
         else if (distanceToPlayer > maxDistance)
         {
             // Сближаемся
-            agent.SetDestination(player.position);
+            agent.SetDestination(targetPlayer.position);
             agent.isStopped = false;
             isMoving = true;
         }
@@ -187,7 +187,7 @@ public class RangedEnemy : EnemyStateMachine
         }
 
         // Поворачиваемся к игроку
-        Vector3 lookDirection = player.position - transform.position;
+        Vector3 lookDirection = targetPlayer.position - transform.position;
         lookDirection.y = 0;
         transform.rotation = Quaternion.LookRotation(lookDirection);
 
@@ -264,7 +264,7 @@ public class RangedEnemy : EnemyStateMachine
             projScript.damage = currentDamage;
             projScript.hitEffect = hitEffect;
 
-            Vector3 directionToPlayer = (player.position - spawnPos).normalized;
+            Vector3 directionToPlayer = (targetPlayer.position - spawnPos).normalized;
             rb.linearVelocity = directionToPlayer * currentSpeed;
             rb.AddTorque(Random.insideUnitSphere * 5f, ForceMode.Impulse);
 
@@ -292,5 +292,33 @@ public class RangedEnemy : EnemyStateMachine
 
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, maxDistance);
+    }
+
+    public RangedAttackType GetAttackType()
+    {
+        return attackType;
+    }
+
+    public float GetCurrentDamage()
+    {
+        return currentDamage;
+    }
+
+    public void SetAttackType(RangedAttackType type)
+    {
+        attackType = type;
+        // Обновляем параметры в зависимости от типа
+        if (attackType == RangedAttackType.Bird)
+        {
+            currentDamage = birdDamage;
+            currentProjectile = birdPrefab;
+            currentSpeed = birdSpeed;
+        }
+        else
+        {
+            currentDamage = octopusDamage;
+            currentProjectile = octopusPrefab;
+            currentSpeed = octopusSpeed;
+        }
     }
 }

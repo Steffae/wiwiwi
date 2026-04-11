@@ -34,6 +34,8 @@ public class MeleeEnemy : EnemyStateMachine
     private bool isAttacking = false;
     private float currentPhysicalDamage;
 
+    public float CurrentDamage => currentPhysicalDamage;
+
     protected override void Awake()
     {
         base.Awake();
@@ -101,7 +103,7 @@ public class MeleeEnemy : EnemyStateMachine
         if (agent != null && agent.isActiveAndEnabled)
         {
             agent.isStopped = false;
-            agent.SetDestination(player.position);
+            agent.SetDestination(targetPlayer.position);
         }
 
         if (animator != null)
@@ -111,14 +113,14 @@ public class MeleeEnemy : EnemyStateMachine
     protected override void AttackBehavior()
     {
         // Останавливаемся
-        if (agent != null)
+        if (agent != null && agent.isActiveAndEnabled && agent.isOnNavMesh)
         {
             agent.isStopped = true;
             agent.velocity = Vector3.zero;
         }
 
         // Поворачиваемся к игроку
-        Vector3 lookDirection = player.position - transform.position;
+        Vector3 lookDirection = targetPlayer.position - transform.position;
         lookDirection.y = 0;
         transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDirection), Time.deltaTime * 10f);
 
@@ -165,20 +167,20 @@ public class MeleeEnemy : EnemyStateMachine
         yield return new WaitForSeconds(0.3f);
 
         // Проверяем, что игрок всё ещё рядом
-        float currentDistance = Vector3.Distance(transform.position, player.position);
+        float currentDistance = Vector3.Distance(transform.position, targetPlayer.position);
         if (currentDistance <= attackRange + 0.5f && !isDying)
         {
-            HealthComponent playerHealth = player.GetComponent<HealthComponent>();
+            HealthComponent playerHealth = targetPlayer.GetComponent<HealthComponent>();
             if (playerHealth != null)
             {
                 playerHealth.TakeDamage(currentPhysicalDamage);
                 Debug.Log("Нанесён удар толчком!");
             }
 
-            Rigidbody playerRb = player.GetComponent<Rigidbody>();
+            Rigidbody playerRb = targetPlayer.GetComponent<Rigidbody>();
             if (playerRb != null)
             {
-                Vector3 pushDirection = (player.position - transform.position).normalized;
+                Vector3 pushDirection = (targetPlayer.position - transform.position).normalized;
                 pushDirection.y = 0.5f;
                 playerRb.AddForce(pushDirection * pushForce, ForceMode.Impulse);
             }
@@ -205,7 +207,7 @@ public class MeleeEnemy : EnemyStateMachine
         yield return new WaitForSeconds(0.2f);
 
         Vector3 startPos = transform.position;
-        Vector3 targetPos = player.position;
+        Vector3 targetPos = targetPlayer.position;
         targetPos.y = startPos.y;
 
         float distanceToPlayer = Vector3.Distance(startPos, targetPos);
@@ -242,7 +244,7 @@ public class MeleeEnemy : EnemyStateMachine
         while (elapsed < fallDuration)
         {
             float t = elapsed / fallDuration;
-            Vector3 currentTarget = Vector3.Lerp(targetPos, player.position, t);
+            Vector3 currentTarget = Vector3.Lerp(targetPos, targetPlayer.position, t);
             currentTarget.y = Mathf.Lerp(fallStart.y, targetPos.y, t);
             transform.position = currentTarget;
             elapsed += Time.deltaTime;
@@ -258,10 +260,10 @@ public class MeleeEnemy : EnemyStateMachine
         }
 
         // Нанесение урона
-        float finalDistance = Vector3.Distance(transform.position, player.position);
+        float finalDistance = Vector3.Distance(transform.position, targetPlayer.position);
         if (finalDistance <= attackRange + 1f && !isDying)
         {
-            HealthComponent playerHealth = player.GetComponent<HealthComponent>();
+            HealthComponent playerHealth = targetPlayer.GetComponent<HealthComponent>();
             if (playerHealth != null)
             {
                 playerHealth.TakeDamage(currentPhysicalDamage);
@@ -269,10 +271,10 @@ public class MeleeEnemy : EnemyStateMachine
             }
 
             // Эффект отбрасывания при приземлении
-            Rigidbody playerRb = player.GetComponent<Rigidbody>();
+            Rigidbody playerRb = targetPlayer.GetComponent<Rigidbody>();
             if (playerRb != null)
             {
-                Vector3 pushDirection = (player.position - transform.position).normalized;
+                Vector3 pushDirection = (targetPlayer.position - transform.position).normalized;
                 pushDirection.y = 0.5f;
                 playerRb.AddForce(pushDirection * 8f, ForceMode.Impulse);
             }
@@ -297,5 +299,34 @@ public class MeleeEnemy : EnemyStateMachine
 
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRange);
+    }
+
+    public MeleeAttackType GetAttackType()
+    {
+        return attackType;
+    }
+
+    public float GetCurrentDamage()
+    {
+        return currentPhysicalDamage;
+    }
+
+    public void SetAttackType(MeleeAttackType type)
+    {
+        attackType = type;
+
+        // Обновляем параметры в зависимости от типа атаки
+        if (attackType == MeleeAttackType.Push)
+        {
+            currentPhysicalDamage = pushDamage;
+            attackCooldown = 2f;
+        }
+        else
+        {
+            currentPhysicalDamage = jumpDamage;
+            attackCooldown = jumpCooldown;
+        }
+
+        Debug.Log($"{gameObject.name}: тип атаки изменён на {attackType}, урон {currentPhysicalDamage}");
     }
 }

@@ -21,7 +21,7 @@ public class EnemyBase : MonoBehaviour
     protected bool isDying = false;
     protected bool isHit = false;
     protected NavMeshAgent agent;
-    protected Transform player;
+    protected Transform targetPlayer;
     protected Animator animator;
 
     // UI компоненты
@@ -64,7 +64,7 @@ public class EnemyBase : MonoBehaviour
 
     protected virtual void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player")?.transform;
+        targetPlayer = GameObject.FindGameObjectWithTag("Player")?.transform;
 
         // Создание полоски здоровья
         if (healthBarPrefab != null)
@@ -109,9 +109,9 @@ public class EnemyBase : MonoBehaviour
 
         // Проверка расстояния до игрока
         bool showHealthBar = false;
-        if (player != null)
+        if (targetPlayer != null)
         {
-            float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+            float distanceToPlayer = Vector3.Distance(transform.position, targetPlayer.position);
             showHealthBar = distanceToPlayer <= showDistance;
         }
 

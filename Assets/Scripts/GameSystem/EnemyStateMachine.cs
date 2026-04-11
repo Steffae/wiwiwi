@@ -22,8 +22,6 @@ public abstract class EnemyStateMachine : EnemyBase
     public float fleeHealthPercent = 30f;
     public float fleeDistance = 15f;
     public float fleeSpeed = 5f;
-
-    protected Transform player;
     protected float distanceToPlayer;
     protected bool isStateChanging = false;
     protected bool isPeacefulMode = false;
@@ -31,7 +29,7 @@ public abstract class EnemyStateMachine : EnemyBase
     protected override void Awake()
     {
         base.Awake();
-        player = GameObject.FindGameObjectWithTag("Player")?.transform;
+        targetPlayer = GameObject.FindGameObjectWithTag("Player")?.transform;
     }
 
     protected virtual void Start()
@@ -74,9 +72,11 @@ public abstract class EnemyStateMachine : EnemyBase
 
     protected virtual void Update()
     {
-        if (player == null || isDying || isHit || isStateChanging) return;
+        if (targetPlayer == null || isDying || isHit || isStateChanging) return;
 
-        distanceToPlayer = Vector3.Distance(transform.position, player.position);
+        if (agent != null && !agent.isOnNavMesh) return;
+
+        distanceToPlayer = Vector3.Distance(transform.position, targetPlayer.position);
 
         UpdateState();
 
@@ -159,7 +159,7 @@ public abstract class EnemyStateMachine : EnemyBase
         if (agent != null && agent.isActiveAndEnabled && !isDying)
         {
             agent.isStopped = false;
-            agent.SetDestination(player.position);
+            agent.SetDestination(targetPlayer.position);
         }
 
         //if (animator != null)
@@ -176,7 +176,7 @@ public abstract class EnemyStateMachine : EnemyBase
             agent.velocity = Vector3.zero;
         }
 
-        Vector3 lookDirection = player.position - transform.position;
+        Vector3 lookDirection = targetPlayer.position - transform.position;
         lookDirection.y = 0;
         transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDirection), Time.deltaTime * 10f);
 
@@ -184,7 +184,7 @@ public abstract class EnemyStateMachine : EnemyBase
 
     protected virtual void FleeBehavior()
     {
-        Vector3 fleeDirection = (transform.position - player.position).normalized;
+        Vector3 fleeDirection = (transform.position - targetPlayer.position).normalized;
         fleeDirection.y = 0;
         Vector3 fleePoint = transform.position + fleeDirection * fleeDistance;
 
@@ -234,11 +234,11 @@ public abstract class EnemyStateMachine : EnemyBase
         switch (state)
         {
             case EnemyState.Flee:
-                if (agent != null)
+                if (agent != null && agent.isActiveAndEnabled && agent.isOnNavMesh)
                     agent.speed = moveSpeed;
                 break;
             case EnemyState.Attack:
-                if (agent != null && !isDying)
+                if (agent != null && !isDying && agent.isActiveAndEnabled && agent.isOnNavMesh)
                     agent.isStopped = false;
                 break;
         }

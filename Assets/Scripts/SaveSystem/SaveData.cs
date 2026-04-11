@@ -36,6 +36,7 @@ public class EnemySaveData
 {
     public string enemyId;
     public string enemyType;
+    public string attackType;
     public float posX;
     public float posY;
     public float posZ;
