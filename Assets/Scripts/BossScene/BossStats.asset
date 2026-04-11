@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d38b18ea7980124408fd047ff06df9ff, type: 3}
+  m_Name: BossStats
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Boss.BossStats
+  maxHealth: 100
+  walkSpeed: 3.5
+  runSpeed: 6
+  enrageSpeedMultiplier: 1.5
+  rotationSpeed: 10
+  attackRange: 3
+  heavyAttackRange: 4
+  rangedAttackRange: 15
+  attackCooldown: 2
+  heavyAttackCooldown: 5
+  damage: 25
+  heavyDamageMultiplier: 2
+  enrageDamageMultiplier: 1.3
+  stunDuration: 2
+  stunThreshold: 50
+  enrageHealthThreshold: 0.3
+  fleeHealthThreshold: 0.2
+  fleeDistance: 20
+  fireDamageOverTime: 5
+  fireDuration: 3
+  fireColor: {r: 1, g: 0.3, b: 0, a: 1}
+  fireHitEffectPrefab: {fileID: 6294508013172393196, guid: 043176b6a68be2b43b073aaaa4782c7d, type: 3}
+  fireProjectilePrefab: {fileID: 6236971838747647226, guid: bc14dcaad4d84dc4b97ccfa4ba22dd63, type: 3}
+  iceSlowAmount: 0.5
+  iceSlowDuration: 2
+  iceColor: {r: 0.3, g: 0.8, b: 1, a: 1}
+  iceHitEffectPrefab: {fileID: 5112403345868107898, guid: 6f34ef0d986e9db4199cf75805f79753, type: 3}
+  iceProjectilePrefab: {fileID: 6236971838747647226, guid: 0ae9994aed7d67047821ac0ad045e923, type: 3}
+  earthStunChance: 0.3
+  earthStunDuration: 1.5
+  earthColor: {r: 0.6, g: 0.4, b: 0.1, a: 1}
+  earthHitEffectPrefab: {fileID: 2353600328335836179, guid: ceec7516237b4104b94300043ca39784, type: 3}
+  earthProjectilePrefab: {fileID: 6236971838747647226, guid: 47d605f0edc2c1545a6d4a14e40ba8d4, type: 3}
+  etherManaBurn: 20
+  etherColor: {r: 0.8, g: 0.2, b: 0.8, a: 1}
+  etherHitEffectPrefab: {fileID: 5824670795371433373, guid: f6fd568b816c64943a44efc3add3a881, type: 3}
+  etherProjectilePrefab: {fileID: 6236971838747647226, guid: 7f31d0e9ac3a3d04f93f0771b5d928cd, type: 3}
+  defaultProjectilePrefab: {fileID: 6236971838747647226, guid: 5018fad07638d984dad8ea19a4b676f8, type: 3}

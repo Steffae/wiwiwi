@@ -5,13 +5,13 @@ public class EnemySpawner : MonoBehaviour
 {
     [Header("Spawn Settings")]
     public GameObject[] enemyPrefabs;
-    public float spawnInterval = 5f;        // Интервал между спавнами
-    public int maxEnemies = 10;             // Максимальное количество врагов одновременно
-    public float spawnRadius = 10f;         // Радиус спавна вокруг точки
+    public float spawnInterval = 5f;        // РРЅС‚РµСЂРІР°Р» РјРµР¶РґСѓ СЃРїР°РІРЅР°РјРё
+    public int maxEnemies = 10;             // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РІСЂР°РіРѕРІ РѕРґРЅРѕРІСЂРµРјРµРЅРЅРѕ
+    public float spawnRadius = 10f;         // Р Р°РґРёСѓСЃ СЃРїР°РІРЅР° РІРѕРєСЂСѓРі С‚РѕС‡РєРё
 
     [Header("Spawn Area")]
-    public bool useRandomPoint = true;      // Использовать случайную точку
-    public Vector3 customSpawnArea;         // Размер области спавна
+    public bool useRandomPoint = true;      // РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЃР»СѓС‡Р°Р№РЅСѓСЋ С‚РѕС‡РєСѓ
+    public Vector3 customSpawnArea;         // Р Р°Р·РјРµСЂ РѕР±Р»Р°СЃС‚Рё СЃРїР°РІРЅР°
 
     private List<GameObject> activeEnemies = new List<GameObject>();
     private float lastSpawnTime;
@@ -23,10 +23,10 @@ public class EnemySpawner : MonoBehaviour
 
     void Update()
     {
-        // Очищаем список от уничтоженных врагов
+        // РћС‡РёС‰Р°РµРј СЃРїРёСЃРѕРє РѕС‚ СѓРЅРёС‡С‚РѕР¶РµРЅРЅС‹С… РІСЂР°РіРѕРІ
         activeEnemies.RemoveAll(enemy => enemy == null);
 
-        // Спавним новых врагов
+        // РЎРїР°РІРЅРёРј РЅРѕРІС‹С… РІСЂР°РіРѕРІ
         if (Time.time > lastSpawnTime + spawnInterval && activeEnemies.Count < maxEnemies)
         {
             SpawnEnemy();
@@ -38,42 +38,42 @@ public class EnemySpawner : MonoBehaviour
     {
         if (enemyPrefabs.Length == 0)
         {
-            Debug.LogWarning("Нет префабов врагов для спавна!");
+            Debug.LogWarning("РќРµС‚ РїСЂРµС„Р°Р±РѕРІ РІСЂР°РіРѕРІ РґР»СЏ СЃРїР°РІРЅР°!");
             return;
         }
 
-        // Выбираем случайного врага из массива
+        // Р’С‹Р±РёСЂР°РµРј СЃР»СѓС‡Р°Р№РЅРѕРіРѕ РІСЂР°РіР° РёР· РјР°СЃСЃРёРІР°
         int randomIndex = Random.Range(0, enemyPrefabs.Length);
         GameObject enemyPrefab = enemyPrefabs[randomIndex];
 
-        // Вычисляем позицию спавна
+        // Р’С‹С‡РёСЃР»СЏРµРј РїРѕР·РёС†РёСЋ СЃРїР°РІРЅР°
         Vector3 spawnPosition = GetSpawnPosition();
 
-        // Создаём врага
+        // РЎРѕР·РґР°С‘Рј РІСЂР°РіР°
         GameObject newEnemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
         activeEnemies.Add(newEnemy);
 
-        Debug.Log($"Спавнен враг {enemyPrefab.name} на позиции {spawnPosition}");
+        Debug.Log($"РЎРїР°РІРЅРµРЅ РІСЂР°Рі {enemyPrefab.name} РЅР° РїРѕР·РёС†РёРё {spawnPosition}");
     }
 
     Vector3 GetSpawnPosition()
     {
         if (useRandomPoint)
         {
-            // Случайная точка в радиусе от спавнера
+            // РЎР»СѓС‡Р°Р№РЅР°СЏ С‚РѕС‡РєР° РІ СЂР°РґРёСѓСЃРµ РѕС‚ СЃРїР°РІРЅРµСЂР°
             Vector2 randomCircle = Random.insideUnitCircle * spawnRadius;
             return transform.position + new Vector3(randomCircle.x, 0, randomCircle.y);
         }
         else
         {
-            // Случайная точка в прямоугольной области
+            // РЎР»СѓС‡Р°Р№РЅР°СЏ С‚РѕС‡РєР° РІ РїСЂСЏРјРѕСѓРіРѕР»СЊРЅРѕР№ РѕР±Р»Р°СЃС‚Рё
             float randomX = Random.Range(-customSpawnArea.x / 2, customSpawnArea.x / 2);
             float randomZ = Random.Range(-customSpawnArea.z / 2, customSpawnArea.z / 2);
             return transform.position + new Vector3(randomX, 0, randomZ);
         }
     }
 
-    // Визуализация зоны спавна в редакторе
+    // Р’РёР·СѓР°Р»РёР·Р°С†РёСЏ Р·РѕРЅС‹ СЃРїР°РІРЅР° РІ СЂРµРґР°РєС‚РѕСЂРµ
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green;
@@ -87,7 +87,7 @@ public class EnemySpawner : MonoBehaviour
             Gizmos.DrawWireCube(transform.position, customSpawnArea);
         }
 
-        // Точка спавнера
+        // РўРѕС‡РєР° СЃРїР°РІРЅРµСЂР°
         Gizmos.color = Color.red;
         Gizmos.DrawSphere(transform.position, 0.5f);
     }

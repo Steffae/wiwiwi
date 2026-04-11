@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
+using TMPro;
 using System.Collections;
 using System.Collections.Generic;
 using Game.Core;
@@ -13,48 +15,51 @@ namespace Game.Boss
         [SerializeField] private Transform healthBarPosition;
         [SerializeField] private GameObject healthBarPrefab;
 
-        [Header("Combat Points")]
-        [SerializeField] private Transform meleeAttackPoint;
-        [SerializeField] private Transform rangedAttackPoint;
-        [SerializeField] private GameObject defaultProjectilePrefab;
-
         // Компоненты
         private Animator animator;
-        private NavMeshAgent agent;
         private Collider bossCollider;
+        private BossHealth bossHealth;
+        private BossMovement bossMovement;
+        private BossCombat bossCombat;
+
+        // UI
+        private Slider healthSlider;
+        private Text healthText;
 
         // Состояния
         private Dictionary<BossState, IBossState> states;
         private IBossState currentState;
         private BossState currentStateType;
 
-        // Характеристики
-        private float currentHealth;
-        private bool isDead = false;
+        // Состояние босса
         private bool isPeacefulMode = false;
         private bool hasBeenAttackedByPlayer = false;
-
-        // Таймеры
-        private float attackTimer = 0f;
         private float stunTimer = 0f;
 
-        // Цель (игрок)
+        // Цель
         private Transform player;
 
         // Свойства
         public BossStats Stats => stats;
         public Animator Animator => animator;
-        public NavMeshAgent Agent => agent;
+        public NavMeshAgent Agent => bossMovement?.Agent;
         public Transform Player => player;
-        public float CurrentHealth => currentHealth;
-        public float AttackTimer { get => attackTimer; set => attackTimer = value; }
-        public float StunTimer { get => stunTimer; set => stunTimer = value; }
+        public float CurrentHealth => bossHealth?.CurrentHealth ?? 0;
+        public bool IsEnraged => bossHealth?.IsEnraged ?? false;
         public bool IsPeacefulMode { get => isPeacefulMode; set => isPeacefulMode = value; }
-        public bool HasBeenAttackedByPlayer => hasBeenAttackedByPlayer;
-        public bool IsEnraged { get; private set; }
-        public Transform MeleeAttackPoint => meleeAttackPoint;
-        public Transform RangedAttackPoint => rangedAttackPoint;
-        public GameObject DefaultProjectilePrefab => defaultProjectilePrefab;
+        public bool HasBeenAttackedByPlayer { get => hasBeenAttackedByPlayer; set => hasBeenAttackedByPlayer = value; }
+
+        public float StunTimer { get => stunTimer; set => stunTimer = value; }
+        public BossWeaponType CurrentWeapon => bossCombat?.CurrentWeapon ?? BossWeaponType.Melee;
+        public BossElementType CurrentElement => bossCombat?.CurrentElement ?? BossElementType.Fire;
+        public Transform MeleeAttackPoint => bossCombat?.GetMeleeAttackPoint();
+        public Transform RangedAttackPoint => null;
+
+        // Для совместимости с состояниями
+        public float AttackRange => bossCombat?.AttackRange ?? stats.attackRange;
+        public float HeavyAttackRange => bossCombat?.HeavyAttackRange ?? stats.heavyAttackRange;
+        public float AttackCooldown => stats.attackCooldown;
+        public float HeavyAttackCooldown => stats.heavyAttackCooldown;
 
         // События
         public System.Action<float, float> OnHealthChanged;
@@ -63,10 +68,10 @@ namespace Game.Boss
         private void Awake()
         {
             animator = GetComponent<Animator>();
-            agent = GetComponent<NavMeshAgent>();
             bossCollider = GetComponent<Collider>();
-
-            currentHealth = stats.maxHealth;
+            bossHealth = GetComponent<BossHealth>();
+            bossMovement = GetComponent<BossMovement>();
+            bossCombat = GetComponent<BossCombat>();
 
             InitializeStates();
         }
@@ -75,9 +80,13 @@ namespace Game.Boss
         {
             player = GameObject.FindGameObjectWithTag("Player")?.transform;
 
-            if (player == null)
+            // Подписываемся на события здоровья
+            if (bossHealth != null)
             {
-                Debug.LogError("Boss: Player not found!");
+                bossHealth.OnHealthChanged += (cur, max) => OnHealthChanged?.Invoke(cur, max);
+                bossHealth.OnDeath += HandleDeath;
+                bossHealth.OnEnrage += HandleEnrage;
+                bossHealth.OnStunned += HandleStunned;
             }
 
             // Подписываемся на мирный режим
@@ -92,22 +101,88 @@ namespace Game.Boss
 
         private void Update()
         {
-            if (isDead || player == null) return;
+            if (bossHealth != null && bossHealth.IsDead) return;
 
-            if (attackTimer > 0) attackTimer -= Time.deltaTime;
             if (stunTimer > 0) stunTimer -= Time.deltaTime;
 
             currentState?.Update(this);
-
-            UpdateMovementAnimation();
+            bossMovement?.UpdateMovementAnimation(animator);
         }
 
         private void OnPeacefulModeChanged(bool peaceful)
         {
             isPeacefulMode = peaceful;
             hasBeenAttackedByPlayer = false;
-            Debug.Log($"Boss: Peaceful mode = {peaceful}");
         }
+
+        private void HandleEnrage()
+        {
+            bossMovement?.SetEnraged(true);
+            bossCombat?.SetEnraged(true);
+            TransitionToState(BossState.Enrage);
+        }
+
+        private void HandleStunned(float duration)
+        {
+            stunTimer = duration;
+            TransitionToState(BossState.Stunned);
+        }
+
+        private void HandleDeath()
+        {
+            animator?.SetTrigger("Death");
+            if (Agent != null) Agent.isStopped = true;
+            if (bossCollider != null) bossCollider.enabled = false;
+
+            if (healthSlider != null) healthSlider.gameObject.SetActive(false);
+
+            OnBossDeath?.Invoke();
+            StartCoroutine(DeathCoroutine());
+        }
+
+        private IEnumerator DeathCoroutine()
+        {
+            yield return new WaitForSeconds(3f);
+            Destroy(gameObject);
+        }
+
+        // ===== МЕТОДЫ ДЛЯ УПРАВЛЕНИЯ =====
+
+        public void SetAgentStopped(bool stopped) => bossMovement?.SetStopped(stopped);
+        public void ChasePlayer() => bossMovement?.ChasePlayer();
+        public void FleeFromPlayer() => bossMovement?.FleeFromPlayer(stats.fleeDistance);
+        public void FacePlayer() => bossMovement?.FacePlayer();
+        public float DistanceToPlayer() => bossMovement?.DistanceToPlayer() ?? float.MaxValue;
+        public bool CanSeePlayer() => bossCombat?.CanSeePlayer() ?? false;
+        public bool CanAttack() => bossCombat?.CanAttack() ?? false;
+        public bool IsPlayerInAttackRange() => bossCombat?.IsPlayerInAttackRange() ?? false;
+        public bool IsPlayerInHeavyRange() => bossCombat?.IsPlayerInHeavyRange() ?? false;
+        public void PerformMeleeAttack() => bossCombat?.PerformMeleeAttack();
+        public void PerformHeavyMeleeAttack() => bossCombat?.PerformHeavyMeleeAttack();
+        public void LaunchProjectile() => bossCombat?.LaunchProjectile();
+        public bool ShouldFlee() => bossHealth?.ShouldFlee ?? false;
+        public bool IsAgentReady() => bossMovement?.IsAgentReady() ?? false;
+
+        // ===== МЕТОДЫ ДЛЯ СОВМЕСТИМОСТИ С СОСТОЯНИЯМИ =====
+
+        public void SafeSetAgentStopped(bool stopped)
+        {
+            SetAgentStopped(stopped);
+        }
+
+        public void SafeSetDestination(Vector3 destination)
+        {
+            if (!IsAgentReady()) return;
+            Agent.SetDestination(destination);
+        }
+
+        public void TakeDamage(float damage)
+        {
+            hasBeenAttackedByPlayer = true;
+            bossHealth?.TakeDamage(damage);
+        }
+
+        // ===== УПРАВЛЕНИЕ СОСТОЯНИЯМИ =====
 
         private void InitializeStates()
         {
@@ -125,145 +200,43 @@ namespace Game.Boss
 
         public void TransitionToState(BossState newState)
         {
-            if (isDead && newState != BossState.Dead) return;
+            if (bossHealth != null && bossHealth.IsDead) return;
 
             currentState?.Exit(this);
             currentStateType = newState;
             currentState = states[newState];
             currentState?.Enter(this);
-
-            Debug.Log($"Boss transitioned to: {newState}");
         }
 
-        private void UpdateMovementAnimation()
-        {
-            if (agent != null && animator != null)
-            {
-                float speed = agent.velocity.magnitude;
-                animator.SetFloat("Speed", speed);
-            }
-        }
+        // ===== UI =====
 
         private void CreateHealthBar()
         {
             if (healthBarPrefab != null && healthBarPosition != null)
             {
-                Instantiate(healthBarPrefab, healthBarPosition);
+                GameObject obj = Instantiate(healthBarPrefab, healthBarPosition.position, Quaternion.identity, healthBarPosition);
+                obj.transform.localRotation = Quaternion.identity;
+
+                healthSlider = obj.GetComponentInChildren<Slider>();
+                if (healthSlider != null)
+                {
+                    healthSlider.maxValue = bossHealth?.MaxHealth ?? 100;
+                    healthSlider.value = bossHealth?.CurrentHealth ?? 100;
+                }
+
+                healthText = obj.GetComponentInChildren<Text>();
+
+                if (bossHealth != null)
+                {
+                    bossHealth.OnHealthChanged += UpdateHealthUI;
+                }
             }
         }
 
-        public bool IsAgentReady()
+        private void UpdateHealthUI(float current, float max)
         {
-            return agent != null && agent.isActiveAndEnabled && agent.isOnNavMesh && agent.enabled;
-        }
-
-        public void SafeSetDestination(Vector3 destination)
-        {
-            if (!IsAgentReady()) return;
-
-            if (!agent.pathPending && agent.remainingDistance < 0.5f)
-            {
-                agent.ResetPath();
-            }
-
-            agent.SetDestination(destination);
-        }
-
-        public void SafeSetAgentStopped(bool stopped)
-        {
-            if (!IsAgentReady()) return;
-
-            agent.isStopped = stopped;
-
-            if (!stopped)
-            {
-                agent.ResetPath();
-            }
-        }
-
-        public void TakeDamage(float damage)
-        {
-            if (isDead) return;
-
-            // В мирном режиме отмечаем, что босса атаковали
-            if (isPeacefulMode && !hasBeenAttackedByPlayer)
-            {
-                hasBeenAttackedByPlayer = true;
-                Debug.Log("Boss was attacked! Entering aggressive mode.");
-            }
-
-            currentHealth = Mathf.Max(0, currentHealth - damage);
-            OnHealthChanged?.Invoke(currentHealth, stats.maxHealth);
-
-            animator.SetTrigger("TakeHit");
-
-            if (damage >= stats.stunThreshold && currentStateType != BossState.Stunned)
-            {
-                TransitionToState(BossState.Stunned);
-            }
-
-            if (!IsEnraged && currentHealth <= stats.maxHealth * stats.enrageHealthThreshold)
-            {
-                IsEnraged = true;
-                TransitionToState(BossState.Enrage);
-            }
-
-            if (currentHealth <= 0)
-            {
-                Die();
-            }
-        }
-
-        private void Die()
-        {
-            isDead = true;
-            animator.SetTrigger("Death");
-            agent.isStopped = true;
-            bossCollider.enabled = false;
-
-            OnBossDeath?.Invoke();
-
-            StartCoroutine(DeathCoroutine());
-        }
-
-        private IEnumerator DeathCoroutine()
-        {
-            yield return new WaitForSeconds(3f);
-            Destroy(gameObject);
-        }
-
-        public float DistanceToPlayer()
-        {
-            if (player == null) return float.MaxValue;
-            return Vector3.Distance(transform.position, player.position);
-        }
-
-        public bool CanSeePlayer()
-        {
-            if (player == null) return false;
-
-            Vector3 direction = player.position - transform.position;
-            if (Physics.Raycast(transform.position + Vector3.up, direction.normalized,
-                out RaycastHit hit, direction.magnitude))
-            {
-                return hit.transform.CompareTag("Player");
-            }
-            return false;
-        }
-
-        public void FacePlayer()
-        {
-            if (player == null) return;
-
-            Vector3 direction = (player.position - transform.position).normalized;
-            direction.y = 0;
-
-            if (direction != Vector3.zero)
-            {
-                Quaternion targetRotation = Quaternion.LookRotation(direction);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation,
-                    stats.rotationSpeed * Time.deltaTime);
-            }
+            if (healthSlider != null) healthSlider.value = current;
+            if (healthText != null) healthText.text = $"{Mathf.Ceil(current)}/{max}";
         }
 
         private void OnDestroy()
@@ -272,6 +245,34 @@ namespace Game.Boss
             {
                 GameManager.Instance.UnsubscribeFromPeacefulMode(OnPeacefulModeChanged);
             }
+        }
+
+        // Свойства
+        public float AttackTimer
+        {
+            get => bossCombat?.AttackTimer ?? 0;
+            set => bossCombat?.SetAttackTimer(value);
+        }
+
+        // Методы для совместимости
+        public void ApplyElementEffect(GameObject target)
+        {
+            bossCombat?.ApplyElementEffectPublic(target);
+        }
+
+        public void SpawnHitEffect(Vector3 position)
+        {
+            Debug.Log($"SpawnHitEffect at {position}");
+        }
+
+        public void LaunchProjectile(float damage)
+        {
+            bossCombat?.LaunchProjectile(damage);
+        }
+
+        public void SetAttackTimer(float value)
+        {
+            bossCombat?.SetAttackTimer(value);
         }
     }
 }

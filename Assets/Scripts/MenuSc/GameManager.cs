@@ -29,7 +29,6 @@ namespace Game.Core
 
         private void Awake()
         {
-            // Синглтон
             if (Instance == null)
             {
                 Instance = this;

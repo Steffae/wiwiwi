@@ -58,7 +58,7 @@ public class MainToBossSceneMove : MonoBehaviour
         playerData.lastSceneName = SceneManager.GetActiveScene().name;
         playerData.isInitialized = true;
 
-        // Сохраняем урон (опционально)
+        // Сохраняем урон
         PlayerController controller = player.GetComponent<PlayerController>();
         if (controller != null)
         {

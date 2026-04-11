@@ -11,14 +11,8 @@ namespace Game.Boss
         {
             hasAttacked = false;
 
-            if (boss.Agent != null)
-            {
-                boss.Agent.isStopped = true;
-            }
-
+            boss.SafeSetAgentStopped(true);
             boss.FacePlayer();
-
-            // Можно использовать другой триггер или параметр
             boss.Animator.SetTrigger("HeavyAttack");
 
             boss.StartCoroutine(PerformHeavyAttack(boss));
@@ -26,7 +20,6 @@ namespace Game.Boss
 
         private IEnumerator PerformHeavyAttack(BossController boss)
         {
-            // Тяжёлая атака имеет более долгую подготовку
             yield return new WaitForSeconds(0.8f);
 
             if (!hasAttacked && boss.Player != null)
@@ -41,18 +34,31 @@ namespace Game.Boss
                     damage *= boss.Stats.enrageDamageMultiplier;
                 }
 
-                // Увеличенный радиус для тяжёлой атаки
-                HealthComponent playerHealth = boss.Player.GetComponent<HealthComponent>();
-                if (playerHealth != null)
+                if (boss.CurrentWeapon == BossWeaponType.Melee)
                 {
-                    playerHealth.TakeDamage(damage);
-                    Debug.Log($"Boss dealt {damage} damage to player!");
+                    if (distance <= boss.Stats.heavyAttackRange && boss.CanSeePlayer())
+                    {
+                        HealthComponent playerHealth = boss.Player.GetComponent<HealthComponent>();
+                        if (playerHealth != null)
+                        {
+                            playerHealth.TakeDamage(damage);
+                            Debug.Log($"Boss HEAVY attack: {damage} {boss.CurrentElement} damage!");
+                        }
+
+                        boss.ApplyElementEffect(boss.Player.gameObject);
+                        boss.SpawnHitEffect(boss.MeleeAttackPoint.position);
+                    }
+                }
+                else
+                {
+                    // Для дальнего боя - усиленный снаряд
+                    boss.LaunchProjectile(damage);
+                    Debug.Log($"Boss launched HEAVY {boss.CurrentElement} projectile!");
                 }
             }
 
             yield return new WaitForSeconds(0.7f);
 
-            // Долгий кулдаун для тяжёлой атаки
             boss.AttackTimer = boss.Stats.heavyAttackCooldown;
 
             if (boss.CurrentHealth > 0)
@@ -68,10 +74,7 @@ namespace Game.Boss
 
         public void Exit(BossController boss)
         {
-            if (boss.Agent != null)
-            {
-                boss.Agent.isStopped = false;
-            }
+            boss.SafeSetAgentStopped(false);
         }
     }
 }

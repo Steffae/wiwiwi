@@ -11,24 +11,15 @@ namespace Game.Boss
         {
             hasAttacked = false;
 
-            if (boss.Agent != null)
-            {
-                boss.Agent.isStopped = true;
-            }
-
-            // Поворачиваемся к игроку
+            boss.SafeSetAgentStopped(true);
             boss.FacePlayer();
-
-            // Запускаем анимацию атаки
             boss.Animator.SetTrigger("Attack");
 
-            // Запускаем корутину для нанесения урона в нужный момент
             boss.StartCoroutine(PerformAttack(boss));
         }
 
         private IEnumerator PerformAttack(BossController boss)
         {
-            // Ждём момент удара (обычно 30-40% анимации)
             yield return new WaitForSeconds(0.4f);
 
             if (!hasAttacked && boss.Player != null)
@@ -43,22 +34,38 @@ namespace Game.Boss
                     damage *= boss.Stats.enrageDamageMultiplier;
                 }
 
-                // Проверяем, попали ли мы
-                HealthComponent playerHealth = boss.Player.GetComponent<HealthComponent>();
-                if (playerHealth != null)
+                // Проверяем тип оружия
+                if (boss.CurrentWeapon == BossWeaponType.Melee)
                 {
-                    playerHealth.TakeDamage(damage);
-                    Debug.Log($"Boss dealt {damage} damage to player!");
+                    // Ближний бой
+                    if (distance <= boss.Stats.attackRange && boss.CanSeePlayer())
+                    {
+                        HealthComponent playerHealth = boss.Player.GetComponent<HealthComponent>();
+                        if (playerHealth != null)
+                        {
+                            playerHealth.TakeDamage(damage);
+                            Debug.Log($"Boss dealt {damage} {boss.CurrentElement} melee damage!");
+                        }
+
+                        // Применяем эффект стихии
+                        boss.ApplyElementEffect(boss.Player.gameObject);
+
+                        // Эффект попадания
+                        boss.SpawnHitEffect(boss.MeleeAttackPoint.position);
+                    }
+                }
+                else
+                {
+                    // Дальний бой - запускаем снаряд
+                    boss.LaunchProjectile(damage);
+                    Debug.Log($"Boss launched {boss.CurrentElement} projectile!");
                 }
             }
 
-            // Ждём завершения анимации
             yield return new WaitForSeconds(0.8f);
 
-            // Устанавливаем кулдаун
             boss.AttackTimer = boss.Stats.attackCooldown;
 
-            // Возвращаемся в Chase
             if (boss.CurrentHealth > 0)
             {
                 boss.TransitionToState(BossState.Chase);
@@ -67,16 +74,12 @@ namespace Game.Boss
 
         public void Update(BossController boss)
         {
-            // Поворачиваемся к игроку во время атаки
             boss.FacePlayer();
         }
 
         public void Exit(BossController boss)
         {
-            if (boss.Agent != null)
-            {
-                boss.Agent.isStopped = false;
-            }
+            boss.SafeSetAgentStopped(false);
         }
     }
 }

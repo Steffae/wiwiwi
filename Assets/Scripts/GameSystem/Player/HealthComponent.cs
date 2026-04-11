@@ -126,8 +126,13 @@ public class HealthComponent : MonoBehaviour
         if (rb != null && damage > 10f)
         {
             Vector3 knockbackDirection = -transform.forward;
-            knockbackDirection.y = 0.3f;
-            rb.AddForce(knockbackDirection * damage * 2f, ForceMode.Impulse);
+            knockbackDirection.y = 0.2f;
+            knockbackDirection.Normalize();
+
+            // Ограничиваем силу отбрасывания (максимум 15)
+            float knockbackForce = Mathf.Min(damage * 1.5f, 15f);
+
+            rb.AddForce(knockbackDirection * knockbackForce, ForceMode.Impulse);
         }
     }
 

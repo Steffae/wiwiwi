@@ -87,7 +87,6 @@ namespace Game.UI
                 peaceText.color = whiteColor;
             }
 
-            // Обновляем цвет ручки
             if (handleImage != null)
             {
                 handleImage.color = isPeaceful ? peacefulColor : combatColor;
@@ -99,7 +98,6 @@ namespace Game.UI
             scrollbar.onValueChanged.RemoveListener(OnScrollbarChanged);
         }
 
-        // Публичный метод для получения текущего режима (для других скриптов)
         public bool IsPeacefulMode()
         {
             return scrollbar.value >= 0.5f;

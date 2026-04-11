@@ -26,15 +26,47 @@ namespace Game.Boss
 
         [Header("Stun")]
         public float stunDuration = 2f;
-        public float stunThreshold = 50f; // Урон для стана за одно попадание
+        public float stunThreshold = 50f;
 
         [Header("Enrage")]
         [Range(0, 1)]
-        public float enrageHealthThreshold = 0.3f; // 30% HP
+        public float enrageHealthThreshold = 0.3f;
 
         [Header("Flee")]
         [Range(0, 1)]
-        public float fleeHealthThreshold = 0.2f; // 20% HP
+        public float fleeHealthThreshold = 0.2f;
         public float fleeDistance = 20f;
+
+        // ===== НОВЫЕ ПОЛЯ ДЛЯ СТИХИЙ =====
+
+        [Header("Element Effects - Fire")]
+        public float fireDamageOverTime = 5f;
+        public float fireDuration = 3f;
+        public Color fireColor = new Color(1f, 0.3f, 0f);
+        public GameObject fireHitEffectPrefab;
+        public GameObject fireProjectilePrefab;
+
+        [Header("Element Effects - Ice")]
+        public float iceSlowAmount = 0.5f;
+        public float iceSlowDuration = 2f;
+        public Color iceColor = new Color(0.3f, 0.8f, 1f);
+        public GameObject iceHitEffectPrefab;
+        public GameObject iceProjectilePrefab;
+
+        [Header("Element Effects - Earth")]
+        public float earthStunChance = 0.3f;
+        public float earthStunDuration = 1.5f;
+        public Color earthColor = new Color(0.6f, 0.4f, 0.1f);
+        public GameObject earthHitEffectPrefab;
+        public GameObject earthProjectilePrefab;
+
+        [Header("Element Effects - Ether")]
+        public float etherManaBurn = 20f;
+        public Color etherColor = new Color(0.8f, 0.2f, 0.8f);
+        public GameObject etherHitEffectPrefab;
+        public GameObject etherProjectilePrefab;
+
+        [Header("Default Projectile")]
+        public GameObject defaultProjectilePrefab;
     }
 }

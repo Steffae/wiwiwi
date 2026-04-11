@@ -4,10 +4,10 @@ using UnityEngine.AI;
 
 public enum EnemyState
 {
-    Idle,      // Патруль
-    Chase,     // Преследование
-    Attack,    // Атака
-    Flee       // Бегство
+    Idle,      // РџР°С‚СЂСѓР»СЊ
+    Chase,     // РџСЂРµСЃР»РµРґРѕРІР°РЅРёРµ
+    Attack,    // РђС‚Р°РєР°
+    Flee       // Р‘РµРіСЃС‚РІРѕ
 }
 
 public abstract class EnemyStateMachine : EnemyBase
@@ -32,10 +32,11 @@ public abstract class EnemyStateMachine : EnemyBase
         targetPlayer = GameObject.FindGameObjectWithTag("Player")?.transform;
     }
 
-    protected virtual void Start()
+    protected override void Start()
     {
-        base.Start();
-        // Получаем режим
+        base.Start(); // Р’С‹Р·РѕРІ Р±Р°Р·РѕРІРѕРіРѕ РјРµС‚РѕРґР° РёР· EnemyBase
+
+        // РџРѕР»СѓС‡Р°РµРј СЂРµР¶РёРј
         if (GameManager.Instance != null)
         {
             isPeacefulMode = GameManager.Instance.IsPeacefulMode;
@@ -61,9 +62,9 @@ public abstract class EnemyStateMachine : EnemyBase
     private void OnPeacefulModeChanged(bool isPeaceful)
     {
         isPeacefulMode = isPeaceful;
-        Debug.Log($"{gameObject.name}: режим изменён на {(isPeaceful ? "МИРНЫЙ" : "АГРЕССИВНЫЙ")}");
+        Debug.Log($"{gameObject.name}: СЂРµР¶РёРј РёР·РјРµРЅС‘РЅ РЅР° {(isPeaceful ? "РњРР РќР«Р™" : "РђР“Р Р•РЎРЎРР’РќР«Р™")}");
 
-        // Если включили мирный режим во время атаки/преследования — останавливаемся
+        // Р•СЃР»Рё РІРєР»СЋС‡РёР»Рё РјРёСЂРЅС‹Р№ СЂРµР¶РёРј РІРѕ РІСЂРµРјСЏ Р°С‚Р°РєРё/РїСЂРµСЃР»РµРґРѕРІР°РЅРёСЏ вЂ” РѕСЃС‚Р°РЅР°РІР»РёРІР°РµРјСЃСЏ
         if (isPeacefulMode && (currentState == EnemyState.Chase || currentState == EnemyState.Attack))
         {
             SwitchState(EnemyState.Idle);
@@ -105,10 +106,10 @@ public abstract class EnemyStateMachine : EnemyBase
 
     protected virtual void UpdateState()
     {
-        // Если включен мирный режим — не переходим в Chase и Attack
+        // Р•СЃР»Рё РІРєР»СЋС‡РµРЅ РјРёСЂРЅС‹Р№ СЂРµР¶РёРј вЂ” РЅРµ РїРµСЂРµС…РѕРґРёРј РІ Chase Рё Attack
         if (isPeacefulMode)
         {
-            // Проверяем бегство
+            // РџСЂРѕРІРµСЂСЏРµРј Р±РµРіСЃС‚РІРѕ
             if (ShouldFlee())
             {
                 if (currentState != EnemyState.Flee)
@@ -116,13 +117,13 @@ public abstract class EnemyStateMachine : EnemyBase
                 return;
             }
 
-            // В мирном режиме только Idle и Flee
+            // Р’ РјРёСЂРЅРѕРј СЂРµР¶РёРјРµ С‚РѕР»СЊРєРѕ Idle Рё Flee
             if (currentState != EnemyState.Idle)
                 SwitchState(EnemyState.Idle);
             return;
         }
 
-        // Обычный режим
+        // РћР±С‹С‡РЅС‹Р№ СЂРµР¶РёРј
         if (ShouldFlee())
         {
             if (currentState != EnemyState.Flee)
@@ -163,7 +164,7 @@ public abstract class EnemyStateMachine : EnemyBase
         }
 
         //if (animator != null)
-            //animator.SetFloat("Speed", 1f);
+        //animator.SetFloat("Speed", 1f);
     }
 
     protected virtual void AttackBehavior()
@@ -196,7 +197,7 @@ public abstract class EnemyStateMachine : EnemyBase
         }
 
         //if (animator != null)
-            //animator.SetFloat("Speed", 1.2f);
+        //animator.SetFloat("Speed", 1.2f);
     }
 
     protected void SwitchState(EnemyState newState)
@@ -215,16 +216,16 @@ public abstract class EnemyStateMachine : EnemyBase
         switch (state)
         {
             case EnemyState.Flee:
-                Debug.Log($"{gameObject.name}: Бег HP {healthSystem.CurrentHealth}/{maxHealth}");
+                Debug.Log($"{gameObject.name}: Р‘РµРі HP {healthSystem.CurrentHealth}/{maxHealth}");
                 break;
             case EnemyState.Attack:
-                Debug.Log($"{gameObject.name}: Атака");
+                Debug.Log($"{gameObject.name}: РђС‚Р°РєР°");
                 break;
             case EnemyState.Chase:
-                Debug.Log($"{gameObject.name}: Преследование");
+                Debug.Log($"{gameObject.name}: РџСЂРµСЃР»РµРґРѕРІР°РЅРёРµ");
                 break;
             case EnemyState.Idle:
-                Debug.Log($"{gameObject.name}: Патруль");
+                Debug.Log($"{gameObject.name}: РџР°С‚СЂСѓР»СЊ");
                 break;
         }
     }
