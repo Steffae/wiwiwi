@@ -2,12 +2,12 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
 
-public class RangedEnemy : EnemyBase
+public class RangedEnemy : EnemyStateMachine
 {
     [Header("Ranged Settings")]
     public float attackRange = 15f;
-    public float minDistance = 8f;      // зона отступления
-    public float maxDistance = 12f;     // зона сближения
+    public float minDistance = 8f;
+    public float maxDistance = 12f;
     public float attackCooldown = 2f;
     public float magicDamage = 15f;
     public GameObject birdPrefab;
@@ -22,6 +22,8 @@ public class RangedEnemy : EnemyBase
     {
         base.Awake();
 
+        chaseRange = attackRange;
+
         if (agent != null)
         {
             agent.speed = moveSpeed;
@@ -31,61 +33,135 @@ public class RangedEnemy : EnemyBase
         InvokeRepeating(nameof(SetNewPatrolTarget), 0f, 5f);
     }
 
-    void Update()
+    protected override void Start()
     {
-        if (player == null || isAttacking || isDying || isHit) return;
+        base.Start();
+    }
 
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+    // Переключение состояний
 
-        // Дистанционное поведение врага
+    protected override bool CanAttack()
+    {
+        // В мирном режиме не атакуем
+        if (isPeacefulMode)
+        {
+            Debug.Log($"{gameObject.name}: мирный режим, атака запрещена");
+            return false;
+        }
+
+        return distanceToPlayer <= attackRange && distanceToPlayer >= minDistance;
+    }
+
+    protected override void UpdateState()
+    {
+        if (isPeacefulMode)
+        {
+            if (currentState != EnemyState.Idle)
+            {
+                SwitchState(EnemyState.Idle);
+            }
+            return;
+        }
+
+        // Проверка дистанции
         if (distanceToPlayer <= attackRange)
         {
-
+            // Слишком близко — отступаем
             if (distanceToPlayer < minDistance)
             {
-                // Отступаем назад
-                Vector3 awayFromPlayer = (transform.position - player.position).normalized;
-                awayFromPlayer.y = 0;
-                Vector3 retreatPoint = transform.position + awayFromPlayer * 5f;
-
-                agent.SetDestination(retreatPoint);
-                agent.isStopped = false;
-                isMoving = true;
-                Debug.Log($"RangedEnemy: Отступление! dist={distanceToPlayer}");
+                if (currentState != EnemyState.Chase)
+                    SwitchState(EnemyState.Chase);
+                return;
             }
-            else if (distanceToPlayer > maxDistance)
+
+            // На дистанции атаки
+            if (distanceToPlayer <= maxDistance && distanceToPlayer >= minDistance)
             {
-                // Сближаемся
-                agent.SetDestination(player.position);
-                agent.isStopped = false;
-                isMoving = true;
-                Debug.Log($"RangedEnemy: Сближение! dist={distanceToPlayer}");
+                if (currentState != EnemyState.Attack)
+                    SwitchState(EnemyState.Attack);
+                return;
             }
-            else
+
+            // Слишком далеко — сближаемся
+            if (distanceToPlayer > maxDistance)
             {
-                // Оптимальная дистанция — атакуем
-                if (isMoving)
-                {
-                    agent.isStopped = true;
-                    isMoving = false;
-                }
-
-                // Поворачиваемся к игроку
-                Vector3 lookDirection = player.position - transform.position;
-                lookDirection.y = 0;
-                transform.rotation = Quaternion.LookRotation(lookDirection);
-
-                AttackPlayer();
+                if (currentState != EnemyState.Chase)
+                    SwitchState(EnemyState.Chase);
+                return;
             }
         }
-        else
+
+        // Патруль
+        if (distanceToPlayer > attackRange)
         {
-            // Режим патрулирования
+            if (currentState != EnemyState.Idle)
+                SwitchState(EnemyState.Idle);
+        }
+    }
+
+    // Поведения состояний
+
+    protected override void IdleBehavior()
+    {
+        // Патрулирование
+        if (agent != null && agent.isActiveAndEnabled)
+        {
             agent.isStopped = false;
             agent.SetDestination(patrolTarget);
             isMoving = true;
         }
     }
+
+    protected override void ChaseBehavior()
+    {
+        if (distanceToPlayer < minDistance)
+        {
+            // Отступаем назад
+            Vector3 awayFromPlayer = (transform.position - player.position).normalized;
+            awayFromPlayer.y = 0;
+            Vector3 retreatPoint = transform.position + awayFromPlayer * 5f;
+
+            agent.SetDestination(retreatPoint);
+            agent.isStopped = false;
+            isMoving = true;
+        }
+        else if (distanceToPlayer > maxDistance)
+        {
+            // Сближаемся
+            agent.SetDestination(player.position);
+            agent.isStopped = false;
+            isMoving = true;
+        }
+        else
+        {
+            // Атаковать
+            if (currentState != EnemyState.Attack)
+                SwitchState(EnemyState.Attack);
+        }
+    }
+
+    protected override void AttackBehavior()
+    {
+        // Останавливаемся
+        if (isMoving)
+        {
+            agent.isStopped = true;
+            isMoving = false;
+        }
+
+        // Поворачиваемся к игроку
+        Vector3 lookDirection = player.position - transform.position;
+        lookDirection.y = 0;
+        transform.rotation = Quaternion.LookRotation(lookDirection);
+
+        // Атака
+        if (Time.time > lastAttackTime + attackCooldown && !isAttacking && !isDying)
+        {
+            lastAttackTime = Time.time;
+            StartCoroutine(PerformRangedAttack());
+        }
+    }
+
 
     void SetNewPatrolTarget()
     {
@@ -104,15 +180,6 @@ public class RangedEnemy : EnemyBase
         }
     }
 
-    void AttackPlayer()
-    {
-        if (Time.time > lastAttackTime + attackCooldown && !isAttacking)
-        {
-            lastAttackTime = Time.time;
-            StartCoroutine(PerformRangedAttack());
-        }
-    }
-
     IEnumerator PerformRangedAttack()
     {
         isAttacking = true;
@@ -123,6 +190,7 @@ public class RangedEnemy : EnemyBase
         {
             Vector3 spawnPos = transform.position + transform.forward * 2.5f + Vector3.up * 1.5f;
 
+            // Проверка, не спавнится ли внутри врага
             Collider[] hitColliders = Physics.OverlapSphere(spawnPos, 0.5f);
             foreach (var hit in hitColliders)
             {
@@ -161,9 +229,8 @@ public class RangedEnemy : EnemyBase
             Vector3 directionToPlayer = (player.position - spawnPos).normalized;
             float speed = 15f;
             rb.linearVelocity = directionToPlayer * speed;
-            //rb.AddForce(directionToPlayer * 15f, ForceMode.Impulse);
-
             rb.AddTorque(Random.insideUnitSphere * 5f, ForceMode.Impulse);
+
             // Игнорируем столкновения с врагом
             Collider enemyCollider = GetComponent<Collider>();
             if (enemyCollider != null && bird.GetComponent<Collider>() != null)

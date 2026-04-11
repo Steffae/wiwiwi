@@ -21,6 +21,7 @@ public class EnemyBase : MonoBehaviour
     protected bool isHit = false;
     protected NavMeshAgent agent;
     protected Transform player;
+    protected Animator animator;
 
     // UI компоненты
     protected GameObject healthBarInstance;
@@ -48,6 +49,8 @@ public class EnemyBase : MonoBehaviour
         // Подписываемся на события
         healthSystem.OnHealthChanged += UpdateHealthUI;
         healthSystem.OnDeath += Die;
+
+        animator = GetComponent<Animator>();
 
         agent = GetComponent<NavMeshAgent>();
         if (agent != null)
@@ -85,6 +88,12 @@ public class EnemyBase : MonoBehaviour
                 healthSlider.maxValue = maxHealth;
                 healthSlider.value = healthSystem.CurrentHealth;
             }
+
+            Debug.Log($"HealthBar создан для {gameObject.name}: {healthBarInstance != null}");
+        }
+        else
+        {
+            Debug.LogWarning($"healthBarPrefab не назначен для {gameObject.name}");
         }
     }
 

@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
 
-public class MeleeEnemy : EnemyBase
+public class MeleeEnemy : EnemyStateMachine
 {
     [Header("Melee Settings")]
     public float detectionRange = 8f;
@@ -19,6 +19,8 @@ public class MeleeEnemy : EnemyBase
     {
         base.Awake();
 
+        chaseRange = detectionRange;
+
         if (agent != null)
         {
             agent.stoppingDistance = attackRange * 0.8f;
@@ -27,29 +29,76 @@ public class MeleeEnemy : EnemyBase
         InvokeRepeating(nameof(SetNewPatrolTarget), 0f, 5f);
     }
 
-    void Update()
+    protected override void Start()
     {
-        if (player == null || isAttacking || isDying || isHit) return;
+        base.Start();
+    }
 
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+    // Переключение состояний
 
-        if (distanceToPlayer <= attackRange)
+    protected override bool CanAttack()
+    {
+        // В мирном режиме не атакуем
+        if (isPeacefulMode) return false;
+
+        return distanceToPlayer <= attackRange;
+    }
+
+    // Поведения состояний
+
+    protected override void IdleBehavior()
+    {
+        // Патрулирование
+        if (agent != null && agent.isActiveAndEnabled)
         {
-            agent.isStopped = true;
-            agent.velocity = Vector3.zero;
-            AttackPlayer();
+            agent.isStopped = false;
+
+            if (Vector3.Distance(transform.position, patrolTarget) < 0.5f)
+            {
+                SetNewPatrolTarget();
+            }
+            agent.SetDestination(patrolTarget);
         }
-        else if (distanceToPlayer <= detectionRange)
+
+        // Анимация
+        if (animator != null)
+            animator.SetFloat("Speed", 0.1f);
+    }
+
+    protected override void ChaseBehavior()
+    {
+        if (agent != null && agent.isActiveAndEnabled)
         {
             agent.isStopped = false;
             agent.SetDestination(player.position);
         }
-        else
+
+        if (animator != null)
+            animator.SetFloat("Speed", 1f);
+    }
+
+    protected override void AttackBehavior()
+    {
+        // Останавливаемся
+        if (agent != null)
         {
-            agent.isStopped = false;
-            agent.SetDestination(patrolTarget);
+            agent.isStopped = true;
+            agent.velocity = Vector3.zero;
+        }
+
+        // Поворачиваемся к игроку
+        Vector3 lookDirection = player.position - transform.position;
+        lookDirection.y = 0;
+        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDirection), Time.deltaTime * 10f);
+
+        // Атака с кулдауном
+        if (Time.time > lastAttackTime + attackCooldown && !isAttacking && !isDying)
+        {
+            lastAttackTime = Time.time;
+            StartCoroutine(PerformPhysicalAttack());
         }
     }
+
 
     void SetNewPatrolTarget()
     {
@@ -68,24 +117,15 @@ public class MeleeEnemy : EnemyBase
         }
     }
 
-    void AttackPlayer()
-    {
-        if (Time.time > lastAttackTime + attackCooldown && !isAttacking && !isDying)
-        {
-            lastAttackTime = Time.time;
-            transform.LookAt(new Vector3(player.position.x, transform.position.y, player.position.z));
-            StartCoroutine(PerformPhysicalAttack());
-        }
-    }
-
     IEnumerator PerformPhysicalAttack()
     {
         isAttacking = true;
 
         yield return new WaitForSeconds(0.3f);
 
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-        if (distanceToPlayer <= attackRange + 0.5f && !isDying)
+        // Проверяем, что игрок всё ещё рядом
+        float currentDistance = Vector3.Distance(transform.position, player.position);
+        if (currentDistance <= attackRange + 0.5f && !isDying)
         {
             HealthComponent playerHealth = player.GetComponent<HealthComponent>();
             if (playerHealth != null)
