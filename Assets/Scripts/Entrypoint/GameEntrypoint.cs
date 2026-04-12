@@ -6,7 +6,9 @@ public class GameEntrypoint : MonoBehaviour
 
     public IAudioService AudioService { get; private set; }
     public ISaveRepository SaveRepository { get; private set; }
-    public object GameStateService { get; internal set; }
+    public IGameStateService GameStateService { get; private set; }
+    public IGameScoreService GameScoreService { get; private set; }
+    public ISaveInteractor SaveInteractor { get; set; }
 
     private void Awake()
     {
@@ -19,13 +21,14 @@ public class GameEntrypoint : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        InitializeServices();
+        InitializeGlobalServices();
     }
 
-    private void InitializeServices()
+    private void InitializeGlobalServices()
     {
-        // Инициализация основных сервисов (внедрение зависимостей)
         AudioService = new AudioService(gameObject);
         SaveRepository = new JsonSaveRepository();
+        GameStateService = new GameStateService();
+        GameScoreService = new GameScoreService();
     }
 }

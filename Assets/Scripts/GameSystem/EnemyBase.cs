@@ -209,6 +209,12 @@ public class EnemyBase : MonoBehaviour
 
         Debug.Log($"{gameObject.name} погиб");
 
+        // Уведомляем систему очков
+        if (GameEntrypoint.Instance?.GameScoreService != null)
+        {
+            GameEntrypoint.Instance.GameScoreService.OnEnemyKilled();
+        }
+
         // Отключение навигации
         if (agent != null) agent.enabled = false;
 

@@ -1,17 +1,18 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class GameMenu : MonoBehaviour
 {
     public GameObject GameOverPanel;
 
     private IAudioService audioService;
+    private IGameStateService gameStateService;
 
     [SerializeField] private AudioClip buttonClick;
 
-    private void Start()
+    public void Initialize(IAudioService audioService, IGameStateService gameStateService)
     {
-        audioService = GameEntrypoint.Instance.AudioService;
+        this.audioService = audioService;
+        this.gameStateService = gameStateService;
 
         GameOverPanel.SetActive(true);
         Cursor.lockState = CursorLockMode.None;
@@ -21,12 +22,12 @@ public class GameMenu : MonoBehaviour
     public void AgainPlayPressed()
     {
         audioService.PlaySoundEffect(buttonClick);
-        SceneManager.LoadScene("Location");
+        gameStateService.LoadLocation();
     }
 
     public void LvPressed()
     {
         audioService.PlaySoundEffect(buttonClick);
-        SceneManager.LoadScene("MenuScene");
+        gameStateService.LoadMenu();
     }
 }

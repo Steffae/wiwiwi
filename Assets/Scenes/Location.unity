@@ -80735,6 +80735,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameplaySceneEntrypoint
   gameplayMusic: {fileID: 8300000, guid: e1e991f561e40ba45b02843c512b54de, type: 3}
+  victoryMusic: {fileID: 8300000, guid: fa68da7c840226549b35143f44d8cb5c, type: 3}
 --- !u!4 &1601650733
 Transform:
   m_ObjectHideFlags: 0
@@ -110797,9 +110798,21 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 1991715374}
+    - target: {fileID: 1811782491085871003, guid: 3bb8ea42e096eaa4a88bf8fb19be94b5, type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 25
+      objectReference: {fileID: 0}
     - target: {fileID: 2243676707746896454, guid: 3bb8ea42e096eaa4a88bf8fb19be94b5, type: 3}
       propertyPath: m_Name
       value: Canvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 4434608077991044761, guid: 3bb8ea42e096eaa4a88bf8fb19be94b5, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4434608077991044761, guid: 3bb8ea42e096eaa4a88bf8fb19be94b5, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5662540480222399713, guid: 3bb8ea42e096eaa4a88bf8fb19be94b5, type: 3}
       propertyPath: m_AnchorMax.x

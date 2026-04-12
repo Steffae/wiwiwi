@@ -164,7 +164,7 @@ GameObject:
   m_Component:
   - component: {fileID: 110437079}
   m_Layer: 0
-  m_Name: BossSpawnPoint
+  m_Name: PlayerSpawnPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -840,6 +840,7 @@ PrefabInstance:
     m_RemovedGameObjects:
     - {fileID: 4978998693133207603, guid: 3bb8ea42e096eaa4a88bf8fb19be94b5, type: 3}
     - {fileID: 9048221791697364260, guid: 3bb8ea42e096eaa4a88bf8fb19be94b5, type: 3}
+    - {fileID: 7568238805622886197, guid: 3bb8ea42e096eaa4a88bf8fb19be94b5, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3bb8ea42e096eaa4a88bf8fb19be94b5, type: 3}
@@ -1078,6 +1079,37 @@ MonoBehaviour:
   targetSceneName: GoodEnd
   playerTag: Player
   activationEffect: {fileID: 2065740250}
+--- !u!1 &1323064827
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1323064828}
+  m_Layer: 0
+  m_Name: BossSpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1323064828
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1323064827}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.9419198, z: -0, w: 0.3358378}
+  m_LocalPosition: {x: 2.36, y: -0.11, z: 6.34}
+  m_LocalScale: {x: 0.49999994, y: 0.5, z: 0.49999994}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1368244419
 GameObject:
   m_ObjectHideFlags: 0
@@ -1145,6 +1177,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BossSceneEntrypoint
   bossMusic: {fileID: 8300000, guid: 7c609f15cde55c84c800c0d3816639ea, type: 3}
+  bossPrefab: {fileID: 6380075286535452846, guid: 1a86aa36fd26dd8488d0ccecebc130c9, type: 3}
+  bossSpawnPoint: {fileID: 1323064828}
 --- !u!4 &1387306033
 Transform:
   m_ObjectHideFlags: 0
@@ -5164,6 +5198,10 @@ PrefabInstance:
       value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6380075286535452846, guid: 1a86aa36fd26dd8488d0ccecebc130c9, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6380075286535452846, guid: 1a86aa36fd26dd8488d0ccecebc130c9, type: 3}
       propertyPath: m_TagString
       value: Boss
       objectReference: {fileID: 0}
@@ -5394,6 +5432,7 @@ SceneRoots:
   - {fileID: 1941491031}
   - {fileID: 1387306033}
   - {fileID: 1011577096}
+  - {fileID: 1323064828}
   - {fileID: 110437079}
   - {fileID: 884440541}
   - {fileID: 1028272037}

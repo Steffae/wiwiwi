@@ -1,17 +1,18 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class SaveMenuUI : MonoBehaviour
 {
     private ISaveInteractor saveInteractor;
     private IAudioService audioService;
+    private IGameStateService gameStateService;
 
     [SerializeField] private AudioClip buttonClick;
 
-    public void Initialize(ISaveInteractor interactor)
+    public void Initialize(ISaveInteractor interactor, IAudioService audioService, IGameStateService gameStateService = null)
     {
-        saveInteractor = interactor;
-        audioService = GameEntrypoint.Instance.AudioService;
+        this.saveInteractor = interactor;
+        this.audioService = audioService;
+        this.gameStateService = gameStateService ?? GameEntrypoint.Instance.GameStateService;
     }
 
     public void OnSavePressed()
@@ -29,6 +30,6 @@ public class SaveMenuUI : MonoBehaviour
     public void OnMenuPressed()
     {
         audioService.PlaySoundEffect(buttonClick);
-        SceneManager.LoadScene("MenuScene");
+        gameStateService?.LoadMenu();
     }
 }
