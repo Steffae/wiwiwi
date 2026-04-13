@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100016, guid: 89fc79b8e96bce64d9ea713a39f3f05e, type: 3}
       propertyPath: m_Name
-      value: RangedEnemy
+      value: RangedBird
       objectReference: {fileID: 0}
     - target: {fileID: 100016, guid: 89fc79b8e96bce64d9ea713a39f3f05e, type: 3}
       propertyPath: m_TagString
@@ -176,7 +176,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d75e329e0399bc4ca41987c58d88b80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RangedEnemy
-  maxHealth: 200
+  maxHealth: 150
   moveSpeed: 2
   healthBarPrefab: {fileID: 1756244541765657985, guid: 154b2c33003abb24087d402e09184a04, type: 3}
   healthBarOffset: {x: 0, y: 2, z: 0}

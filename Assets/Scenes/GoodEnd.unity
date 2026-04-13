@@ -148,7 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0719ff0ee691e547bf049ffdb210749, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameGoodSceneEntrypoint
-  gameGoodMusic: {fileID: 8300000, guid: 7c609f15cde55c84c800c0d3816639ea, type: 3}
+  gameGoodMusic: {fileID: 8300000, guid: fa68da7c840226549b35143f44d8cb5c, type: 3}
 --- !u!4 &94529845
 Transform:
   m_ObjectHideFlags: 0

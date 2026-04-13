@@ -6,7 +6,7 @@ using Game.Data;
 public class HealthComponent : MonoBehaviour
 {
     [Header("Health Settings")]
-    [SerializeField] private float maxHealth = 100f;
+    [SerializeField] private float maxHealth = 300f;
 
     [Header("ScriptableObject Data")]
     [SerializeField] private PlayerRuntimeData playerData;
@@ -173,7 +173,7 @@ public class HealthComponent : MonoBehaviour
         // Сбрасываем данные при смерти
         if (playerData != null)
         {
-            playerData.ResetToDefault();
+            playerData.DeathReset();
         }
 
         UnityEngine.SceneManagement.SceneManager.LoadScene("End");

@@ -6,8 +6,8 @@ namespace Game.Data
     public class PlayerRuntimeData : ScriptableObject
     {
         [Header("Health")]
-        public float currentHealth = 100f;
-        public float maxHealth = 100f;
+        public float currentHealth = 300f;
+        public float maxHealth = 300f;
 
         [Header("Position")]
         public Vector3 lastPosition;
@@ -17,10 +17,13 @@ namespace Game.Data
         public float physicalDamage = 15f;
         public float magicDamage = 20f;
 
-        // Флаг для отслеживания, был ли игрок инициализирован
+        [Header("Settings")]
+        [SerializeField] private bool resetOnStart = true;
+
         public bool isInitialized = false;
 
-        public void ResetToDefault()
+        // Полный сброс данных (для новой игры)
+        public void FullReset()
         {
             currentHealth = maxHealth;
             lastPosition = Vector3.zero;
@@ -28,6 +31,22 @@ namespace Game.Data
             physicalDamage = 15f;
             magicDamage = 20f;
             isInitialized = true;
+
+            Debug.Log($"PlayerRuntimeData RESET: HP = {currentHealth}/{maxHealth}");
+        }
+
+        // Сброс при смерти (только HP и позиция)
+        public void DeathReset()
+        {
+            currentHealth = maxHealth;
+            lastPosition = Vector3.zero;
+
+            Debug.Log($"PlayerRuntimeData DEATH RESET: HP = {currentHealth}/{maxHealth}");
+        }
+
+        public void ResetToDefault()
+        {
+            FullReset();
         }
 
         public float GetHealthPercent()

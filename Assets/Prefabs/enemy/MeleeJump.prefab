@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100018, guid: c0ac0abef9c67f64590fc85c01acb27f, type: 3}
       propertyPath: m_Name
-      value: MeleeEnemy
+      value: MeleeJump
       objectReference: {fileID: 0}
     - target: {fileID: 100018, guid: c0ac0abef9c67f64590fc85c01acb27f, type: 3}
       propertyPath: m_TagString
@@ -176,7 +176,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b55a89c6c69eda48a15130e882c1b7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MeleeEnemy
-  maxHealth: 200
+  maxHealth: 150
   moveSpeed: 3
   healthBarPrefab: {fileID: 1756244541765657985, guid: 154b2c33003abb24087d402e09184a04, type: 3}
   healthBarOffset: {x: 0, y: 2, z: 0}
