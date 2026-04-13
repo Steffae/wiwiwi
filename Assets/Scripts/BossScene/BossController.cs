@@ -146,7 +146,7 @@ namespace Game.Boss
             Destroy(gameObject);
         }
 
-        // ===== МЕТОДЫ ДЛЯ УПРАВЛЕНИЯ =====
+        // МЕТОДЫ ДЛЯ УПРАВЛЕНИЯ
 
         public void SetAgentStopped(bool stopped) => bossMovement?.SetStopped(stopped);
         public void ChasePlayer() => bossMovement?.ChasePlayer();
@@ -166,7 +166,7 @@ namespace Game.Boss
         public bool ShouldFlee() => bossHealth?.ShouldFlee ?? false;
         public bool IsAgentReady() => bossMovement?.IsAgentReady() ?? false;
 
-        // ===== МЕТОДЫ ДЛЯ СОВМЕСТИМОСТИ С СОСТОЯНИЯМИ =====
+        // МЕТОДЫ ДЛЯ СОВМЕСТИМОСТИ С СОСТОЯНИЯМИ
 
         public void SafeSetAgentStopped(bool stopped)
         {
@@ -185,7 +185,7 @@ namespace Game.Boss
             bossHealth?.TakeDamage(damage);
         }
 
-        // ===== УПРАВЛЕНИЕ СОСТОЯНИЯМИ =====
+        // УПРАВЛЕНИЕ СОСТОЯНИЯМИ
 
         private void InitializeStates()
         {
@@ -211,7 +211,7 @@ namespace Game.Boss
             currentState?.Enter(this);
         }
 
-        // ===== UI =====
+        // UI
 
         private void CreateHealthBar()
         {

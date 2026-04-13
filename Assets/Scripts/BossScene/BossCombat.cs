@@ -120,7 +120,7 @@ namespace Game.Boss
             return dmg;
         }
 
-        // ===== ОБЫЧНАЯ АТАКА =====
+        // ОБЫЧНАЯ АТАКА 
 
         public void PerformMeleeAttack()
         {
@@ -145,7 +145,7 @@ namespace Game.Boss
             attackTimer = attackCooldown;
         }
 
-        // ===== ТЯЖЁЛАЯ АТАКА =====
+        // ТЯЖЁЛАЯ АТАКА 
 
         public void PerformHeavyMeleeAttack()
         {
@@ -170,7 +170,7 @@ namespace Game.Boss
             attackTimer = heavyAttackCooldown;
         }
 
-        // ===== УНИВЕРСАЛЬНЫЕ МЕТОДЫ =====
+        // УНИВЕРСАЛЬНЫЕ МЕТОД
 
         private void DealDamageToPlayer(float damage)
         {
@@ -208,7 +208,7 @@ namespace Game.Boss
             projScript.Initialize(damage, currentElement, this, boss, isHeavy);
         }
 
-        // ===== ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ =====
+        // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
 
         public Transform GetMeleeAttackPoint() => meleeAttackPoint;
         public Transform GetRangedAttackPoint() => rangedAttackPoint;
