@@ -15,7 +15,7 @@ namespace Game.Boss
                 boss.Agent.speed = boss.Stats.runSpeed * boss.Stats.enrageSpeedMultiplier;
             }
 
-            // Эффект ярости (можно добавить партиклы)
+            // Эффект ярости
             Debug.Log("BOSS ENRAGED!");
 
             boss.StartCoroutine(EnrageRoutine(boss));
@@ -23,7 +23,6 @@ namespace Game.Boss
 
         private IEnumerator EnrageRoutine(BossController boss)
         {
-            // Анимация/эффект ярости
             yield return new WaitForSeconds(1.5f);
 
             if (boss.CurrentHealth > 0)
@@ -34,7 +33,7 @@ namespace Game.Boss
 
         public void Update(BossController boss)
         {
-            // Можно добавить эффект дрожания камеры или экрана
+            // Для эффекта ярости - потом когда-нибудь будет...
         }
 
         public void Exit(BossController boss)

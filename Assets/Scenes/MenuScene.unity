@@ -2995,6 +2995,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 222ddeac22d3ea04f869427db3a16530, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameEntrypoint
+  playerData: {fileID: 11400000, guid: bfa1d97dc63759f4f872788dfaba7792, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

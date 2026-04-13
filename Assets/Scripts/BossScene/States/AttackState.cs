@@ -27,44 +27,23 @@ namespace Game.Boss
                 hasAttacked = true;
 
                 float distance = boss.DistanceToPlayer();
-                float damage = boss.Stats.damage;
 
-                if (boss.IsEnraged)
-                {
-                    damage *= boss.Stats.enrageDamageMultiplier;
-                }
-
-                // Проверяем тип оружия
                 if (boss.CurrentWeapon == BossWeaponType.Melee)
                 {
-                    // Ближний бой
-                    if (distance <= boss.Stats.attackRange && boss.CanSeePlayer())
+                    if (distance <= boss.AttackRange && boss.CanSeePlayer())
                     {
-                        HealthComponent playerHealth = boss.Player.GetComponent<HealthComponent>();
-                        if (playerHealth != null)
-                        {
-                            playerHealth.TakeDamage(damage);
-                            Debug.Log($"Boss dealt {damage} {boss.CurrentElement} melee damage!");
-                        }
-
-                        // Применяем эффект стихии
-                        boss.ApplyElementEffect(boss.Player.gameObject);
-
-                        // Эффект попадания
-                        boss.SpawnHitEffect(boss.MeleeAttackPoint.position);
+                        boss.PerformMeleeAttack();
                     }
                 }
                 else
                 {
-                    // Дальний бой - запускаем снаряд
-                    boss.LaunchProjectile(damage);
-                    Debug.Log($"Boss launched {boss.CurrentElement} projectile!");
+                    boss.PerformRangedAttack();
                 }
             }
 
             yield return new WaitForSeconds(0.8f);
 
-            boss.AttackTimer = boss.Stats.attackCooldown;
+            boss.SetAttackTimer(boss.AttackCooldown);
 
             if (boss.CurrentHealth > 0)
             {

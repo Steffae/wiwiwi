@@ -10,13 +10,13 @@ namespace Game.Boss
         [SerializeField] private float stunThreshold = 50f;
         [SerializeField] private float stunDuration = 2f;
         [SerializeField] private float enrageHealthPercent = 0.3f;
-        [SerializeField] private float fleeHealthPercent = 0.2f;
+        [SerializeField] private float fleeHealthAmount = 50f;
 
         private float currentHealth;
         private bool isDead = false;
         private bool isEnraged = false;
 
-        // События (BossController подписывается на них)
+        // События
         public event Action<float, float> OnHealthChanged;
         public event Action<float> OnDamageTaken;
         public event Action OnDeath;
@@ -29,7 +29,7 @@ namespace Game.Boss
         public bool IsDead => isDead;
         public bool IsEnraged => isEnraged;
         public float HealthPercent => currentHealth / maxHealth;
-        public bool ShouldFlee => currentHealth <= maxHealth * fleeHealthPercent;
+        public bool ShouldFlee => currentHealth <= fleeHealthAmount; // Бегство при маленьком здоровье
 
         private void Start()
         {

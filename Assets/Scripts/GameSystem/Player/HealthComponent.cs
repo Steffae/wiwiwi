@@ -170,12 +170,6 @@ public class HealthComponent : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        // Сбрасываем данные при смерти
-        if (playerData != null)
-        {
-            playerData.DeathReset();
-        }
-
         UnityEngine.SceneManagement.SceneManager.LoadScene("End");
     }
 

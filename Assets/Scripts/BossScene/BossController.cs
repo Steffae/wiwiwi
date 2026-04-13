@@ -56,10 +56,10 @@ namespace Game.Boss
         public Transform RangedAttackPoint => null;
 
         // Для совместимости с состояниями
-        public float AttackRange => bossCombat?.AttackRange ?? stats.attackRange;
-        public float HeavyAttackRange => bossCombat?.HeavyAttackRange ?? stats.heavyAttackRange;
-        public float AttackCooldown => stats.attackCooldown;
-        public float HeavyAttackCooldown => stats.heavyAttackCooldown;
+        public float AttackRange => bossCombat?.AttackRange ?? 3f;
+        public float HeavyAttackRange => bossCombat?.HeavyAttackRange ?? 4f;
+        public float AttackCooldown => bossCombat?.AttackCooldown ?? 2f;
+        public float HeavyAttackCooldown => bossCombat?.HeavyAttackCooldown ?? 5f;
 
         // События
         public System.Action<float, float> OnHealthChanged;
@@ -158,8 +158,11 @@ namespace Game.Boss
         public bool IsPlayerInAttackRange() => bossCombat?.IsPlayerInAttackRange() ?? false;
         public bool IsPlayerInHeavyRange() => bossCombat?.IsPlayerInHeavyRange() ?? false;
         public void PerformMeleeAttack() => bossCombat?.PerformMeleeAttack();
+        public void PerformRangedAttack() => bossCombat?.PerformRangedAttack();
         public void PerformHeavyMeleeAttack() => bossCombat?.PerformHeavyMeleeAttack();
-        public void LaunchProjectile() => bossCombat?.LaunchProjectile();
+        public void PerformHeavyRangedAttack() => bossCombat?.PerformHeavyRangedAttack();
+        public void LaunchProjectile() => bossCombat?.LaunchProjectile(bossCombat.CalculateDamage(), false);
+        public void LaunchProjectile(float damage) => bossCombat?.LaunchProjectile(damage, false);
         public bool ShouldFlee() => bossHealth?.ShouldFlee ?? false;
         public bool IsAgentReady() => bossMovement?.IsAgentReady() ?? false;
 
@@ -254,25 +257,10 @@ namespace Game.Boss
             set => bossCombat?.SetAttackTimer(value);
         }
 
-        // Методы для совместимости
-        public void ApplyElementEffect(GameObject target)
-        {
-            bossCombat?.ApplyElementEffectPublic(target);
-        }
-
         public void SpawnHitEffect(Vector3 position)
         {
             Debug.Log($"SpawnHitEffect at {position}");
         }
-
-        public void LaunchProjectile(float damage)
-        {
-            bossCombat?.LaunchProjectile(damage);
-        }
-
-        public void SetAttackTimer(float value)
-        {
-            bossCombat?.SetAttackTimer(value);
-        }
+        public void SetAttackTimer(float value) => bossCombat?.SetAttackTimer(value);
     }
 }

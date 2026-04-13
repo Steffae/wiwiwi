@@ -1,3 +1,4 @@
+using Game.Data;
 using UnityEngine;
 
 public class GameEntrypoint : MonoBehaviour
@@ -9,6 +10,10 @@ public class GameEntrypoint : MonoBehaviour
     public IGameStateService GameStateService { get; private set; }
     public IGameScoreService GameScoreService { get; private set; }
     public ISaveInteractor SaveInteractor { get; set; }
+
+    // Добавляем ссылку на PlayerRuntimeData
+    [Header("Player Data")]
+    [SerializeField] private PlayerRuntimeData playerData;
 
     private void Awake()
     {
@@ -28,7 +33,9 @@ public class GameEntrypoint : MonoBehaviour
     {
         AudioService = new AudioService(gameObject);
         SaveRepository = new JsonSaveRepository();
-        GameStateService = new GameStateService();
         GameScoreService = new GameScoreService();
+
+        // Передаём playerData в конструктор
+        GameStateService = new GameStateService(playerData, GameScoreService);
     }
 }

@@ -27,39 +27,23 @@ namespace Game.Boss
                 hasAttacked = true;
 
                 float distance = boss.DistanceToPlayer();
-                float damage = boss.Stats.damage * boss.Stats.heavyDamageMultiplier;
-
-                if (boss.IsEnraged)
-                {
-                    damage *= boss.Stats.enrageDamageMultiplier;
-                }
 
                 if (boss.CurrentWeapon == BossWeaponType.Melee)
                 {
-                    if (distance <= boss.Stats.heavyAttackRange && boss.CanSeePlayer())
+                    if (distance <= boss.HeavyAttackRange && boss.CanSeePlayer())
                     {
-                        HealthComponent playerHealth = boss.Player.GetComponent<HealthComponent>();
-                        if (playerHealth != null)
-                        {
-                            playerHealth.TakeDamage(damage);
-                            Debug.Log($"Boss HEAVY attack: {damage} {boss.CurrentElement} damage!");
-                        }
-
-                        boss.ApplyElementEffect(boss.Player.gameObject);
-                        boss.SpawnHitEffect(boss.MeleeAttackPoint.position);
+                        boss.PerformHeavyMeleeAttack();
                     }
                 }
                 else
                 {
-                    // Для дальнего боя - усиленный снаряд
-                    boss.LaunchProjectile(damage);
-                    Debug.Log($"Boss launched HEAVY {boss.CurrentElement} projectile!");
+                    boss.PerformHeavyRangedAttack();
                 }
             }
 
             yield return new WaitForSeconds(0.7f);
 
-            boss.AttackTimer = boss.Stats.heavyAttackCooldown;
+            boss.SetAttackTimer(boss.HeavyAttackCooldown);
 
             if (boss.CurrentHealth > 0)
             {

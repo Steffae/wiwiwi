@@ -10,7 +10,7 @@ namespace Game.Boss
         [SerializeField] private float heavyAttackRange = 4f;
         [SerializeField] private float attackCooldown = 2f;
         [SerializeField] private float heavyAttackCooldown = 5f;
-        [SerializeField] private float baseDamage = 15f;
+        [SerializeField] private float baseDamage = 25f;
         [SerializeField] private float heavyDamageMultiplier = 2f;
         [SerializeField] private float enrageDamageMultiplier = 1.3f;
 
@@ -25,10 +25,17 @@ namespace Game.Boss
         [Header("Stats Reference")]
         [SerializeField] private BossStats stats;
 
+        [Header("Element Components")]
+        [SerializeField] private FireElement fireElement;
+        [SerializeField] private IceElement iceElement;
+        [SerializeField] private EarthElement earthElement;
+        [SerializeField] private EtherElement etherElement;
+
         private bool isEnraged = false;
         private float attackTimer = 0f;
         private Transform player;
         private BossController boss;
+        private BossElementBase currentElementComponent;
 
         // Свойства
         public BossWeaponType CurrentWeapon => currentWeapon;
@@ -36,6 +43,8 @@ namespace Game.Boss
         public float AttackTimer => attackTimer;
         public float AttackRange => attackRange;
         public float HeavyAttackRange => heavyAttackRange;
+        public float AttackCooldown => attackCooldown;
+        public float HeavyAttackCooldown => heavyAttackCooldown;
 
         private void Start()
         {
@@ -53,11 +62,31 @@ namespace Game.Boss
         {
             currentWeapon = (BossWeaponType)Random.Range(0, 2);
             currentElement = (BossElementType)Random.Range(0, 4);
+
+            // Выбираем компонент стихии
+            currentElementComponent = GetElementComponent(currentElement);
+            if (currentElementComponent != null)
+            {
+                currentElementComponent.Initialize(boss, this, stats);
+            }
+
             Debug.Log($"Boss initialized: {currentWeapon} + {currentElement}");
         }
 
-        public void SetEnraged(bool enraged) => isEnraged = enraged;
+        private BossElementBase GetElementComponent(BossElementType element)
+        {
+            return element switch
+            {
+                BossElementType.Fire => fireElement,
+                BossElementType.Ice => iceElement,
+                BossElementType.Earth => earthElement,
+                BossElementType.Ether => etherElement,
+                _ => fireElement
+            };
+        }
 
+        public void SetEnraged(bool enraged) => isEnraged = enraged;
+        public void SetAttackTimer(float value) => attackTimer = value;
         public bool CanAttack() => attackTimer <= 0;
 
         public bool IsPlayerInAttackRange()
@@ -91,14 +120,32 @@ namespace Game.Boss
             return dmg;
         }
 
+        // ===== ОБЫЧНАЯ АТАКА =====
+
         public void PerformMeleeAttack()
         {
             if (player == null) return;
 
             float damage = CalculateDamage();
             DealDamageToPlayer(damage);
+
+            // Применяем эффект стихии (обычная ближняя)
+            currentElementComponent?.ApplyMeleeEffect(player.gameObject);
+
             attackTimer = attackCooldown;
         }
+
+        public void PerformRangedAttack()
+        {
+            if (player == null) return;
+
+            float damage = CalculateDamage();
+            LaunchProjectile(damage, false);
+
+            attackTimer = attackCooldown;
+        }
+
+        // ===== ТЯЖЁЛАЯ АТАКА =====
 
         public void PerformHeavyMeleeAttack()
         {
@@ -106,8 +153,24 @@ namespace Game.Boss
 
             float damage = CalculateDamage() * heavyDamageMultiplier;
             DealDamageToPlayer(damage);
+
+            // Применяем эффект стихии (тяжёлая ближняя)
+            currentElementComponent?.ApplyHeavyMeleeEffect(player.gameObject);
+
             attackTimer = heavyAttackCooldown;
         }
+
+        public void PerformHeavyRangedAttack()
+        {
+            if (player == null) return;
+
+            float damage = CalculateDamage() * heavyDamageMultiplier;
+            LaunchProjectile(damage, true);
+
+            attackTimer = heavyAttackCooldown;
+        }
+
+        // ===== УНИВЕРСАЛЬНЫЕ МЕТОДЫ =====
 
         private void DealDamageToPlayer(float damage)
         {
@@ -115,21 +178,18 @@ namespace Game.Boss
             if (playerHealth != null)
             {
                 playerHealth.TakeDamage(damage);
-                Debug.Log($"Boss dealt {damage} {currentElement} damage!");
+                Debug.Log($"Boss dealt {damage} damage!");
             }
 
-            ApplyElementEffect(player.gameObject);
-
-            // Отмечаем, что босса атаковали (для мирного режима)
             if (boss != null)
             {
                 boss.HasBeenAttackedByPlayer = true;
             }
         }
 
-        public void LaunchProjectile()
+        public void LaunchProjectile(float damage, bool isHeavy)
         {
-            GameObject prefab = GetProjectilePrefab();
+            GameObject prefab = currentElementComponent?.GetProjectilePrefab();
             if (prefab == null || player == null) return;
 
             Vector3 spawnPos = rangedAttackPoint != null ?
@@ -145,138 +205,13 @@ namespace Game.Boss
             BossProjectile projScript = proj.GetComponent<BossProjectile>();
             if (projScript == null) projScript = proj.AddComponent<BossProjectile>();
 
-            float damage = CalculateDamage();
-            projScript.Initialize(damage, currentElement, this, boss);
-
-            attackTimer = attackCooldown;
+            projScript.Initialize(damage, currentElement, this, boss, isHeavy);
         }
 
-        private GameObject GetProjectilePrefab()
-        {
-            if (stats == null) return null;
-
-            return currentElement switch
-            {
-                BossElementType.Fire => stats.fireProjectilePrefab,
-                BossElementType.Ice => stats.iceProjectilePrefab,
-                BossElementType.Earth => stats.earthProjectilePrefab,
-                BossElementType.Ether => stats.etherProjectilePrefab,
-                _ => stats.defaultProjectilePrefab
-            };
-        }
-
-        private void ApplyElementEffect(GameObject target)
-        {
-            switch (currentElement)
-            {
-                case BossElementType.Fire:
-                    StartCoroutine(ApplyFireEffect(target));
-                    break;
-                case BossElementType.Ice:
-                    StartCoroutine(ApplyIceEffect(target));
-                    break;
-                case BossElementType.Earth:
-                    ApplyEarthEffect(target);
-                    break;
-                case BossElementType.Ether:
-                    ApplyEtherEffect(target);
-                    break;
-            }
-        }
-
-        private IEnumerator ApplyFireEffect(GameObject target)
-        {
-            HealthComponent health = target.GetComponent<HealthComponent>();
-            if (health == null || stats == null) yield break;
-
-            float elapsed = 0f;
-            while (elapsed < stats.fireDuration)
-            {
-                health.TakeDamage(stats.fireDamageOverTime * 0.5f);
-                elapsed += 0.5f;
-                yield return new WaitForSeconds(0.5f);
-            }
-        }
-
-        private IEnumerator ApplyIceEffect(GameObject target)
-        {
-            PlayerController playerCtrl = target.GetComponent<PlayerController>();
-            if (playerCtrl == null || stats == null) yield break;
-
-            float origWalk = playerCtrl.walkSpeed;
-            float origRun = playerCtrl.runSpeed;
-
-            playerCtrl.walkSpeed *= (1 - stats.iceSlowAmount);
-            playerCtrl.runSpeed *= (1 - stats.iceSlowAmount);
-
-            yield return new WaitForSeconds(stats.iceSlowDuration);
-
-            playerCtrl.walkSpeed = origWalk;
-            playerCtrl.runSpeed = origRun;
-        }
-
-        private void ApplyEarthEffect(GameObject target)
-        {
-            if (stats == null) return;
-
-            if (Random.value < stats.earthStunChance)
-            {
-                PlayerController playerCtrl = target.GetComponent<PlayerController>();
-                if (playerCtrl != null)
-                {
-                    StartCoroutine(StunPlayer(playerCtrl));
-                }
-            }
-        }
-
-        private IEnumerator StunPlayer(PlayerController playerCtrl)
-        {
-            playerCtrl.enabled = false;
-            yield return new WaitForSeconds(stats.earthStunDuration);
-            playerCtrl.enabled = true;
-        }
-
-        private void ApplyEtherEffect(GameObject target)
-        {
-            Debug.Log($"Ether effect: burned {stats?.etherManaBurn ?? 0} mana");
-        }
+        // ===== ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ =====
 
         public Transform GetMeleeAttackPoint() => meleeAttackPoint;
-
-        // Сеттер для таймера атаки
-        public void SetAttackTimer(float value)
-        {
-            attackTimer = value;
-        }
-
-        // Публичный метод для применения эффекта стихии
-        public void ApplyElementEffectPublic(GameObject target)
-        {
-            ApplyElementEffect(target);
-        }
-
-        // Публичный метод для запуска снаряда с указанным уроном
-        public void LaunchProjectile(float damage)
-        {
-            GameObject prefab = GetProjectilePrefab();
-            if (prefab == null || player == null) return;
-
-            Vector3 spawnPos = rangedAttackPoint != null ?
-                rangedAttackPoint.position :
-                transform.position + transform.forward * 2f + Vector3.up * 1.5f;
-
-            GameObject proj = Instantiate(prefab, spawnPos, Quaternion.identity);
-            Vector3 dir = (player.position + Vector3.up - spawnPos).normalized;
-
-            Rigidbody rb = proj.GetComponent<Rigidbody>();
-            if (rb != null) rb.linearVelocity = dir * 15f;
-
-            BossProjectile projScript = proj.GetComponent<BossProjectile>();
-            if (projScript == null) projScript = proj.AddComponent<BossProjectile>();
-
-            projScript.Initialize(damage, currentElement, this, boss);
-
-            attackTimer = attackCooldown;
-        }
+        public Transform GetRangedAttackPoint() => rangedAttackPoint;
+        public BossElementBase GetCurrentElementComponent() => currentElementComponent;
     }
 }

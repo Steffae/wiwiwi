@@ -25,7 +25,7 @@ namespace Game.Boss
                 // В обычном режиме или если босса уже атаковали в мирном - преследуем
                 bool shouldChase = !boss.IsPeacefulMode || boss.HasBeenAttackedByPlayer;
 
-                if (shouldChase && distance <= boss.Stats.attackRange * 3f && boss.CanSeePlayer())
+                if (shouldChase && distance <= boss.AttackRange * 3f && boss.CanSeePlayer())
                 {
                     boss.TransitionToState(BossState.Chase);
                     return;

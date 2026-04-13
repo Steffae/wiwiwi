@@ -3,10 +3,7 @@ using UnityEngine.SceneManagement;
 using Game.Data;
 
 public class PlayerSceneTransition : MonoBehaviour
-{
-    [Header("Target Scene")]
-    [SerializeField] private string targetSceneName = "Location_boss";
-
+{ 
     [Header("Spawn Point in Target Scene")]
     [SerializeField] private string spawnPointName = "PlayerSpawnPoint";
 
@@ -14,6 +11,7 @@ public class PlayerSceneTransition : MonoBehaviour
     [SerializeField] private PlayerRuntimeData playerData;
 
     private bool isTransitioning = false;
+    private IGameStateService gameStateService;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -26,7 +24,7 @@ public class PlayerSceneTransition : MonoBehaviour
 
             // Загружаем новую сцену
             isTransitioning = true;
-            SceneManager.LoadScene(targetSceneName);
+            gameStateService?.LoadLocationBoss();
 
             // Подписываемся на событие загрузки сцены для телепортации игрока
             SceneManager.sceneLoaded += OnSceneLoaded;
@@ -94,10 +92,6 @@ public class PlayerSceneTransition : MonoBehaviour
             }
 
             Debug.Log($"Player teleported to spawn point: {spawnPointName}");
-        }
-        else
-        {
-            Debug.LogWarning($"Spawn point '{spawnPointName}' not found in scene {targetSceneName}");
         }
     }
 

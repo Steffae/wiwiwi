@@ -52,6 +52,10 @@ public class MainMenu : MonoBehaviour
     public void LvPressed()
     {
         audioService.PlaySoundEffect(buttonClick);
+
+        // Сбрасываем данные игрока перед загрузкой локации
+        gameStateService.FullReset();
+
         gameStateService.LoadLocation();
     }
 }

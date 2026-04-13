@@ -52,7 +52,7 @@ namespace Game.Boss
             if (boss.IsPeacefulMode)
             {
                 float healthPercent = boss.CurrentHealth / boss.Stats.maxHealth;
-                if (healthPercent <= boss.Stats.fleeHealthThreshold)
+                if (healthPercent <= boss.Stats.fleeHealthAmount)
                 {
                     boss.TransitionToState(BossState.Flee);
                     return;

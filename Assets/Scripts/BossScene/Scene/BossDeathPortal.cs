@@ -6,8 +6,10 @@ namespace Game.Boss
     public class BossDeathPortal : MonoBehaviour
     {
         [Header("Portal Settings")]
-        [SerializeField] private string targetSceneName = "GoodEnd";
         [SerializeField] private string playerTag = "Player";
+
+
+        private IGameStateService gameStateService;
 
         [SerializeField] private GameObject activationEffect;
 
@@ -24,6 +26,16 @@ namespace Game.Boss
 
         private void Start()
         {
+            // Получаем сервис из GameEntrypoint
+            if (GameEntrypoint.Instance != null)
+            {
+                gameStateService = GameEntrypoint.Instance.GameStateService;
+            }
+            else
+            {
+                Debug.LogError("BossDeathPortal: GameEntrypoint.Instance is null!");
+            }
+
             // Находим босса и подписываемся на его смерть
             BossController boss = FindAnyObjectByType<BossController>();
             if (boss != null)
@@ -68,8 +80,8 @@ namespace Game.Boss
 
             if (other.CompareTag(playerTag))
             {
-                Debug.Log($"Player entered portal, loading scene: {targetSceneName}");
-                SceneManager.LoadScene(targetSceneName);
+                Debug.Log("Player entered portal, loading GoodEnd scene");
+                gameStateService.LoadGoodEnd();
             }
         }
 

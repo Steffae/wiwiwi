@@ -17,12 +17,8 @@ namespace Game.Data
         public float physicalDamage = 15f;
         public float magicDamage = 20f;
 
-        [Header("Settings")]
-        [SerializeField] private bool resetOnStart = true;
-
         public bool isInitialized = false;
 
-        // Полный сброс данных (для новой игры)
         public void FullReset()
         {
             currentHealth = maxHealth;
@@ -35,7 +31,6 @@ namespace Game.Data
             Debug.Log($"PlayerRuntimeData RESET: HP = {currentHealth}/{maxHealth}");
         }
 
-        // Сброс при смерти (только HP и позиция)
         public void DeathReset()
         {
             currentHealth = maxHealth;

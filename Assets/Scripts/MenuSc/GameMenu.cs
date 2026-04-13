@@ -22,6 +22,10 @@ public class GameMenu : MonoBehaviour
     public void AgainPlayPressed()
     {
         audioService.PlaySoundEffect(buttonClick);
+
+        // Сбрасываем данные игрока при рестарте после смерти
+        gameStateService.FullReset();
+
         gameStateService.LoadLocation();
     }
 
