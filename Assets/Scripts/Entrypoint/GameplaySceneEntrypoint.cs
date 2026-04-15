@@ -32,8 +32,7 @@ public class GameplaySceneEntrypoint : MonoBehaviour
 
         var saveInteractor = new SaveInteractor(
             playerRepo,
-            enemyRepo,
-            gameEntrypoint.SaveRepository);
+            enemyRepo);
 
         gameEntrypoint.SaveInteractor = saveInteractor;
 
