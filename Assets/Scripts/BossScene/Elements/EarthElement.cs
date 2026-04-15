@@ -12,11 +12,11 @@ namespace Game.Boss
         private float heavySlowDuration;
         private float slowAmount;
         private float knockupForce;
-        private AudioSource audioSource;
+        private IAudioService audioService;
 
-        public override void Initialize(BossController bossController, BossCombat bossCombat, BossStats bossStats)
+        public override void Initialize(IAudioService audioService, BossController bossController, BossCombat bossCombat, BossStats bossStats)
         {
-            base.Initialize(bossController, bossCombat, bossStats);
+            base.Initialize(audioService, bossController, bossCombat, bossStats);
 
             earthProjectilePrefab = stats.earthProjectilePrefab;
             mudEffectPrefab = stats.earthMudEffectPrefab;
@@ -26,7 +26,7 @@ namespace Game.Boss
             slowAmount = stats.earthSlowAmount;
             knockupForce = stats.earthKnockupForce;
 
-            audioSource = bossController.GetComponent<AudioSource>();
+            this.audioService = audioService;
         }
 
         public override void ApplyMeleeEffect(GameObject target)
@@ -90,8 +90,7 @@ namespace Game.Boss
 
         private void PlayEarthSound()
         {
-            if (audioSource != null && earthSound != null)
-                audioSource.PlayOneShot(earthSound);
+            audioService.PlaySoundEffect(earthSound);
         }
 
         public override GameObject GetProjectilePrefab() => earthProjectilePrefab;

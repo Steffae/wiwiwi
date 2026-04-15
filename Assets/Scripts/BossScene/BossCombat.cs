@@ -35,6 +35,7 @@ namespace Game.Boss
         private float attackTimer = 0f;
         private Transform player;
         private BossController boss;
+        private IAudioService audioS;
         private BossElementBase currentElementComponent;
 
         // Свойства
@@ -67,7 +68,7 @@ namespace Game.Boss
             currentElementComponent = GetElementComponent(currentElement);
             if (currentElementComponent != null)
             {
-                currentElementComponent.Initialize(boss, this, stats);
+                currentElementComponent.Initialize(audioS, boss, this, stats);
             }
 
             Debug.Log($"Boss initialized: {currentWeapon} + {currentElement}");

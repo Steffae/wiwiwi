@@ -4,12 +4,14 @@ namespace Game.Boss
 {
     public abstract class BossElementBase : MonoBehaviour
     {
+        protected IAudioService audioS;
         protected BossController boss;
         protected BossCombat combat;
         protected BossStats stats;
 
-        public virtual void Initialize(BossController bossController, BossCombat bossCombat, BossStats bossStats)
+        public virtual void Initialize(IAudioService audioService, BossController bossController, BossCombat bossCombat, BossStats bossStats)
         {
+            audioS = audioService;
             boss = bossController;
             combat = bossCombat;
             stats = bossStats;
