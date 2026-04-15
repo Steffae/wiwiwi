@@ -10,4 +10,5 @@ public interface IGameScoreService
 
     void OnEnemyKilled();
     void Reset();
+    void Restore(int killCount);
 }

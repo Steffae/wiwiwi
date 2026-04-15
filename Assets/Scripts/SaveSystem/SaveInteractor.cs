@@ -26,6 +26,7 @@ public class SaveInteractor : ISaveInteractor
         saveData.PlayerPosition = playerData.position;
         saveData.playerHealth = playerData.health;
         saveData.playerMaxHealth = playerData.maxHealth;
+        saveData.killCount = playerData.killCount;
         saveData.enemies = enemiesData;
         saveData.saveTime = System.DateTime.Now.ToString("HH:mm:ss");
 
@@ -42,11 +43,17 @@ public class SaveInteractor : ISaveInteractor
         {
             position = saveData.PlayerPosition,
             health = saveData.playerHealth,
-            maxHealth = saveData.playerMaxHealth
+            maxHealth = saveData.playerMaxHealth,
+            killCount = saveData.killCount
         };
 
         playerRepository.Restore(playerData);
         enemyRepository.Restore(saveData.enemies);
+
+        if (GameEntrypoint.Instance?.GameScoreService != null)
+        {
+            GameEntrypoint.Instance.GameScoreService.Restore(saveData.killCount);
+        }
     }
 
     public bool HasSave()

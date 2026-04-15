@@ -1117,7 +1117,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9ca74123a9cf5c4e97b72d954049db5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BossSceneEntrypoint
-  bossMusic: {fileID: 8300000, guid: 7c609f15cde55c84c800c0d3816639ea, type: 3}
+  bossMusic: {fileID: 8300000, guid: 8e186ba85de85434aa705beb7cac45f9, type: 3}
   bossPrefab: {fileID: 6981138783707327435, guid: 694b402a856d3a64aa50d8455ded7a71, type: 3}
   bossSpawnPoint: {fileID: 1323064828}
 --- !u!4 &1387306033
