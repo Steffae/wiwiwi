@@ -41,19 +41,19 @@ MonoBehaviour:
   iceProjectilePrefab: {fileID: 6236971838747647226, guid: 0ae9994aed7d67047821ac0ad045e923, type: 3}
   iceEffectPrefab: {fileID: 5112403345868107898, guid: 6f34ef0d986e9db4199cf75805f79753, type: 3}
   iceFreezeEffectPrefab: {fileID: 8433079331162208932, guid: 3b7e489cc13dac144b93495cf5b38349, type: 3}
-  iceSound: {fileID: 8300000, guid: 85e9f05d59f55a54f920fe3881810a3c, type: 3}
+  iceSound: {fileID: 8300000, guid: db61c5fdf801e59419b37364a5d0e14d, type: 3}
   iceNormalFreezeDuration: 3
   iceHeavyFreezeDuration: 5
   iceColor: {r: 0.3, g: 0.8, b: 1, a: 1}
   etherProjectilePrefab: {fileID: 5824670795371433373, guid: f6fd568b816c64943a44efc3add3a881, type: 3}
   etherEffectPrefab: {fileID: 2708598583397607911, guid: 6398d43fe79ea0140913dc5530c646af, type: 3}
-  etherSound: {fileID: 8300000, guid: 85e9f05d59f55a54f920fe3881810a3c, type: 3}
+  etherSound: {fileID: 8300000, guid: d8ec6cb214c2f3e4c9acc184ed6dd293, type: 3}
   etherNormalInvisDuration: 3
   etherHeavyInvisDuration: 6
   etherColor: {r: 0.8, g: 0.2, b: 0.8, a: 1}
   earthProjectilePrefab: {fileID: 6236971838747647226, guid: 47d605f0edc2c1545a6d4a14e40ba8d4, type: 3}
   earthMudEffectPrefab: {fileID: 4425129568585013132, guid: bbeeb0ddc21369746aaaae5c5c1c09cf, type: 3}
-  earthSound: {fileID: 8300000, guid: 85e9f05d59f55a54f920fe3881810a3c, type: 3}
+  earthSound: {fileID: 8300000, guid: 8112ee879f4ca724198389694d0e85e9, type: 3}
   earthNormalSlowDuration: 2
   earthHeavySlowDuration: 5
   earthSlowAmount: 1.5
