@@ -31,4 +31,10 @@ public class GameScoreService : IGameScoreService
     {
         KillCount = 0;
     }
+
+    public void Restore(int killCount)
+    {
+        KillCount = killCount;
+        OnKillCountChanged?.Invoke(KillCount);
+    }
 }

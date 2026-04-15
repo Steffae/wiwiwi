@@ -11,6 +11,7 @@ public class SaveData
     public float playerZ;
     public float playerHealth;
     public float playerMaxHealth;
+    public int killCount;
 
     // Данные врагов
     public List<EnemySaveData> enemies = new List<EnemySaveData>();

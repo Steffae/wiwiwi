@@ -8,6 +8,7 @@ public class PlayerData
     public float z;
     public float health;
     public float maxHealth;
+    public int killCount;
 
     public Vector3 position
     {
