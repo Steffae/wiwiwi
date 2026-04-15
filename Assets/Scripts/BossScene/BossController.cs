@@ -55,6 +55,8 @@ namespace Game.Boss
         public Transform MeleeAttackPoint => bossCombat?.GetMeleeAttackPoint();
         public Transform RangedAttackPoint => null;
 
+        private BossDeathPortal bdp;
+
         // Для совместимости с состояниями
         public float AttackRange => bossCombat?.AttackRange ?? 3f;
         public float HeavyAttackRange => bossCombat?.HeavyAttackRange ?? 4f;
@@ -79,6 +81,7 @@ namespace Game.Boss
         private void Start()
         {
             player = GameObject.FindGameObjectWithTag("Player")?.transform;
+            bdp = FindAnyObjectByType<BossDeathPortal>();
 
             // Подписываемся на события здоровья
             if (bossHealth != null)
@@ -143,6 +146,7 @@ namespace Game.Boss
         private IEnumerator DeathCoroutine()
         {
             yield return new WaitForSeconds(3f);
+            bdp.ActivatePortal();
             Destroy(gameObject);
         }
 

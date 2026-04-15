@@ -35,18 +35,6 @@ namespace Game.Boss
             {
                 Debug.LogError("BossDeathPortal: GameEntrypoint.Instance is null!");
             }
-
-            // Находим босса и подписываемся на его смерть
-            BossController boss = FindAnyObjectByType<BossController>();
-            if (boss != null)
-            {
-                boss.OnBossDeath += ActivatePortal;
-                Debug.Log("Portal subscribed to boss death");
-            }
-            else
-            {
-                Debug.LogWarning("BossDeathPortal: BossController not found in scene!");
-            }
         }
 
         // Активирует портал (вызывается при смерти босса)
