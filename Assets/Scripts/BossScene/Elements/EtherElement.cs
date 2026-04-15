@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using Unity.VisualScripting;
 
 namespace Game.Boss
 {
@@ -7,15 +8,19 @@ namespace Game.Boss
     {
         private GameObject etherProjectilePrefab;
         private GameObject etherEffectPrefab;
+
         private AudioClip etherSound;
+
         private float normalInvisDuration;
         private float heavyInvisDuration;
-        private AudioSource audioSource;
         private Renderer[] bossRenderers;
+        [SerializeField] private GameObject bossHealthBar;
 
-        public override void Initialize(BossController bossController, BossCombat bossCombat, BossStats bossStats)
+        private IAudioService audioService;
+
+        public override void Initialize(IAudioService audioService, BossController bossController, BossCombat bossCombat, BossStats bossStats)
         {
-            base.Initialize(bossController, bossCombat, bossStats);
+            base.Initialize(audioService, bossController, bossCombat, bossStats);
 
             etherProjectilePrefab = stats.etherProjectilePrefab;
             etherEffectPrefab = stats.etherEffectPrefab;
@@ -23,7 +28,7 @@ namespace Game.Boss
             normalInvisDuration = stats.etherNormalInvisDuration;
             heavyInvisDuration = stats.etherHeavyInvisDuration;
 
-            audioSource = bossController.GetComponent<AudioSource>();
+            this.audioService = audioService;
             bossRenderers = bossController.GetComponentsInChildren<Renderer>();
         }
 
@@ -71,8 +76,10 @@ namespace Game.Boss
         private IEnumerator MakeBossInvisible(float duration)
         {
             SetBossVisibility(false);
+            bossHealthBar.SetActive(false);
             yield return new WaitForSeconds(duration);
             SetBossVisibility(true);
+            bossHealthBar.SetActive(true);
         }
 
         private void SetBossVisibility(bool visible)
@@ -83,8 +90,7 @@ namespace Game.Boss
 
         private void PlayEtherSound()
         {
-            if (audioSource != null && etherSound != null)
-                audioSource.PlayOneShot(etherSound);
+            audioService.PlaySoundEffect(etherSound);
         }
 
         public override GameObject GetProjectilePrefab() => etherProjectilePrefab;

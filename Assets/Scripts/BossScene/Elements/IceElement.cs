@@ -11,11 +11,11 @@ namespace Game.Boss
         private AudioClip iceSound;
         private float normalFreezeDuration;
         private float heavyFreezeDuration;
-        private AudioSource audioSource;
+        private IAudioService audioService;
 
-        public override void Initialize(BossController bossController, BossCombat bossCombat, BossStats bossStats)
+        public override void Initialize(IAudioService audioService, BossController bossController, BossCombat bossCombat, BossStats bossStats)
         {
-            base.Initialize(bossController, bossCombat, bossStats);
+            base.Initialize(audioService, bossController, bossCombat, bossStats);
 
             iceProjectilePrefab = stats.iceProjectilePrefab;
             iceEffectPrefab = stats.iceEffectPrefab;
@@ -24,7 +24,7 @@ namespace Game.Boss
             normalFreezeDuration = stats.iceNormalFreezeDuration;
             heavyFreezeDuration = stats.iceHeavyFreezeDuration;
 
-            audioSource = bossController.GetComponent<AudioSource>();
+            this.audioService = audioService;
         }
 
         public override void ApplyMeleeEffect(GameObject target)
@@ -89,8 +89,7 @@ namespace Game.Boss
 
         private void PlayIceSound()
         {
-            if (audioSource != null && iceSound != null)
-                audioSource.PlayOneShot(iceSound);
+            audioService.PlaySoundEffect(iceSound);
         }
 
         public override GameObject GetProjectilePrefab() => iceProjectilePrefab;

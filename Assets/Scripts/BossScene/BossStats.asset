@@ -17,14 +17,14 @@ MonoBehaviour:
   runSpeed: 6
   enrageSpeedMultiplier: 1.5
   rotationSpeed: 10
-  attackRange: 3
+  attackRange: 7
   heavyAttackRange: 10
   attackCooldown: 1
   heavyAttackCooldown: 4
   baseDamage: 20
   heavyDamageMultiplier: 2
   enrageDamageMultiplier: 1.3
-  stunDuration: 2
+  stunDuration: 1
   stunThreshold: 50
   enrageHealthThreshold: 0.3
   fleeHealthAmount: 50

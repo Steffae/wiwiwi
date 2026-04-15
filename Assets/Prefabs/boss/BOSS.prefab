@@ -852,6 +852,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f00f6efa24c4f4c4bb14617f2e13675e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Boss.EtherElement
+  bossHealthBar: {fileID: 5642058918844182735}
 --- !u!114 &4055485203087026036
 MonoBehaviour:
   m_ObjectHideFlags: 0

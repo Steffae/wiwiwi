@@ -13,9 +13,9 @@ namespace Game.Boss
         private float flashNormalDuration;
         private float flashHeavyDuration;
 
-        public override void Initialize(BossController bossController, BossCombat bossCombat, BossStats bossStats)
+        public override void Initialize(IAudioService audioService, BossController bossController, BossCombat bossCombat, BossStats bossStats)
         {
-            base.Initialize(bossController, bossCombat, bossStats);
+            base.Initialize(audioService, bossController, bossCombat, bossStats);
 
             // Берём настройки из Stats
             fireEffectPrefab = stats.fireEffectPrefab;
