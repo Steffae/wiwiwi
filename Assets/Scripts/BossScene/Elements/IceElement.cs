@@ -89,7 +89,10 @@ namespace Game.Boss
 
         private void PlayIceSound()
         {
-            audioService.PlaySoundEffect(iceSound);
+            if (audioService != null && iceSound != null)
+            {
+                audioService.PlaySoundEffect(iceSound);
+            }
         }
 
         public override GameObject GetProjectilePrefab() => iceProjectilePrefab;

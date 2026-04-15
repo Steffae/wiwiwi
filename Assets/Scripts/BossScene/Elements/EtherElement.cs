@@ -90,7 +90,10 @@ namespace Game.Boss
 
         private void PlayEtherSound()
         {
-            audioService.PlaySoundEffect(etherSound);
+            if (audioService != null && etherSound != null)
+            {
+                audioService.PlaySoundEffect(etherSound);
+            }
         }
 
         public override GameObject GetProjectilePrefab() => etherProjectilePrefab;

@@ -90,7 +90,10 @@ namespace Game.Boss
 
         private void PlayEarthSound()
         {
-            audioService.PlaySoundEffect(earthSound);
+            if (audioService != null && earthSound != null)
+            {
+                audioService.PlaySoundEffect(earthSound);
+            }
         }
 
         public override GameObject GetProjectilePrefab() => earthProjectilePrefab;
