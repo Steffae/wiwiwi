@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 namespace Game.Core
 {
@@ -10,7 +11,7 @@ namespace Game.Core
         [SerializeField] private bool isPeacefulMode = false;
 
         // Событие, на которое подписываются босс и мобы
-        public System.Action<bool> OnPeacefulModeChanged;
+        public Action<bool> OnPeacefulModeChanged;
 
         // Свойство для доступа к текущему режиму
         public bool IsPeacefulMode
@@ -66,14 +67,14 @@ namespace Game.Core
         }
 
         // Подписка для врагов (босс, мобы)
-        public void SubscribeToPeacefulMode(System.Action<bool> callback)
+        public void SubscribeToPeacefulMode(Action<bool> callback)
         {
             OnPeacefulModeChanged += callback;
             callback?.Invoke(isPeacefulMode);
         }
  
         // Отписка
-        public void UnsubscribeFromPeacefulMode(System.Action<bool> callback)
+        public void UnsubscribeFromPeacefulMode(Action<bool> callback)
         {
             OnPeacefulModeChanged -= callback;
         }

@@ -15269,8 +15269,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7828ee7db664cf64c84b80b05bd6385d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainToBossSceneMove
-  targetSceneName: Location_boss
-  triggerTag: Player
   spawnPointName: BossSpawnPoint
   playerData: {fileID: 11400000, guid: bfa1d97dc63759f4f872788dfaba7792, type: 2}
 --- !u!1001 &327828881
@@ -53644,8 +53642,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7828ee7db664cf64c84b80b05bd6385d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainToBossSceneMove
-  targetSceneName: Location_boss
-  triggerTag: Player
   spawnPointName: BossSpawnPoint
   playerData: {fileID: 11400000, guid: bfa1d97dc63759f4f872788dfaba7792, type: 2}
 --- !u!1001 &1120087831
@@ -58770,8 +58766,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7828ee7db664cf64c84b80b05bd6385d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainToBossSceneMove
-  targetSceneName: Location_boss
-  triggerTag: Player
   spawnPointName: BossSpawnPoint
   playerData: {fileID: 11400000, guid: bfa1d97dc63759f4f872788dfaba7792, type: 2}
 --- !u!1001 &1218623379
@@ -88128,8 +88122,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7828ee7db664cf64c84b80b05bd6385d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainToBossSceneMove
-  targetSceneName: Location_boss
-  triggerTag: Player
   spawnPointName: BossSpawnPoint
   playerData: {fileID: 11400000, guid: bfa1d97dc63759f4f872788dfaba7792, type: 2}
 --- !u!65 &1777395840
@@ -107210,6 +107202,56 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2587156182966324022, guid: d71fb8fdd7564124591ae9173367da6e, type: 3}
   m_PrefabInstance: {fileID: 2138256191}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2138440161
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2138440162}
+  - component: {fileID: 2138440163}
+  m_Layer: 5
+  m_Name: view
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2138440162
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2138440161}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8655321726607287116}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2138440163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2138440161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c152dd809e498c1499a48f18185ac41d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.System.UI.ScoreboardView
+  killCountText: {fileID: 0}
+  progressFill: {fileID: 0}
 --- !u!1001 &2140373125
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -108255,9 +108297,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 1410379183634332391, guid: 3bb8ea42e096eaa4a88bf8fb19be94b5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2138440162}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3bb8ea42e096eaa4a88bf8fb19be94b5, type: 3}
+--- !u!224 &8655321726607287116 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 1410379183634332391, guid: 3bb8ea42e096eaa4a88bf8fb19be94b5, type: 3}
+  m_PrefabInstance: {fileID: 8655321726607287115}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
