@@ -1,9 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 using System.Collections;
 using Game.Data;
 
-public class HealthComponent : MonoBehaviour
+public class HealthComponent : MonoBehaviour, IHealth
 {
     [Header("Health Settings")]
     [SerializeField] private float maxHealth = 300f;
@@ -20,12 +21,14 @@ public class HealthComponent : MonoBehaviour
     private Animator animator;
     private bool isDead = false;
 
-    public System.Action<float> OnDamageTaken;
-    public System.Action OnDeath;
+    public event Action<float, float> OnHealthChanged;
+    public event Action<float> OnDamageTaken;
+    public event Action OnDeath;
 
-    public HealthSystem HealthSystem => healthSystem;
     public float CurrentHealth => healthSystem?.CurrentHealth ?? 0;
-    public float MaxHealthValue => maxHealth;
+    public float MaxHealth => maxHealth;
+    public bool IsDead => isDead;
+    public HealthSystem HealthSystem => healthSystem;
 
     void Awake()
     {
@@ -41,26 +44,21 @@ public class HealthComponent : MonoBehaviour
 
     private void InitializeHealthSystem()
     {
-        // Если есть PlayerRuntimeData и он инициализирован - берём оттуда
         if (playerData != null && playerData.isInitialized)
         {
             healthSystem = new HealthSystem(playerData.maxHealth);
             healthSystem.SetHealth(playerData.currentHealth);
-            Debug.Log($"Health loaded from ScriptableObject: {playerData.currentHealth}/{playerData.maxHealth}");
         }
         else
         {
             healthSystem = new HealthSystem(maxHealth);
 
-            // Если PlayerRuntimeData есть, но не инициализирован - инициализируем
             if (playerData != null)
             {
                 playerData.maxHealth = maxHealth;
                 playerData.currentHealth = maxHealth;
                 playerData.isInitialized = true;
             }
-
-            Debug.Log($"Health initialized with default: {maxHealth}");
         }
     }
 
@@ -89,8 +87,10 @@ public class HealthComponent : MonoBehaviour
         }
     }
 
-    void UpdateUI(float currentHealth)
+    private void UpdateUI(float currentHealth)
     {
+        OnHealthChanged?.Invoke(currentHealth, maxHealth);
+
         if (healthSlider != null)
         {
             healthSlider.value = currentHealth;
@@ -102,11 +102,9 @@ public class HealthComponent : MonoBehaviour
         }
     }
 
-    void HandleDamageTaken(float damage)
+    private void HandleDamageTaken(float damage)
     {
         if (isDead) return;
-
-        Debug.Log($"{gameObject.name} получил {damage} урона. Здоровье: {healthSystem.CurrentHealth}");
 
         OnDamageTaken?.Invoke(damage);
 
@@ -121,7 +119,6 @@ public class HealthComponent : MonoBehaviour
             StartCoroutine(ShowVignette());
         }
 
-        // Эффект отбрасывания
         Rigidbody rb = GetComponent<Rigidbody>();
         if (rb != null && damage > 10f)
         {
@@ -129,9 +126,7 @@ public class HealthComponent : MonoBehaviour
             knockbackDirection.y = 0.2f;
             knockbackDirection.Normalize();
 
-            // Ограничиваем силу отбрасывания (максимум 15)
             float knockbackForce = Mathf.Min(damage * 1.5f, 15f);
-
             rb.AddForce(knockbackDirection * knockbackForce, ForceMode.Impulse);
         }
     }
@@ -146,12 +141,10 @@ public class HealthComponent : MonoBehaviour
         }
     }
 
-    void HandleDeath()
+    private void HandleDeath()
     {
         if (isDead) return;
         isDead = true;
-
-        Debug.Log($"{gameObject.name} умер");
 
         OnDeath?.Invoke();
 
@@ -167,13 +160,10 @@ public class HealthComponent : MonoBehaviour
             healthSlider.gameObject.SetActive(false);
         }
 
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-
-        UnityEngine.SceneManagement.SceneManager.LoadScene("End");
+        SceneLoader.LoadEnd();
     }
 
-    void DisableControls()
+    private void DisableControls()
     {
         PlayerController playerController = GetComponent<PlayerController>();
         if (playerController != null)
@@ -196,7 +186,7 @@ public class HealthComponent : MonoBehaviour
         DisableCamera();
     }
 
-    void DisableCamera()
+    private void DisableCamera()
     {
         Camera cam = GetComponentInChildren<Camera>();
         if (cam != null)
@@ -225,14 +215,22 @@ public class HealthComponent : MonoBehaviour
         }
     }
 
-    public void ResetHealth()
+    public void Reset()
     {
         healthSystem.Reset();
         isDead = false;
         UpdateUI(healthSystem.CurrentHealth);
     }
 
-    // Метод для ручного сохранения позиции (вызывать при переходе между сценами)
+    public void SetHealth(float health)
+    {
+        if (healthSystem != null)
+        {
+            healthSystem.SetHealth(health);
+            UpdateUI(healthSystem.CurrentHealth);
+        }
+    }
+
     public void SavePlayerState(string sceneName)
     {
         if (playerData != null)
@@ -250,15 +248,6 @@ public class HealthComponent : MonoBehaviour
             healthSystem.OnHealthChanged -= UpdateUI;
             healthSystem.OnHealthChanged -= SaveHealthToData;
             healthSystem.OnDeath -= HandleDeath;
-        }
-    }
-
-    public void SetHealth(float health)
-    {
-        if (healthSystem != null)
-        {
-            healthSystem.SetHealth(health);
-            UpdateUI(healthSystem.CurrentHealth);
         }
     }
 }

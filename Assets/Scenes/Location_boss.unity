@@ -1029,8 +1029,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1323064828}
+  - component: {fileID: 1323064829}
   m_Layer: 0
-  m_Name: BossSpawn
+  m_Name: BossSpawnPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1051,6 +1052,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 140, z: 0}
+--- !u!114 &1323064829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1323064827}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4811c6f4963e66949b9d1f5faea4ea20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Boss.BossSpawner
+  bossPrefab: {fileID: 6981138783707327435, guid: 694b402a856d3a64aa50d8455ded7a71, type: 3}
+  spawnPoint: {fileID: 1323064828}
 --- !u!1 &1368244419
 GameObject:
   m_ObjectHideFlags: 0
@@ -1118,8 +1133,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BossSceneEntrypoint
   bossMusic: {fileID: 8300000, guid: 8e186ba85de85434aa705beb7cac45f9, type: 3}
-  bossPrefab: {fileID: 6981138783707327435, guid: 694b402a856d3a64aa50d8455ded7a71, type: 3}
-  bossSpawnPoint: {fileID: 1323064828}
 --- !u!4 &1387306033
 Transform:
   m_ObjectHideFlags: 0

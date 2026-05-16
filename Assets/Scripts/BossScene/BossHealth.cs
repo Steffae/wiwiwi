@@ -3,7 +3,7 @@ using System;
 
 namespace Game.Boss
 {
-    public class BossHealth : MonoBehaviour
+    public class BossHealth : MonoBehaviour, IHealth
     {
         [Header("Health Settings")]
         [SerializeField] private float maxHealth = 500f;
@@ -16,20 +16,18 @@ namespace Game.Boss
         private bool isDead = false;
         private bool isEnraged = false;
 
-        // События
         public event Action<float, float> OnHealthChanged;
         public event Action<float> OnDamageTaken;
         public event Action OnDeath;
         public event Action OnEnrage;
         public event Action<float> OnStunned;
 
-        // Свойства
         public float CurrentHealth => currentHealth;
         public float MaxHealth => maxHealth;
         public bool IsDead => isDead;
         public bool IsEnraged => isEnraged;
         public float HealthPercent => currentHealth / maxHealth;
-        public bool ShouldFlee => currentHealth <= fleeHealthAmount; // Бегство при маленьком здоровье
+        public bool ShouldFlee => currentHealth <= fleeHealthAmount;
 
         private void Start()
         {
@@ -46,20 +44,17 @@ namespace Game.Boss
             OnDamageTaken?.Invoke(damage);
             OnHealthChanged?.Invoke(currentHealth, maxHealth);
 
-            // Проверка на стан
             if (damage >= stunThreshold && !isDead)
             {
                 OnStunned?.Invoke(stunDuration);
             }
 
-            // Проверка на ярость
             if (!isEnraged && currentHealth <= maxHealth * enrageHealthPercent)
             {
                 isEnraged = true;
                 OnEnrage?.Invoke();
             }
 
-            // Проверка на смерть
             if (currentHealth <= 0 && !isDead)
             {
                 isDead = true;

@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 using TMPro;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Game.Core;
@@ -15,37 +16,31 @@ namespace Game.Boss
         [SerializeField] private Transform healthBarPosition;
         [SerializeField] private GameObject healthBarPrefab;
 
-        // Компоненты
         private Animator animator;
         private Collider bossCollider;
-        private BossHealth bossHealth;
+        private IHealth health;
         private BossMovement bossMovement;
         private BossCombat bossCombat;
 
-        // UI
         private Slider healthSlider;
         private Text healthText;
 
-        // Состояния
         private Dictionary<BossState, IBossState> states;
         private IBossState currentState;
         private BossState currentStateType;
 
-        // Состояние босса
         private bool isPeacefulMode = false;
         private bool hasBeenAttackedByPlayer = false;
         private float stunTimer = 0f;
 
-        // Цель
         private Transform player;
 
-        // Свойства
         public BossStats Stats => stats;
         public Animator Animator => animator;
         public NavMeshAgent Agent => bossMovement?.Agent;
         public Transform Player => player;
-        public float CurrentHealth => bossHealth?.CurrentHealth ?? 0;
-        public bool IsEnraged => bossHealth?.IsEnraged ?? false;
+        public float CurrentHealth => health?.CurrentHealth ?? 0;
+        public bool IsEnraged { get; private set; }
         public bool IsPeacefulMode { get => isPeacefulMode; set => isPeacefulMode = value; }
         public bool HasBeenAttackedByPlayer { get => hasBeenAttackedByPlayer; set => hasBeenAttackedByPlayer = value; }
 
@@ -57,21 +52,19 @@ namespace Game.Boss
 
         private BossDeathPortal bdp;
 
-        // Для совместимости с состояниями
         public float AttackRange => bossCombat?.AttackRange ?? 3f;
         public float HeavyAttackRange => bossCombat?.HeavyAttackRange ?? 4f;
         public float AttackCooldown => bossCombat?.AttackCooldown ?? 2f;
         public float HeavyAttackCooldown => bossCombat?.HeavyAttackCooldown ?? 5f;
 
-        // События
-        public System.Action<float, float> OnHealthChanged;
-        public System.Action OnBossDeath;
+        public event Action<float, float> OnHealthChanged;
+        public event Action OnBossDeath;
 
         private void Awake()
         {
             animator = GetComponent<Animator>();
             bossCollider = GetComponent<Collider>();
-            bossHealth = GetComponent<BossHealth>();
+            health = GetComponent<IHealth>();
             bossMovement = GetComponent<BossMovement>();
             bossCombat = GetComponent<BossCombat>();
 
@@ -83,16 +76,13 @@ namespace Game.Boss
             player = GameObject.FindGameObjectWithTag("Player")?.transform;
             bdp = FindAnyObjectByType<BossDeathPortal>();
 
-            // Подписываемся на события здоровья
-            if (bossHealth != null)
+            if (health != null)
             {
-                bossHealth.OnHealthChanged += (cur, max) => OnHealthChanged?.Invoke(cur, max);
-                bossHealth.OnDeath += HandleDeath;
-                bossHealth.OnEnrage += HandleEnrage;
-                bossHealth.OnStunned += HandleStunned;
+                health.OnHealthChanged += (cur, max) => OnHealthChanged?.Invoke(cur, max);
+                health.OnDeath += HandleDeath;
+                SubscribeBossHealthEvents();
             }
 
-            // Подписываемся на мирный режим
             if (GameManager.Instance != null)
             {
                 GameManager.Instance.SubscribeToPeacefulMode(OnPeacefulModeChanged);
@@ -102,9 +92,18 @@ namespace Game.Boss
             TransitionToState(BossState.Idle);
         }
 
+        private void SubscribeBossHealthEvents()
+        {
+            if (health is BossHealth bossHealth)
+            {
+                bossHealth.OnEnrage += HandleEnrage;
+                bossHealth.OnStunned += HandleStunned;
+            }
+        }
+
         private void Update()
         {
-            if (bossHealth != null && bossHealth.IsDead) return;
+            if (health != null && health.IsDead) return;
 
             if (stunTimer > 0) stunTimer -= Time.deltaTime;
 
@@ -120,6 +119,7 @@ namespace Game.Boss
 
         private void HandleEnrage()
         {
+            IsEnraged = true;
             bossMovement?.SetEnraged(true);
             bossCombat?.SetEnraged(true);
             TransitionToState(BossState.Enrage);
@@ -146,11 +146,9 @@ namespace Game.Boss
         private IEnumerator DeathCoroutine()
         {
             yield return new WaitForSeconds(3f);
-            bdp.ActivatePortal();
+            bdp?.ActivatePortal();
             Destroy(gameObject);
         }
-
-        // МЕТОДЫ ДЛЯ УПРАВЛЕНИЯ
 
         public void SetAgentStopped(bool stopped) => bossMovement?.SetStopped(stopped);
         public void ChasePlayer() => bossMovement?.ChasePlayer();
@@ -167,10 +165,8 @@ namespace Game.Boss
         public void PerformHeavyRangedAttack() => bossCombat?.PerformHeavyRangedAttack();
         public void LaunchProjectile() => bossCombat?.LaunchProjectile(bossCombat.CalculateDamage(), false);
         public void LaunchProjectile(float damage) => bossCombat?.LaunchProjectile(damage, false);
-        public bool ShouldFlee() => bossHealth?.ShouldFlee ?? false;
+        public bool ShouldFlee() => health is BossHealth bh && bh.ShouldFlee;
         public bool IsAgentReady() => bossMovement?.IsAgentReady() ?? false;
-
-        // МЕТОДЫ ДЛЯ СОВМЕСТИМОСТИ С СОСТОЯНИЯМИ
 
         public void SafeSetAgentStopped(bool stopped)
         {
@@ -186,10 +182,8 @@ namespace Game.Boss
         public void TakeDamage(float damage)
         {
             hasBeenAttackedByPlayer = true;
-            bossHealth?.TakeDamage(damage);
+            health?.TakeDamage(damage);
         }
-
-        // УПРАВЛЕНИЕ СОСТОЯНИЯМИ
 
         private void InitializeStates()
         {
@@ -207,15 +201,13 @@ namespace Game.Boss
 
         public void TransitionToState(BossState newState)
         {
-            if (bossHealth != null && bossHealth.IsDead) return;
+            if (health != null && health.IsDead) return;
 
             currentState?.Exit(this);
             currentStateType = newState;
             currentState = states[newState];
             currentState?.Enter(this);
         }
-
-        // UI
 
         private void CreateHealthBar()
         {
@@ -227,15 +219,15 @@ namespace Game.Boss
                 healthSlider = obj.GetComponentInChildren<Slider>();
                 if (healthSlider != null)
                 {
-                    healthSlider.maxValue = bossHealth?.MaxHealth ?? 100;
-                    healthSlider.value = bossHealth?.CurrentHealth ?? 100;
+                    healthSlider.maxValue = health?.MaxHealth ?? 100;
+                    healthSlider.value = health?.CurrentHealth ?? 100;
                 }
 
                 healthText = obj.GetComponentInChildren<Text>();
 
-                if (bossHealth != null)
+                if (health != null)
                 {
-                    bossHealth.OnHealthChanged += UpdateHealthUI;
+                    health.OnHealthChanged += UpdateHealthUI;
                 }
             }
         }
@@ -254,7 +246,6 @@ namespace Game.Boss
             }
         }
 
-        // Свойства
         public float AttackTimer
         {
             get => bossCombat?.AttackTimer ?? 0;

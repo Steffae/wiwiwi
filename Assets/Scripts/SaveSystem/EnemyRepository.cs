@@ -13,7 +13,7 @@ public class EnemyRepository : IRepository<List<EnemySaveData>>
     {
         var data = new List<EnemySaveData>();
 
-        // Находим всех врагов на сцене
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         EnemyBase[] enemies = Object.FindObjectsByType<EnemyBase>(FindObjectsSortMode.None);
 
         foreach (var enemy in enemies)
@@ -23,11 +23,11 @@ public class EnemyRepository : IRepository<List<EnemySaveData>>
             var enemyData = new EnemySaveData();
             enemyData.Position = enemy.transform.position;
             enemyData.health = enemy.CurrentHealth;
-            enemyData.maxHealth = enemy.MaxHealthValue;
+            enemyData.maxHealth = enemy.MaxHealth;
             enemyData.isAlive = !enemy.IsDying && enemy.CurrentHealth > 0;
             enemyData.enemyId = enemy.gameObject.GetInstanceID().ToString();
 
-            // Определяем тип врага и тип атаки
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
             if (enemy is MeleeEnemy melee)
             {
                 enemyData.enemyType = "Melee";
@@ -59,14 +59,14 @@ public class EnemyRepository : IRepository<List<EnemySaveData>>
     {
         if (data == null) return;
 
-        // Удаляем всех существующих врагов
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         EnemyBase[] existingEnemies = Object.FindObjectsByType<EnemyBase>(FindObjectsSortMode.None);
         foreach (var enemy in existingEnemies)
         {
             Object.Destroy(enemy.gameObject);
         }
 
-        // Создаём врагов заново
+        // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         foreach (var enemyData in data)
         {
             SpawnEnemyFromData(enemyData);
@@ -78,13 +78,13 @@ public class EnemyRepository : IRepository<List<EnemySaveData>>
         GameObject prefab = GetPrefabByType(data.enemyType, data.attackType);
         if (prefab == null)
         {
-            Debug.LogWarning($"Не найден префаб для {data.enemyType} с атакой {data.attackType}");
+            Debug.LogWarning($"пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ {data.enemyType} пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ {data.attackType}");
             return;
         }
 
         GameObject enemyObj = Object.Instantiate(prefab, data.Position, Quaternion.identity);
 
-        // Восстанавливаем тип атаки
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         if (enemyObj.TryGetComponent<MeleeEnemy>(out var melee))
         {
             if (System.Enum.TryParse<MeleeAttackType>(data.attackType, out var attackType))
@@ -110,8 +110,8 @@ public class EnemyRepository : IRepository<List<EnemySaveData>>
 
     private GameObject GetPrefabByType(string enemyType, string attackType)
     {
-        // Загружаем префабы из Resources или находим их в сцене
-        // Нужно настроить пути к префабам
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ Resources пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ
+        // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         string path = "";
 
         if (enemyType == "Melee")

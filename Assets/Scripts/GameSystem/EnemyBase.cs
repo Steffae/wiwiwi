@@ -32,7 +32,7 @@ public class EnemyBase : MonoBehaviour
 
     // save zone
     public float CurrentHealth => healthSystem.CurrentHealth;
-    public float MaxHealthValue => maxHealth;
+    public float MaxHealth => maxHealth;
     public bool IsDying => isDying;
 
     public void SetHealth(float health)

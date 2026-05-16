@@ -23,7 +23,7 @@ public class PlayerRepository : IRepository<PlayerData>
         {
             position = player.transform.position,
             health = healthComponent.CurrentHealth,
-            maxHealth = healthComponent.MaxHealthValue,
+            maxHealth = healthComponent.MaxHealth,
             killCount = killCount
         };
     }

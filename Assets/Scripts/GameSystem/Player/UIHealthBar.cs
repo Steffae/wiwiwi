@@ -27,7 +27,7 @@ public class UIHealthBar : MonoBehaviour
             targetHealth.OnDeath += OnTargetDeath;
 
             healthSlider.minValue = 0;
-            healthSlider.maxValue = targetHealth.MaxHealthValue;
+            healthSlider.maxValue = targetHealth.MaxHealth;
             healthSlider.value = targetHealth.CurrentHealth;
             UpdateHealthUI(targetHealth.CurrentHealth);
         }
@@ -39,7 +39,7 @@ public class UIHealthBar : MonoBehaviour
             healthSlider.value = currentHealth;
 
         if (healthText != null)
-            healthText.text = $"{Mathf.Ceil(currentHealth)} / {targetHealth.MaxHealthValue}";
+            healthText.text = $"{Mathf.Ceil(currentHealth)} / {targetHealth.MaxHealth}";
     }
 
     void OnHealthChanged(float damage)
