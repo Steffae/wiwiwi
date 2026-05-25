@@ -1,110 +1,102 @@
 using UnityEngine;
 using UnityEngine.AI;
-using System.Collections;
+using Game.Enemy;
 
-public class MeleeEnemy : EnemyBase
+public enum MeleeAttackType
+{
+    Push,
+    Jump
+}
+
+public class MeleeEnemy : EnemyController
 {
     [Header("Melee Settings")]
     public float detectionRange = 8f;
-    public float attackRange = 2f;
-    public float attackCooldown = 2f;
-    public float physicalDamage = 10f;
+    public float attackRangeMelee = 2f;
+    public float pushDamage = 10f;
     public float pushForce = 5f;
 
-    private float lastAttackTime;
-    private Vector3 patrolTarget;
-    private bool isAttacking = false;
+    [Header("Attack Type")]
+    public MeleeAttackType attackType = MeleeAttackType.Push;
+
+    [Header("Jump Attack Settings")]
+    public float jumpDamage = 30f;
+    public float jumpCooldown = 4f;
+    public float jumpHeight = 3f;
+
+    [Header("Effects")]
+    public GameObject jumpLandEffect;
+    public GameObject pushLandEffect;
+
+    private float currentPhysicalDamage;
+    private Coroutine attackCoroutine;
+
+    public float CurrentDamage => currentPhysicalDamage;
 
     protected override void Awake()
     {
         base.Awake();
+
+        chaseRange = detectionRange;
+        attackRange = attackRangeMelee;
 
         if (agent != null)
         {
             agent.stoppingDistance = attackRange * 0.8f;
         }
 
-        InvokeRepeating(nameof(SetNewPatrolTarget), 0f, 5f);
+        RegisterCustomStates();
     }
 
-    void Update()
+    protected override void Start()
     {
-        if (player == null || isAttacking || isDying || isHit) return;
+        base.Start();
 
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-
-        if (distanceToPlayer <= attackRange)
+        if (attackType == MeleeAttackType.Push)
         {
-            agent.isStopped = true;
-            agent.velocity = Vector3.zero;
-            AttackPlayer();
-        }
-        else if (distanceToPlayer <= detectionRange)
-        {
-            agent.isStopped = false;
-            agent.SetDestination(player.position);
+            currentPhysicalDamage = pushDamage;
+            this.attackCooldown = 2f;
+            Debug.Log($"{gameObject.name}: атака - Толчок (урон {currentPhysicalDamage})");
         }
         else
         {
-            agent.isStopped = false;
-            agent.SetDestination(patrolTarget);
+            currentPhysicalDamage = jumpDamage;
+            this.attackCooldown = jumpCooldown;
+            Debug.Log($"{gameObject.name}: атака - Прыжок (урон {currentPhysicalDamage})");
         }
     }
 
-    void SetNewPatrolTarget()
+    private void RegisterCustomStates()
     {
-        for (int i = 0; i < 10; i++)
-        {
-            Vector3 randomDirection = Random.insideUnitSphere * 10f;
-            randomDirection.y = 0;
-            Vector3 randomPoint = transform.position + randomDirection;
-
-            NavMeshHit hit;
-            if (NavMesh.SamplePosition(randomPoint, out hit, 10f, NavMesh.AllAreas))
-            {
-                patrolTarget = hit.position;
-                return;
-            }
-        }
+        RegisterState(EnemyState.Attack, new MeleeAttackState());
     }
 
-    void AttackPlayer()
+    public override bool CanAttack()
     {
-        if (Time.time > lastAttackTime + attackCooldown && !isAttacking && !isDying)
-        {
-            lastAttackTime = Time.time;
-            transform.LookAt(new Vector3(player.position.x, transform.position.y, player.position.z));
-            StartCoroutine(PerformPhysicalAttack());
-        }
+        if (IsPeacefulMode) return false;
+        return DistanceToPlayer <= attackRange;
     }
 
-    IEnumerator PerformPhysicalAttack()
+    public MeleeAttackType GetAttackType() => attackType;
+
+    public float GetCurrentDamage() => currentPhysicalDamage;
+
+    public void SetAttackType(MeleeAttackType type)
     {
-        isAttacking = true;
+        attackType = type;
 
-        yield return new WaitForSeconds(0.3f);
-
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-        if (distanceToPlayer <= attackRange + 0.5f && !isDying)
+        if (attackType == MeleeAttackType.Push)
         {
-            HealthComponent playerHealth = player.GetComponent<HealthComponent>();
-            if (playerHealth != null)
-            {
-                playerHealth.TakeDamage(physicalDamage);
-                Debug.Log("Нанесён удар ближнего боя");
-            }
-
-            Rigidbody playerRb = player.GetComponent<Rigidbody>();
-            if (playerRb != null)
-            {
-                Vector3 pushDirection = (player.position - transform.position).normalized;
-                pushDirection.y = 0.5f;
-                playerRb.AddForce(pushDirection * pushForce, ForceMode.Impulse);
-            }
+            currentPhysicalDamage = pushDamage;
+            this.attackCooldown = 2f;
+        }
+        else
+        {
+            currentPhysicalDamage = jumpDamage;
+            this.attackCooldown = jumpCooldown;
         }
 
-        yield return new WaitForSeconds(0.5f);
-        isAttacking = false;
+        Debug.Log($"{gameObject.name}: тип атаки изменён на {attackType}, урон {currentPhysicalDamage}");
     }
 
     void OnDrawGizmosSelected()
@@ -113,6 +105,6 @@ public class MeleeEnemy : EnemyBase
         Gizmos.DrawWireSphere(transform.position, detectionRange);
 
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, attackRange);
+        Gizmos.DrawWireSphere(transform.position, attackRangeMelee);
     }
 }

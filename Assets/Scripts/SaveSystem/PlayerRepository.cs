@@ -13,11 +13,18 @@ public class PlayerRepository : IRepository<PlayerData>
 
     public PlayerData GetData()
     {
+        int killCount = 0;
+        if (GameEntrypoint.Instance?.GameScoreService != null)
+        {
+            killCount = GameEntrypoint.Instance.GameScoreService.KillCount;
+        }
+
         return new PlayerData
         {
             position = player.transform.position,
             health = healthComponent.CurrentHealth,
-            maxHealth = healthComponent.MaxHealthValue
+            maxHealth = healthComponent.MaxHealth,
+            killCount = killCount
         };
     }
 

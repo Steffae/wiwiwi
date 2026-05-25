@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class MainMenu : MonoBehaviour
 {
@@ -6,15 +6,15 @@ public class MainMenu : MonoBehaviour
     public GameObject settingsPanel;
     public GameObject startPanel;
 
-    private MenuSceneEntrypoint sceneEntrypoint;
     private IAudioService audioService;
+    private IGameStateService gameStateService;
 
     [SerializeField] private AudioClip buttonClick;
 
-    private void Start()
+    public void Initialize(IAudioService audioService, IGameStateService gameStateService)
     {
-        sceneEntrypoint = FindFirstObjectByType<MenuSceneEntrypoint>();
-        audioService = GameEntrypoint.Instance.AudioService;
+        this.audioService = audioService;
+        this.gameStateService = gameStateService;
 
         settingsPanel.SetActive(false);
         startPanel.SetActive(false);
@@ -38,7 +38,7 @@ public class MainMenu : MonoBehaviour
     public void ExitPressed()
     {
         audioService.PlaySoundEffect(buttonClick);
-        sceneEntrypoint.ExitGame();
+        Application.Quit();
     }
 
     public void BackPressed()
@@ -52,6 +52,10 @@ public class MainMenu : MonoBehaviour
     public void LvPressed()
     {
         audioService.PlaySoundEffect(buttonClick);
-        sceneEntrypoint.LoadLocation();
+
+        // Сбрасываем данные игрока перед загрузкой локации
+        gameStateService.FullReset();
+
+        gameStateService.LoadLocation();
     }
 }

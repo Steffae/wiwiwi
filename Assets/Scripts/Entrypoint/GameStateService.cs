@@ -1,19 +1,35 @@
-using UnityEngine.SceneManagement;
+using Game.Data;
 
 public class GameStateService : IGameStateService
 {
-    public void LoadLocation()
+    private readonly PlayerRuntimeData playerData;
+    private readonly IGameScoreService scoreService;
+
+    public GameStateService(PlayerRuntimeData playerData, IGameScoreService scoreService)
     {
-        SceneManager.LoadScene("Location");
+        this.playerData = playerData;
+        this.scoreService = scoreService;
     }
 
-    public void LoadMenu()
+    public void ResetPlayerData()
     {
-        SceneManager.LoadScene("MenuScene");
+        playerData?.FullReset();
     }
 
-    public void LoadEnd()
+    public void ResetScoreData()
     {
-        SceneManager.LoadScene("End");
+        scoreService?.Reset();
     }
+
+    public void FullReset()
+    {
+        ResetPlayerData();
+        ResetScoreData();
+    }
+
+    public void LoadLocation() => SceneLoader.LoadLocation();
+    public void LoadLocationBoss() => SceneLoader.LoadBossLocation();
+    public void LoadMenu() => SceneLoader.LoadMenu();
+    public void LoadEnd() => SceneLoader.LoadEnd();
+    public void LoadGoodEnd() => SceneLoader.LoadGoodEnd();
 }

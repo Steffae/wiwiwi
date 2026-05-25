@@ -8,9 +8,9 @@ public class VolumeSlider : MonoBehaviour
 
     private IAudioService audioService;
 
-    void Start()
+    public void Initialize(IAudioService audioService)
     {
-        audioService = GameEntrypoint.Instance.AudioService;
+        this.audioService = audioService;
 
         volumeSlider.value = isMusic
             ? audioService.MusicVolume

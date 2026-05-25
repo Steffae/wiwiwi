@@ -1,50 +1,81 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameplaySceneEntrypoint : MonoBehaviour
 {
     [Header("Music")]
     [SerializeField] private AudioClip gameplayMusic;
+    [SerializeField] private AudioClip victoryMusic;
 
-    private ISaveInteractor saveInteractor;
     private IAudioService audioService;
+    private IGameStateService gameStateService;
+    private IGameScoreService scoreService;
 
     void Start()
     {
         var gameEntrypoint = GameEntrypoint.Instance;
 
         audioService = gameEntrypoint.AudioService;
+        gameStateService = gameEntrypoint.GameStateService;
+        scoreService = gameEntrypoint.GameScoreService;
 
-        // Музыка сцены
         if (gameplayMusic != null)
             audioService.PlayMusic(gameplayMusic);
 
-        // Получаем объекты сцены
         GameObject player = GameObject.FindGameObjectWithTag("Player");
 
         var enemies = new List<EnemyBase>(
             FindObjectsByType<EnemyBase>(FindObjectsSortMode.None));
 
-        // Репозитории
         var playerRepo = new PlayerRepository(player);
-        var enemyRepo = new EnemyRepository(enemies);
+        var enemyRepo = new EnemyRepository();
 
-        // Interactor
-        saveInteractor = new SaveInteractor(
+        var saveInteractor = new SaveInteractor(
             playerRepo,
-            enemyRepo,
-            gameEntrypoint.SaveRepository);
+            enemyRepo);
 
-        // Передаём interactor в UI
-        InjectSaveInteractorIntoUI();
+        gameEntrypoint.SaveInteractor = saveInteractor;
+
+        SubscribeToScoreEvents();
+        InjectServicesIntoScene(saveInteractor);
     }
 
-    private void InjectSaveInteractorIntoUI()
+    private void SubscribeToScoreEvents()
     {
-        var saveUI = FindFirstObjectByType<SaveMenuUI>();
-        if (saveUI != null)
+        if (scoreService != null && victoryMusic != null)
         {
-            saveUI.Initialize(saveInteractor);
+            scoreService.OnVictory += () =>
+            {
+                audioService.PlaySoundEffect(victoryMusic);
+            };
         }
+    }
+
+    private void InjectServicesIntoScene(ISaveInteractor saveInteractor)
+    {
+        var scoreboardController = FindFirstObjectByType<Game.System.UI.ScoreboardController>();
+        if (scoreboardController != null)
+        {
+            var player = GameObject.FindGameObjectWithTag("Player");
+            scoreboardController.Initialize(scoreService);
+            if (player != null)
+                scoreboardController.SetPlayerHealth(player.GetComponent<HealthComponent>());
+        }
+
+        var pauseMenuController = FindFirstObjectByType<Game.System.UI.PauseMenuController>();
+        if (pauseMenuController != null)
+        {
+            pauseMenuController.Initialize(saveInteractor, audioService, gameStateService);
+        }
+
+        var volumeSliders = FindObjectsByType<VolumeSlider>(FindObjectsSortMode.None);
+        foreach (var slider in volumeSliders)
+        {
+            slider.Initialize(audioService);
+        }
+    }
+
+    private void OnDestroy()
+    {
     }
 }

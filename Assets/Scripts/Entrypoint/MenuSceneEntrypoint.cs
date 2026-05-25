@@ -1,28 +1,38 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class MenuSceneEntrypoint : MonoBehaviour
 {
     private IAudioService audioService;
+    private IGameStateService gameStateService;
 
     [Header("Music")]
     [SerializeField] private AudioClip menuMusic;
 
     void Start()
     {
-        audioService = GameEntrypoint.Instance.AudioService;
+        var gameEntrypoint = GameEntrypoint.Instance;
+
+        audioService = gameEntrypoint.AudioService;
+        gameStateService = gameEntrypoint.GameStateService;
 
         if (menuMusic != null)
             audioService.PlayMusic(menuMusic);
+
+        InjectServicesIntoScene();
     }
 
-    public void LoadLocation()
+    private void InjectServicesIntoScene()
     {
-        SceneManager.LoadScene("Location");
-    }
+        var mainMenu = FindFirstObjectByType<MainMenu>();
+        if (mainMenu != null)
+        {
+            mainMenu.Initialize(audioService, gameStateService);
+        }
 
-    public void ExitGame()
-    {
-        Application.Quit();
+        var volumeSliders = FindObjectsByType<VolumeSlider>(FindObjectsSortMode.None);
+        foreach (var slider in volumeSliders)
+        {
+            slider.Initialize(audioService);
+        }
     }
 }

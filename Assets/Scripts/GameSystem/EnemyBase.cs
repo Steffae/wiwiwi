@@ -7,6 +7,7 @@ public class EnemyBase : MonoBehaviour
 {
     [Header("Health")]
     [SerializeField] protected float maxHealth = 50f;
+    protected float physicalDamage = 10f;
 
     [Header("Movement")]
     public float moveSpeed = 3f;
@@ -20,7 +21,8 @@ public class EnemyBase : MonoBehaviour
     protected bool isDying = false;
     protected bool isHit = false;
     protected NavMeshAgent agent;
-    protected Transform player;
+    protected Transform targetPlayer;
+    protected Animator animator;
 
     // UI компоненты
     protected GameObject healthBarInstance;
@@ -30,7 +32,7 @@ public class EnemyBase : MonoBehaviour
 
     // save zone
     public float CurrentHealth => healthSystem.CurrentHealth;
-    public float MaxHealthValue => maxHealth;
+    public float MaxHealth => maxHealth;
     public bool IsDying => isDying;
 
     public void SetHealth(float health)
@@ -49,6 +51,8 @@ public class EnemyBase : MonoBehaviour
         healthSystem.OnHealthChanged += UpdateHealthUI;
         healthSystem.OnDeath += Die;
 
+        animator = GetComponent<Animator>();
+
         agent = GetComponent<NavMeshAgent>();
         if (agent != null)
         {
@@ -60,7 +64,7 @@ public class EnemyBase : MonoBehaviour
 
     protected virtual void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player")?.transform;
+        targetPlayer = GameObject.FindGameObjectWithTag("Player")?.transform;
 
         // Создание полоски здоровья
         if (healthBarPrefab != null)
@@ -85,6 +89,12 @@ public class EnemyBase : MonoBehaviour
                 healthSlider.maxValue = maxHealth;
                 healthSlider.value = healthSystem.CurrentHealth;
             }
+
+            Debug.Log($"HealthBar создан для {gameObject.name}: {healthBarInstance != null}");
+        }
+        else
+        {
+            Debug.LogWarning($"healthBarPrefab не назначен для {gameObject.name}");
         }
     }
 
@@ -99,9 +109,9 @@ public class EnemyBase : MonoBehaviour
 
         // Проверка расстояния до игрока
         bool showHealthBar = false;
-        if (player != null)
+        if (targetPlayer != null)
         {
-            float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+            float distanceToPlayer = Vector3.Distance(transform.position, targetPlayer.position);
             showHealthBar = distanceToPlayer <= showDistance;
         }
 
@@ -198,6 +208,12 @@ public class EnemyBase : MonoBehaviour
         isDying = true;
 
         Debug.Log($"{gameObject.name} погиб");
+
+        // Уведомляем систему очков
+        if (GameEntrypoint.Instance?.GameScoreService != null)
+        {
+            GameEntrypoint.Instance.GameScoreService.OnEnemyKilled();
+        }
 
         // Отключение навигации
         if (agent != null) agent.enabled = false;
