@@ -23,10 +23,10 @@ public class BossSceneEntrypoint : MonoBehaviour
 
     private void InjectServicesIntoScene()
     {
-        var saveUI = FindFirstObjectByType<SaveMenuUI>();
-        if (saveUI != null)
+        var pauseMenuController = FindFirstObjectByType<Game.System.UI.PauseMenuController>();
+        if (pauseMenuController != null)
         {
-            saveUI.Initialize(null, audioService, gameStateService);
+            pauseMenuController.Initialize(null, audioService, gameStateService);
         }
 
         var volumeSliders = FindObjectsByType<VolumeSlider>(FindObjectsSortMode.None);

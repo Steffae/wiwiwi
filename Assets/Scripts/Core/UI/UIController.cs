@@ -51,8 +51,19 @@ namespace Game.Core
             }
         }
 
+        public virtual void Show()
+        {
+            gameObject.SetActive(true);
+        }
+
+        public virtual void Hide()
+        {
+            gameObject.SetActive(false);
+        }
+
         public virtual void ShowAll()
         {
+            Show();
             foreach (var view in registeredViews)
             {
                 view.Show();
@@ -65,6 +76,7 @@ namespace Game.Core
             {
                 view.Hide();
             }
+            Hide();
         }
     }
 }

@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class CursorController : MonoBehaviour
 {
@@ -8,12 +7,8 @@ public class CursorController : MonoBehaviour
 
     private bool isCursorLocked = true;
 
-    public GameObject GameMenuPanel;
-
     void Start()
     {
-        GameMenuPanel.SetActive(false);
-
         if (startLocked)
         {
             LockCursor();
@@ -24,28 +19,11 @@ public class CursorController : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-        // Отслеживаем нажатие ESC через Input System
-        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
-        {
-            if (isCursorLocked)
-            {
-                UnlockCursor();
-            }
-            else
-            {
-                LockCursor();
-            }
-        }
-    }
-
     public void LockCursor()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         isCursorLocked = true;
-        GameMenuPanel.SetActive(false);
         Debug.Log("Курсор заблокирован");
     }
 
@@ -54,7 +32,6 @@ public class CursorController : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         isCursorLocked = false;
-        GameMenuPanel.SetActive(true);
         Debug.Log("Курсор разблокирован");
     }
 

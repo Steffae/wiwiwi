@@ -29,18 +29,6 @@ namespace Game.System.UI
         private void OnLoadClick() => Controller?.OnLoadPressed();
         private void OnExitClick() => Controller?.OnExitPressed();
 
-        public override void Show()
-        {
-            base.Show();
-            Time.timeScale = 0f;
-        }
-
-        public override void Hide()
-        {
-            base.Hide();
-            Time.timeScale = 1f;
-        }
-
         private void OnDestroy()
         {
             if (saveButton != null) saveButton.onClick.RemoveListener(OnSaveClick);

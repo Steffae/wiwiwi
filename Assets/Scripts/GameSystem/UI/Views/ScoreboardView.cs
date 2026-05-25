@@ -47,13 +47,13 @@ namespace Game.System.UI
                 if (healthSlider != null)
                 {
                     healthSlider.minValue = 0;
-                    healthSlider.maxValue = 100;
+                    healthSlider.maxValue = player.MaxHealth;
                     healthSlider.value = player.CurrentHealth;
                 }
 
                 if (healthText != null)
                 {
-                    healthText.text = $"{Mathf.Ceil(player.CurrentHealth)} / 100";
+                    healthText.text = $"{Mathf.Ceil(player.CurrentHealth)} / {player.MaxHealth}";
                 }
             }
         }

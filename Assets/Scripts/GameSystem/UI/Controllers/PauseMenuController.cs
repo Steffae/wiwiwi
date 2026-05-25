@@ -10,6 +10,7 @@ namespace Game.System.UI
         private IGameStateService gameStateService;
 
         [SerializeField] private AudioClip buttonClick;
+        [SerializeField] private GameObject menuPanel;
 
         public void Initialize(ISaveInteractor saveInteractor, IAudioService audioService, IGameStateService gameStateService = null)
         {
@@ -34,20 +35,35 @@ namespace Game.System.UI
         {
             audioService?.PlaySoundEffect(buttonClick);
             Time.timeScale = 1f;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
             gameStateService?.LoadMenu();
         }
 
         protected override void OnControllerStart()
         {
-            Hide();
+            if (menuPanel != null)
+                menuPanel.SetActive(false);
         }
 
         public void ToggleMenu()
         {
-            if (gameObject.activeSelf)
-                Hide();
+            if (menuPanel == null) return;
+
+            bool isOpen = !menuPanel.activeSelf;
+            menuPanel.SetActive(isOpen);
+            Time.timeScale = isOpen ? 0f : 1f;
+
+            if (isOpen)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
             else
-                Show();
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
         }
     }
 }

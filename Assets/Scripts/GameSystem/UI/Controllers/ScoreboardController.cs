@@ -11,27 +11,17 @@ namespace Game.System.UI
         public void Initialize(IGameScoreService scoreService)
         {
             this.scoreService = scoreService;
-        }
-
-        public void SetPlayerHealth(HealthComponent healthComponent)
-        {
-            playerHealth = healthComponent;
-        }
-
-        protected override void OnControllerStart()
-        {
-            if (playerHealth == null)
-            {
-                var player = GameObject.FindGameObjectWithTag("Player");
-                if (player != null)
-                    playerHealth = player.GetComponent<HealthComponent>();
-            }
 
             if (scoreService != null)
             {
                 scoreService.OnKillCountChanged += OnKillCountChanged;
                 UpdateAllViews();
             }
+        }
+
+        public void SetPlayerHealth(HealthComponent healthComponent)
+        {
+            playerHealth = healthComponent;
         }
 
         private void OnKillCountChanged(int killCount)

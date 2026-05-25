@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameplaySceneEntrypoint : MonoBehaviour
@@ -53,16 +53,19 @@ public class GameplaySceneEntrypoint : MonoBehaviour
 
     private void InjectServicesIntoScene(ISaveInteractor saveInteractor)
     {
-        var saveUI = FindFirstObjectByType<SaveMenuUI>();
-        if (saveUI != null)
+        var scoreboardController = FindFirstObjectByType<Game.System.UI.ScoreboardController>();
+        if (scoreboardController != null)
         {
-            saveUI.Initialize(saveInteractor, audioService, gameStateService);
+            var player = GameObject.FindGameObjectWithTag("Player");
+            scoreboardController.Initialize(scoreService);
+            if (player != null)
+                scoreboardController.SetPlayerHealth(player.GetComponent<HealthComponent>());
         }
 
-        var scoreboardUI = FindFirstObjectByType<ScoreboardUI>();
-        if (scoreboardUI != null)
+        var pauseMenuController = FindFirstObjectByType<Game.System.UI.PauseMenuController>();
+        if (pauseMenuController != null)
         {
-            scoreboardUI.Initialize(scoreService);
+            pauseMenuController.Initialize(saveInteractor, audioService, gameStateService);
         }
 
         var volumeSliders = FindObjectsByType<VolumeSlider>(FindObjectsSortMode.None);
