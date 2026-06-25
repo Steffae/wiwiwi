@@ -13,7 +13,6 @@ public class EnemyRepository : IRepository<List<EnemySaveData>>
     {
         var data = new List<EnemySaveData>();
 
-        // ������� ���� ������ �� �����
         EnemyBase[] enemies = Object.FindObjectsByType<EnemyBase>(FindObjectsSortMode.None);
 
         foreach (var enemy in enemies)
@@ -27,7 +26,6 @@ public class EnemyRepository : IRepository<List<EnemySaveData>>
             enemyData.isAlive = !enemy.IsDying && enemy.CurrentHealth > 0;
             enemyData.enemyId = enemy.gameObject.GetInstanceID().ToString();
 
-            // ���������� ��� ����� � ��� �����
             if (enemy is MeleeEnemy melee)
             {
                 enemyData.enemyType = "Melee";
@@ -59,14 +57,12 @@ public class EnemyRepository : IRepository<List<EnemySaveData>>
     {
         if (data == null) return;
 
-        // ������� ���� ������������ ������
         EnemyBase[] existingEnemies = Object.FindObjectsByType<EnemyBase>(FindObjectsSortMode.None);
         foreach (var enemy in existingEnemies)
         {
             Object.Destroy(enemy.gameObject);
         }
 
-        // ������ ������ ������
         foreach (var enemyData in data)
         {
             SpawnEnemyFromData(enemyData);
@@ -75,16 +71,15 @@ public class EnemyRepository : IRepository<List<EnemySaveData>>
 
     private void SpawnEnemyFromData(EnemySaveData data)
     {
-        GameObject prefab = GetPrefabByType(data.enemyType, data.attackType);
+        GameObject prefab = GetPrefabByType(data.enemyType);
         if (prefab == null)
         {
-            Debug.LogWarning($"�� ������ ������ ��� {data.enemyType} � ������ {data.attackType}");
+            Debug.LogWarning($"Не найден префаб для {data.enemyType}");
             return;
         }
 
         GameObject enemyObj = Object.Instantiate(prefab, data.Position, Quaternion.identity);
 
-        // ��������������� ��� �����
         if (enemyObj.TryGetComponent<MeleeEnemy>(out var melee))
         {
             if (System.Enum.TryParse<MeleeAttackType>(data.attackType, out var attackType))
@@ -108,21 +103,16 @@ public class EnemyRepository : IRepository<List<EnemySaveData>>
         }
     }
 
-    private GameObject GetPrefabByType(string enemyType, string attackType)
+    private GameObject GetPrefabByType(string enemyType)
     {
-        // ��������� ������� �� Resources ��� ������� �� � �����
-        // ����� ��������� ���� � ��������
-        string path = "";
-
         if (enemyType == "Melee")
         {
-            path = attackType == "Push" ? "Prefabs/Enemies/MeleeEnemy_Push" : "Prefabs/Enemies/MeleeEnemy_Jump";
+            return Resources.Load<GameObject>("Prefabs/Enemies/MeleeEnemy");
         }
         else if (enemyType == "Ranged")
         {
-            path = attackType == "Bird" ? "Prefabs/Enemies/RangedEnemy_Bird" : "Prefabs/Enemies/RangedEnemy_Octopus";
+            return Resources.Load<GameObject>("Prefabs/Enemies/RangedEnemy");
         }
-
-        return Resources.Load<GameObject>(path);
+        return null;
     }
 }
